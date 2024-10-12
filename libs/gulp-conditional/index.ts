@@ -8,19 +8,27 @@ import { checkCondition } from "./utils";
 import { PLUGIN_NAME } from "./constants";
 
 import type { GulpConditionalOptions } from "./types";
+import { isBoolean, isFunction, isObject } from "@shared/helpers/typeHelpers";
 
 const GulpConditional = ({ condition, onConditionMet, onConditionNotMet }: GulpConditionalOptions) => {
-  if (typeof condition !== "boolean" || typeof condition !== "object") {
-    GulpWinstonError({
+  if (!isBoolean(condition) || !isObject(condition)) {
+    return GulpWinstonError({
       pluginName: PLUGIN_NAME,
       message: "Condition must be a boolean or an object with condition options.",
     });
   }
 
-  if (!onConditionMet) {
-    GulpWinstonError({
+  if (!onConditionMet && isFunction(onConditionMet)) {
+    return GulpWinstonError({
       pluginName: PLUGIN_NAME,
-      message: "Transformer function is required and must be a function.",
+      message: "OnConditionMet function is required and must be a function.",
+    });
+  }
+
+  if (onConditionNotMet && isFunction(onConditionNotMet)) {
+    return GulpWinstonError({
+      pluginName: PLUGIN_NAME,
+      message: "OnConditionNotMet function is required and must be a function.",
     });
   }
 

@@ -1,0 +1,29 @@
+{
+  "name": "gulp-font-switcher",
+  "description": "",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zilero232/gulp-plugins-hub"
+  },
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "keywords": [],
+  "engines": {
+    "node": ">= 6.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "fonteditor-core": "^2.4.1"
+  }
+}
