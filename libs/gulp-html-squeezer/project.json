@@ -1,0 +1,20 @@
+{
+  "name": "gulp-html-squeezer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "./",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "options": {
+        "main": "libs/gulp-html-squeezer/index.ts",
+        "outputPath": "libs/gulp-html-squeezer/build",
+        "outputFileName": "index.js",
+        "deleteOutputPath": true,
+        "tsConfig": "libs/gulp-html-squeezer/tsconfig.json",
+        "babelConfig": "tools/config/babel/babel.config.json",
+        "webpackConfig": "tools/config/webpack/webpack.config.js"
+      }
+    }
+  }
+}

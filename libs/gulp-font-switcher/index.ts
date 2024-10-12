@@ -51,7 +51,7 @@ const GulpFontSwitcher = <T extends FontTypeValues>({ format, options, toBase64,
           },
         });
 
-        return null;
+        return file;
       }
 
       try {
@@ -136,7 +136,7 @@ const GulpFontSwitcher = <T extends FontTypeValues>({ format, options, toBase64,
           pluginName: PLUGIN_NAME,
           message: `Processing complete. Total files: ${fileCount}, Total processed files: ${processedCount}, Total errors: ${errorCount}`,
           options: {
-            level: "warn",
+            level: "info",
           },
         });
       }
