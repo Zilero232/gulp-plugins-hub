@@ -1,4 +1,4 @@
-import { minify } from "html-minifier-terser";
+import { minify } from "terser";
 
 import GulpPluginFactory from "@zilero/gulp-plugin-factory";
 import GulpWinstonError from "@zilero/gulp-winston-error";
@@ -6,38 +6,38 @@ import GulpWinstonError from "@zilero/gulp-winston-error";
 import { handleUnknownError } from "@shared/utils";
 import { isFunction, isString } from "@shared/helpers/typeHelpers";
 
-import { GulpHtmlSqueezerOptions } from "./types";
-
 import { PLUGIN_NAME } from "./constants";
 
+import { GulpJsSqueezerOptions } from "./types";
+
 /**
- * A Gulp plugin that can be used to minify HTML files.
+ * A Gulp plugin that can be used to minify JavaScript files.
  *
- * The plugin processes the HTML content of each file in the stream, minifying it
+ * The plugin processes the JavaScript content of each file in the stream, minifying it
  * and logging the results. If the file is not a Buffer, it is skipped.
  *
  * The plugin also provides statistics on the number of files processed and the
  * number of errors encountered.
  *
- * @param {GulpHtmlSqueezerOptions} options - The options for the plugin.
+ * @param {GulpJsSqueezerOptions} options - The options for the plugin.
  *
- * @returns {TransformStream} - A Gulp plugin that can be used to minify HTML files.
+ * @returns {TransformStream} - A Gulp plugin that can be used to minify JavaScript files.
  *
  * @example
- * import GulpHtmlSqueezer from "@zilero/gulp-html-squeezer";
+ * import GulpJsSqueezer from "@zilero/gulp-js-squeezer";
  *
- * gulp.src("src/*.html")
- *   .pipe(GulpHtmlSqueezer())
+ * gulp.src("src/*.js")
+ *   .pipe(GulpJsSqueezer())
  *   .pipe(gulp.dest("dist"));
  */
-const GulpHtmlSqueezer = ({
+const GulpJsSqueezer = ({
   logStream = false,
   logEnd = false,
   skipFilesWithoutExtension = true,
   onBeforeMinify,
   onAfterMinify,
   ...minifyOptions
-}: GulpHtmlSqueezerOptions) => {
+}: GulpJsSqueezerOptions) => {
   // Checking the validity of the function onBeforeMinify.
   if (onBeforeMinify && !isFunction(onBeforeMinify)) {
     return GulpWinstonError({
@@ -64,12 +64,12 @@ const GulpHtmlSqueezer = ({
       try {
         const isBuffer = file.isBuffer();
 
-        // Skipping files without an extension .html (if enabled).
-        if (skipFilesWithoutExtension && !file.extname.endsWith(".html")) {
+        // Skipping files without an extension .js (if enabled).
+        if (skipFilesWithoutExtension && !file.extname.endsWith(".js")) {
           if (logStream) {
             GulpWinstonError({
               pluginName: PLUGIN_NAME,
-              message: `Skipped file: ${file.relative} because it does not have an extension .html.`,
+              message: `Skipped file: ${file.relative} because it does not have an extension .js`,
               options: {
                 level: "warn",
               },
@@ -91,8 +91,8 @@ const GulpHtmlSqueezer = ({
             content = onBeforeModified;
           }
 
-          // Minify the HTML content.
-          content = await minify(content, minifyOptions);
+          // Minify the JS content.
+          content = (await minify(content, minifyOptions)).code ?? "";
 
           // onAfterMinify call (if passed).
           const onAfterModified = onAfterMinify ? await onAfterMinify(content) : content;
@@ -115,7 +115,7 @@ const GulpHtmlSqueezer = ({
         if (logStream) {
           GulpWinstonError({
             pluginName: PLUGIN_NAME,
-            message: `Minified HTML file ${file.relative} ${isBuffer ? "successfully." : "failed."}.`,
+            message: `Minified JS file ${file.relative} ${isBuffer ? "successfully." : "failed."}.`,
             options: {
               level: "info",
             },
@@ -138,7 +138,7 @@ const GulpHtmlSqueezer = ({
       if (logEnd) {
         GulpWinstonError({
           pluginName: PLUGIN_NAME,
-          message: `Total files: ${fileCount}, Total processed files: ${processedCount}, Total errors: ${errorCount} HTML file(s).`,
+          message: `Total files: ${fileCount}, Total processed files: ${processedCount}, Total errors: ${errorCount} JS file(s).`,
           options: {
             level: "info",
           },
@@ -148,4 +148,4 @@ const GulpHtmlSqueezer = ({
   });
 };
 
-export default GulpHtmlSqueezer;
+export default GulpJsSqueezer;
