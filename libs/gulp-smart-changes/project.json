@@ -1,0 +1,20 @@
+{
+  "name": "gulp-smart-changes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "./",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "options": {
+        "main": "libs/gulp-smart-changes/index.ts",
+        "outputPath": "libs/gulp-smart-changes/build",
+        "outputFileName": "index.js",
+        "deleteOutputPath": true,
+        "tsConfig": "libs/gulp-smart-changes/tsconfig.json",
+        "babelConfig": "tools/config/babel/babel.config.json",
+        "webpackConfig": "tools/config/webpack/webpack.config.js"
+      }
+    }
+  }
+}
