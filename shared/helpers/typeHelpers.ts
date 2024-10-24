@@ -10,6 +10,17 @@ export function isObject(value: unknown): value is object {
 }
 
 /**
+ * Checks if the value is an array.
+ *
+ * @param value The value to check.
+ *
+ * @returns `true` if the value is an array, otherwise `false`.
+ */
+export function isArray(value: unknown): value is unknown[] {
+  return typeof value === "object" && Array.isArray(value);
+}
+
+/**
  * Checks if the value is a boolean.
  *
  * @param value The value to check.
@@ -62,4 +73,15 @@ export function isError(value: unknown): value is Error {
  */
 export function isFunction(value: unknown): value is Function {
   return typeof value === "function";
+}
+
+/**
+ * Checks if the value is a regular expression.
+ *
+ * @param value The value to check.
+ *
+ * @returns `true` if the value is a regular expression, otherwise `false`.
+ */
+export function isRegExp(value: unknown): value is RegExp {
+  return value instanceof RegExp;
 }

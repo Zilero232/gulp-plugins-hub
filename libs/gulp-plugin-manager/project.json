@@ -1,0 +1,20 @@
+{
+  "name": "gulp-plugin-manager",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "./",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "options": {
+        "main": "libs/gulp-plugin-manager/index.ts",
+        "outputPath": "libs/gulp-plugin-manager/build",
+        "outputFileName": "index.js",
+        "deleteOutputPath": true,
+        "tsConfig": "libs/gulp-plugin-manager/tsconfig.json",
+        "babelConfig": "tools/config/babel/babel.config.json",
+        "webpackConfig": "tools/config/webpack/webpack.config.js"
+      }
+    }
+  }
+}

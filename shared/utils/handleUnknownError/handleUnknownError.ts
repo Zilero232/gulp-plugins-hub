@@ -55,7 +55,7 @@ export function handleUnknownError<TErrorResult, TSuccessResult>({
   } else {
     GulpWinstonError({
       pluginName,
-      message: "An unknown error occurred",
+      message: message || "An unknown error occurred",
     });
 
     // If there is no error, we execute onSuccess, if it is passed.
