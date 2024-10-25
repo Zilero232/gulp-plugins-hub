@@ -1,78 +1,40 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": [
-      "ES2022"
-    ],
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "declaration": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "esModuleInterop": true,
-    "strictPropertyInitialization": false,
-    "baseUrl": ".",
-    "rootDir": ".",
-    "paths": {
-      "@shared/*": [
-        "shared/*"
-      ],
-      "@zilero/gulp-archive-creator": [
-        "libs/gulp-archive-creator/index.ts"
-      ],
-      "@zilero/gulp-conditional": [
-        "libs/gulp-conditional/index.ts"
-      ],
-      "@zilero/gulp-folder-clone": [
-        "libs/gulp-folder-clone/index.ts"
-      ],
-      "@zilero/gulp-font-switcher": [
-        "libs/gulp-font-switcher/index.ts"
-      ],
-      "@zilero/gulp-html-squeezer": [
-        "libs/gulp-html-squeezer/index.ts"
-      ],
-      "@zilero/gulp-js-squeeze": [
-        "libs/gulp-js-squeeze/index.ts"
-      ],
-      "@zilero/gulp-plugin-factory": [
-        "libs/gulp-plugin-factory/index.ts"
-      ],
-      "@zilero/gulp-plugin-manager": [
-        "libs/gulp-plugin-manager/index.ts"
-      ],
-      "@zilero/gulp-pug-compiler": [
-        "libs/gulp-pug-compiler/index.ts"
-      ],
-      "@zilero/gulp-refilename": [
-        "libs/gulp-refilename/index.ts"
-      ],
-      "@zilero/gulp-scss-squeezer": [
-        "libs/gulp-scss-squeezer/index.ts"
-      ],
-      "@zilero/gulp-sharper": [
-        "libs/gulp-sharper/index.ts"
-      ],
-      "@zilero/gulp-smart-changes": [
-        "libs/gulp-smart-changes/index.ts"
-      ],
-      "@zilero/gulp-winston-error": [
-        "libs/gulp-winston-error/index.ts"
-      ]
-    }
-  },
-  "include": [
-    "global.d.ts",
-    "**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022"],
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"baseUrl": ".",
+		"rootDir": ".",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"paths": {
+			"@shared/*": ["shared/*"],
+			"@zilero/gulp-archive-creator": ["libs/gulp-archive-creator/index.ts"],
+			"@zilero/gulp-conditional": ["libs/gulp-conditional/index.ts"],
+			"@zilero/gulp-folder-clone": ["libs/gulp-folder-clone/index.ts"],
+			"@zilero/gulp-font-switcher": ["libs/gulp-font-switcher/index.ts"],
+			"@zilero/gulp-html-squeezer": ["libs/gulp-html-squeezer/index.ts"],
+			"@zilero/gulp-js-squeeze": ["libs/gulp-js-squeeze/index.ts"],
+			"@zilero/gulp-plugin-factory": ["libs/gulp-plugin-factory/index.ts"],
+			"@zilero/gulp-plugin-manager": ["libs/gulp-plugin-manager/index.ts"],
+			"@zilero/gulp-pug-compiler": ["libs/gulp-pug-compiler/index.ts"],
+			"@zilero/gulp-refilename": ["libs/gulp-refilename/index.ts"],
+			"@zilero/gulp-scss-squeezer": ["libs/gulp-scss-squeezer/index.ts"],
+			"@zilero/gulp-sharper": ["libs/gulp-sharper/index.ts"],
+			"@zilero/gulp-smart-changes": ["libs/gulp-smart-changes/index.ts"],
+			"@zilero/gulp-winston-logger": ["libs/gulp-winston-logger/index.ts"]
+		},
+		"strict": true,
+		"strictPropertyInitialization": false,
+		"noUnusedLocals": true,
+		"declaration": false,
+		"importHelpers": true,
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true
+	},
+	"include": ["global.d.ts", "**/*.ts"],
+	"exclude": ["node_modules", "tmp"]
 }

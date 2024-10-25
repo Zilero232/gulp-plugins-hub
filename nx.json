@@ -4,12 +4,17 @@
   "parallel": 1,
   "cacheDirectory": "/tmp/nx-cache",
   "bust": 8,
+  "workspaceLayout": {
+    "appsDir": "example",
+    "libsDir": "libs"
+  },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/eslint.config.[jt]s",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)"
     ],
     "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
@@ -36,11 +41,15 @@
       }
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs", "{workspaceRoot}/.eslintignore"]
+      "inputs": ["default", "{workspaceRoot}/eslint.config.js"]
     }
   },
-  "workspaceLayout": {
-    "appsDir": "example",
-    "libsDir": "libs"
-  }
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    }
+  ]
 }
