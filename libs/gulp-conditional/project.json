@@ -1,36 +1,36 @@
 {
-  "name": "@zilero/gulp-conditional",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "./",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "options": {
-        "main": "libs/gulp-conditional/index.ts",
-        "outputPath": "libs/gulp-conditional/build",
-        "outputFileName": "index.js",
-        "deleteOutputPath": true,
-        "tsConfig": "libs/gulp-conditional/tsconfig.json",
-        "babelConfig": "tools/config/babel/babel.config.json",
-        "webpackConfig": "tools/config/webpack/webpack.config.js"
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "options": {
-        "jestConfig": "libs/gulp-conditional/jest.config.ts",
-        "codeCoverage": true,
-        "coverageDirectory": "{workspaceRoot}/coverage/{projectRoot}",
-        "passWithNoTests": true
-      }
-    },
-    "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/zod/**/*.ts"]
-      }
-    }
-  }
+	"name": "@zilero/gulp-conditional",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "./",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/webpack:webpack",
+			"options": {
+				"main": "libs/gulp-conditional/index.ts",
+				"outputPath": "libs/gulp-conditional/build",
+				"outputFileName": "index.js",
+				"deleteOutputPath": true,
+				"tsConfig": "libs/gulp-conditional/tsconfig.json",
+				"babelConfig": "tools/config/babel/babel.config.json",
+				"webpackConfig": "tools/config/webpack/webpack.config.js"
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"options": {
+				"jestConfig": "libs/gulp-conditional/jest.config.ts",
+				"codeCoverage": true,
+				"coverageDirectory": "{workspaceRoot}/coverage/{projectRoot}",
+				"passWithNoTests": true
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/gulp-conditional/**/*.{js,ts,json}"]
+			}
+		}
+	}
 }

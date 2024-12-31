@@ -1,20 +1,27 @@
 {
-  "name": "@zilero/gulp-plugin-factory",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "./",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "options": {
-        "main": "libs/gulp-plugin-factory/index.ts",
-        "outputPath": "libs/gulp-plugin-factory/build",
-        "outputFileName": "index.js",
-        "deleteOutputPath": true,
-        "tsConfig": "libs/gulp-plugin-factory/tsconfig.json",
-        "babelConfig": "tools/config/babel/babel.config.json",
-        "webpackConfig": "tools/config/webpack/webpack.config.js"
-      }
-    }
-  }
+	"name": "@zilero/gulp-plugin-factory",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "./",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/webpack:webpack",
+			"options": {
+				"main": "libs/gulp-plugin-factory/index.ts",
+				"outputPath": "libs/gulp-plugin-factory/build",
+				"outputFileName": "index.js",
+				"deleteOutputPath": true,
+				"tsConfig": "libs/gulp-plugin-factory/tsconfig.json",
+				"babelConfig": "tools/config/babel/babel.config.json",
+				"webpackConfig": "tools/config/webpack/webpack.config.js"
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/gulp-plugin-factory/**/*.{js,ts,json}"]
+			}
+		}
+	}
 }

@@ -1,5 +1,5 @@
 import GulpPluginFactory from "@zilero/gulp-plugin-factory";
-import GulpWinstonError from "@zilero/gulp-winston-error";
+import GulpWinstonLogger from "@zilero/gulp-winston-logger";
 
 import { handleUnknownError } from "@shared/utils";
 

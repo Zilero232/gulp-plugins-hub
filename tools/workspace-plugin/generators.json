@@ -1,9 +1,9 @@
 {
-  "generators": {
-    "create-folder-plugin": {
-      "factory": "./src/generators/create-folder-plugin/generator",
-      "schema": "./src/generators/create-folder-plugin/schema.json",
-      "description": "Workspace Generator to create a create-folder-plugin"
-    }
-  }
+	"generators": {
+		"create-folder-plugin": {
+			"factory": "./src/generators/create-folder-plugin/generator",
+			"schema": "./src/generators/create-folder-plugin/schema.json",
+			"description": "Workspace Generator to create a create-folder-plugin"
+		}
+	}
 }

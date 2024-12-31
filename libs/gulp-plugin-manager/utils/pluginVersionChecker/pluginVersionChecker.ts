@@ -1,13 +1,13 @@
-import { InvalidFormatError } from "@shared/utils";
-import { isObject } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isObject } from '@shared/helpers/typeHelpers';
 
-import checkPluginVersion from "../../helpers/checkPluginVersion";
+import checkPluginVersion from '../../helpers/checkPluginVersion';
 
-import { GulpPluginManagerOptions } from "../../types";
+import type { GulpPluginManagerOptions } from '../../types';
 
 interface PluginVersionCheckerProps {
-  packagePlugins: Record<string, string>;
-  minVersions: GulpPluginManagerOptions["minVersions"];
+	packagePlugins: Record<string, string>;
+	minVersions: GulpPluginManagerOptions['minVersions'];
 }
 
 /**
@@ -18,23 +18,23 @@ interface PluginVersionCheckerProps {
  * @param {GulpPluginManagerOptions["minVersions"]} props.minVersions - The minimum versions of the plugins.
  */
 export const pluginVersionChecker = ({ packagePlugins, minVersions }: PluginVersionCheckerProps) => {
-  if (!minVersions) {
-    return;
-  }
+	if (!minVersions) {
+		return;
+	}
 
-  if (!isObject(minVersions)) {
-    throw new InvalidFormatError({
-      fieldName: "PluginVersionChecker: minVersions",
-      receivedValue: minVersions,
-      expectedType: "object",
-    });
-  }
+	if (!isObject(minVersions)) {
+		throw new InvalidFormatError({
+			fieldName: 'PluginVersionChecker: minVersions',
+			receivedValue: minVersions,
+			expectedType: 'object',
+		});
+	}
 
-  for (const [pluginName, pluginVersion] of Object.entries(packagePlugins)) {
-    checkPluginVersion({
-      pluginName,
-      pluginVersion,
-      minVersions,
-    });
-  }
+	for (const [pluginName, pluginVersion] of Object.entries(packagePlugins)) {
+		checkPluginVersion({
+			pluginName,
+			pluginVersion,
+			minVersions,
+		});
+	}
 };

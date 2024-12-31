@@ -1,20 +1,27 @@
 {
-  "name": "gulp-archive-creator",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "./",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "options": {
-        "main": "libs/gulp-archive-creator/index.ts",
-        "outputPath": "libs/gulp-archive-creator/build",
-        "outputFileName": "index.js",
-        "deleteOutputPath": true,
-        "tsConfig": "libs/gulp-archive-creator/tsconfig.json",
-        "babelConfig": "tools/config/babel/babel.config.json",
-        "webpackConfig": "tools/config/webpack/webpack.config.js"
-      }
-    }
-  }
+	"name": "gulp-archive-creator",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "./",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/webpack:webpack",
+			"options": {
+				"main": "libs/gulp-archive-creator/index.ts",
+				"outputPath": "libs/gulp-archive-creator/build",
+				"outputFileName": "index.js",
+				"deleteOutputPath": true,
+				"tsConfig": "libs/gulp-archive-creator/tsconfig.json",
+				"babelConfig": "tools/config/babel/babel.config.json",
+				"webpackConfig": "tools/config/webpack/webpack.config.js"
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/gulp-archive-creator/**/*.{js,ts,json}"]
+			}
+		}
+	}
 }

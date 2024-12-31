@@ -1,11 +1,11 @@
-import path from "path";
+import path from 'node:path';
 
-import { InvalidFormatError } from "@shared/utils";
-import { isString } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isString } from '@shared/helpers/typeHelpers';
 
 interface CompareByExtensionProps {
-  sourcePath: string;
-  targetPath: string;
+	sourcePath: string;
+	targetPath: string;
 }
 
 /**
@@ -20,23 +20,23 @@ interface CompareByExtensionProps {
  * @throws {InvalidFormatError} - If the sourcePath or targetPath is not a string.
  */
 const compareByExtension = ({ sourcePath, targetPath }: CompareByExtensionProps): boolean => {
-  if (!sourcePath || !isString(targetPath)) {
-    throw new InvalidFormatError({
-      fieldName: "compareByExtension",
-      receivedValue: sourcePath,
-      expectedType: "string",
-    });
-  }
+	if (!sourcePath || !isString(targetPath)) {
+		throw new InvalidFormatError({
+			fieldName: 'compareByExtension',
+			receivedValue: sourcePath,
+			expectedType: 'string',
+		});
+	}
 
-  if (!targetPath || !isString(targetPath)) {
-    throw new InvalidFormatError({
-      fieldName: "compareByExtension",
-      receivedValue: targetPath,
-      expectedType: "string",
-    });
-  }
+	if (!targetPath || !isString(targetPath)) {
+		throw new InvalidFormatError({
+			fieldName: 'compareByExtension',
+			receivedValue: targetPath,
+			expectedType: 'string',
+		});
+	}
 
-  return path.extname(sourcePath) === path.extname(targetPath);
+	return path.extname(sourcePath) === path.extname(targetPath);
 };
 
 export default compareByExtension;

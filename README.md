@@ -40,7 +40,7 @@ npm install gulp-conditional
 
 - **gulp-zip-creator**: Creates ZIP archives from your files and folders for convenient storage and transfer. 📦
 
-- **gulp-winston-error**: Integrates Winston for error handling and logging in your Gulp tasks. 📝
+- **gulp-winston-logger**: Integrates Winston for error handling and logging in your Gulp tasks. 📝
 
 ## 📚 Documentation
 

@@ -1,6 +1,6 @@
-import { PLUGIN_NAME } from "./constants";
+import { PLUGIN_NAME } from './constants';
 
 export default {
-  displayName: PLUGIN_NAME,
-  preset: "../../jest.preset.js",
+	displayName: PLUGIN_NAME,
+	preset: '../../jest.preset.js',
 };

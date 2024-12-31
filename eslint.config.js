@@ -27,9 +27,10 @@ export default antfu(
 			'antfu/top-level-function': 'off',
 			'antfu/if-newline': 'off',
 			'antfu/curly': 'off',
-			'antfu/brace-style': 'off',
 
 			'test/prefer-lowercase-title': 'off',
+
+			'style/brace-style': 'off',
 
 			'no-console': 'warn',
 		},

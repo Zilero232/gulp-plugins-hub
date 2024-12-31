@@ -1,13 +1,13 @@
-import path from "node:path";
-import fs from "node:fs/promises";
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
-import { handleUnknownError, InvalidFormatError } from "@shared/utils";
-import { isObject, isString } from "@shared/helpers/typeHelpers";
+import { handleUnknownError, InvalidFormatError } from '@shared/utils';
+import { isObject, isString } from '@shared/helpers/typeHelpers';
 
-import { PLUGIN_NAME } from "../constants";
+import { PLUGIN_NAME } from '../constants';
 
 interface baseCacheOptions {
-  cacheFilePath: string;
+	cacheFilePath: string;
 }
 
 /**
@@ -20,35 +20,35 @@ interface baseCacheOptions {
  * @throws {Error} If there is an error reading the file.
  */
 export const loadCache = async ({ cacheFilePath }: baseCacheOptions): Promise<Map<string, string>> => {
-  if (!cacheFilePath && !isString(cacheFilePath)) {
-    throw new InvalidFormatError({
-      fieldName: "loadCache: cacheFilePath",
-      receivedValue: cacheFilePath,
-      expectedType: "string",
-    });
-  }
+	if (!cacheFilePath && !isString(cacheFilePath)) {
+		throw new InvalidFormatError({
+			fieldName: 'loadCache: cacheFilePath',
+			receivedValue: cacheFilePath,
+			expectedType: 'string',
+		});
+	}
 
-  try {
-    const data = await fs.readFile(cacheFilePath, "utf-8");
+	try {
+		const data = await fs.readFile(cacheFilePath, 'utf-8');
 
-    return new Map(Object.entries(JSON.parse(data)));
-  } catch (error: unknown) {
-    handleUnknownError({
-      pluginName: PLUGIN_NAME,
-      message: "Failed to load cache.",
-      error,
-      onError: (typedError) => {
-        // If the file is not found, we return a new Map.
-        if (typedError.code === "ENOENT") {
-          return new Map();
-        }
-      },
-    });
-  }
+		return new Map(Object.entries(JSON.parse(data)));
+	} catch (error: unknown) {
+		handleUnknownError({
+			pluginName: PLUGIN_NAME,
+			message: 'Failed to load cache.',
+			error,
+			onError: (typedError) => {
+				// If the file is not found, we return a new Map.
+				if (typedError.code === 'ENOENT') {
+					return new Map();
+				}
+			},
+		});
+	}
 };
 
 interface SaveCacheProps extends baseCacheOptions {
-  cache: Map<string, string>;
+	cache: Map<string, string>;
 }
 
 /**
@@ -61,24 +61,24 @@ interface SaveCacheProps extends baseCacheOptions {
  * @throws {Error} If there is an error writing the file.
  */
 export const saveCache = async ({ cache, cacheFilePath }: SaveCacheProps): Promise<void> => {
-  if (!cache && !isObject(cache)) {
-    throw new InvalidFormatError({
-      fieldName: "loadCache: cache",
-      receivedValue: cache,
-      expectedType: "object",
-    });
-  }
+	if (!cache && !isObject(cache)) {
+		throw new InvalidFormatError({
+			fieldName: 'loadCache: cache',
+			receivedValue: cache,
+			expectedType: 'object',
+		});
+	}
 
-  if (!cacheFilePath && !isString(cacheFilePath)) {
-    throw new InvalidFormatError({
-      fieldName: "loadCache: cacheFilePath",
-      receivedValue: cacheFilePath,
-      expectedType: "string",
-    });
-  }
+	if (!cacheFilePath && !isString(cacheFilePath)) {
+		throw new InvalidFormatError({
+			fieldName: 'loadCache: cacheFilePath',
+			receivedValue: cacheFilePath,
+			expectedType: 'string',
+		});
+	}
 
-  const data = JSON.stringify(Object.fromEntries(cache));
-  const pathWriteFile = path.resolve(process.cwd(), cacheFilePath);
+	const data = JSON.stringify(Object.fromEntries(cache));
+	const pathWriteFile = path.resolve(process.cwd(), cacheFilePath);
 
-  await fs.writeFile(pathWriteFile, data, "utf-8");
+	await fs.writeFile(pathWriteFile, data, 'utf-8');
 };

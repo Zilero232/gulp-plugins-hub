@@ -2,7 +2,7 @@
  * Before committing, it changes the type to a pre-selected and prepared emoji
  */
 
-const fs = require('node:fs');
+import * as fs from 'node:fs';
 
 const commitTypes = {
 	happy: ':tada:', // Mega happy
@@ -18,7 +18,7 @@ const commitTypes = {
 };
 
 // Function for reading a commit message from a file
-const readCommitMessage = commitMsgFile => {
+const readCommitMessage = (commitMsgFile) => {
 	try {
 		return fs.readFileSync(commitMsgFile, 'utf8').trim();
 	} catch (error) {
@@ -38,7 +38,7 @@ const writeCommitMessage = (commitMsgFile, newCommitMsg) => {
 };
 
 // Function for processing the commit message
-const processCommitMessage = commitMsgFile => {
+const processCommitMessage = (commitMsgFile) => {
 	const commitMsg = readCommitMessage(commitMsgFile);
 	const match = commitMsg.match(/^(\w+)(?=:)\s*/);
 

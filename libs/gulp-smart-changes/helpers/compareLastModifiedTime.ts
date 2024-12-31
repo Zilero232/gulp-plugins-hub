@@ -1,11 +1,11 @@
-import fs from "fs/promises";
+import fs from 'node:fs/promises';
 
-import { InvalidFormatError } from "@shared/utils";
-import { isNumber, isString } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isNumber, isString } from '@shared/helpers/typeHelpers';
 
 interface CompareLastModifiedTimeProps {
-  sourceMtimeMs: number;
-  targetPath: string;
+	sourceMtimeMs: number;
+	targetPath: string;
 }
 
 /**
@@ -20,25 +20,25 @@ interface CompareLastModifiedTimeProps {
  * @throws {InvalidFormatError} - If the sourceMtimeMs is not a number or the targetPath is not a string.
  */
 const compareLastModifiedTime = async ({ sourceMtimeMs, targetPath }: CompareLastModifiedTimeProps): Promise<boolean> => {
-  if (!sourceMtimeMs || !isNumber(sourceMtimeMs)) {
-    throw new InvalidFormatError({
-      fieldName: "compareLastModifiedTime",
-      receivedValue: sourceMtimeMs,
-      expectedType: "string",
-    });
-  }
+	if (!sourceMtimeMs || !isNumber(sourceMtimeMs)) {
+		throw new InvalidFormatError({
+			fieldName: 'compareLastModifiedTime',
+			receivedValue: sourceMtimeMs,
+			expectedType: 'string',
+		});
+	}
 
-  if (!targetPath || !isString(targetPath)) {
-    throw new InvalidFormatError({
-      fieldName: "compareLastModifiedTime",
-      receivedValue: targetPath,
-      expectedType: "string",
-    });
-  }
+	if (!targetPath || !isString(targetPath)) {
+		throw new InvalidFormatError({
+			fieldName: 'compareLastModifiedTime',
+			receivedValue: targetPath,
+			expectedType: 'string',
+		});
+	}
 
-  const targetStat = await fs.stat(targetPath);
+	const targetStat = await fs.stat(targetPath);
 
-  return Math.floor(sourceMtimeMs) > Math.ceil(targetStat.mtimeMs);
+	return Math.floor(sourceMtimeMs) > Math.ceil(targetStat.mtimeMs);
 };
 
 export default compareLastModifiedTime;

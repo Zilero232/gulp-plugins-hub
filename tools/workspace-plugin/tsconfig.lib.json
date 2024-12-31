@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "declaration": true,
-    "types": ["node"]
-  },
-  "include": ["src/**/*.ts", "src/generators/create-folder-plugin/files/constants/index.ts.template"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "jest.config.ts"]
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"types": ["node"],
+		"declaration": true
+	},
+	"include": ["src/**/*.ts", "src/generators/create-folder-plugin/files/constants/index.ts.template"],
+	"exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "jest.config.ts"]
 }

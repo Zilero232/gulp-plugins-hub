@@ -1,10 +1,10 @@
-import { isString } from "@shared/helpers/typeHelpers";
+import { isString } from '@shared/helpers/typeHelpers';
 
-import { GulpFolderCloneOptions } from "../../types";
+import type { GulpFolderCloneOptions } from '../../types';
 
 interface ShouldExcludeFile {
-  filePath: string;
-  excludeFiles: GulpFolderCloneOptions["excludeFiles"];
+	filePath: string;
+	excludeFiles: GulpFolderCloneOptions['excludeFiles'];
 }
 
 /**
@@ -20,21 +20,21 @@ interface ShouldExcludeFile {
  * @returns {boolean} true if the file should be excluded, false otherwise
  */
 export const shouldExcludeFile = ({ filePath, excludeFiles }: ShouldExcludeFile): boolean => {
-  if (!filePath || !Array.isArray(excludeFiles)) {
-    return false;
-  }
+	if (!filePath || !Array.isArray(excludeFiles)) {
+		return false;
+	}
 
-  // Checking whether the file should be excluded by the `excludeFiles` array.
-  return excludeFiles.some((pattern) => {
-    // Checking if the pattern is a string.
-    if (isString(pattern)) {
-      return filePath.includes(pattern);
-    }
-    // Checking if the pattern is a regular expression.
-    else if (pattern instanceof RegExp) {
-      return pattern.test(filePath);
-    }
+	// Checking whether the file should be excluded by the `excludeFiles` array.
+	return excludeFiles.some((pattern) => {
+		// Checking if the pattern is a string.
+		if (isString(pattern)) {
+			return filePath.includes(pattern);
+		}
+		// Checking if the pattern is a regular expression.
+		else if (pattern instanceof RegExp) {
+			return pattern.test(filePath);
+		}
 
-    return false;
-  });
+		return false;
+	});
 };

@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "declaration": true,
-    "types": ["node"]
-  },
-  "include": ["**/*.ts", "../../global.d.ts", "constants/index.ts"],
-  "exclude": ["**/*.test.ts"]
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"types": ["node"],
+		"declaration": true
+	},
+	"include": ["**/*.ts", "../../global.d.ts", "constants/index.ts"],
+	"exclude": ["**/*.test.ts"]
 }

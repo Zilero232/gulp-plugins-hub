@@ -1,34 +1,34 @@
 {
-  "name": "gulp-conditional",
-  "description": "A Gulp plugin for executing different functions based on specified conditions, enabling flexible task management in Gulp workflows.",
-  "version": "1.0.0",
-  "license": "MIT",
-  "type": "module",
-  "author": {
-    "name": "Artemev Alexandr",
-    "url": "https://github.com/Zilero232"
-  },
-  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Zilero232/gulp-plugins-hub"
-  },
-  "bugs": {
-    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-  },
-  "keywords": [
-    "gulp",
-    "conditional",
-    "functions",
-    "task management",
-    "plugin",
-    "workflow"
-  ],
-  "engines": {
-    "node": ">= 6.0"
-  },
-  "files": [
-    "index.js"
-  ],
-  "main": "index.js"
+	"name": "gulp-conditional",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "A Gulp plugin for executing different functions based on specified conditions, enabling flexible task management in Gulp workflows.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [
+		"gulp",
+		"conditional",
+		"functions",
+		"task management",
+		"plugin",
+		"workflow"
+	],
+	"main": "index.js",
+	"files": [
+		"index.js"
+	],
+	"engines": {
+		"node": ">= 6.0"
+	}
 }

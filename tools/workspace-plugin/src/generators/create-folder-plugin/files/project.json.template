@@ -15,6 +15,22 @@
         "babelConfig": "tools/config/babel/babel.config.json",
         "webpackConfig": "tools/config/webpack/webpack.config.js"
       }
-    }
+    },
+    "test": {
+			"executor": "@nx/jest:jest",
+			"options": {
+				"jestConfig": "libs/<%= name %>/jest.config.ts",
+				"codeCoverage": true,
+				"coverageDirectory": "{workspaceRoot}/coverage/{projectRoot}",
+				"passWithNoTests": true
+			}
+		},
+		"lint": {
+			"executor": "@nx/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/<%= name %>/**/*.{js,ts,json}"]
+			}
+		}
   }
 }

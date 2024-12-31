@@ -1,20 +1,27 @@
 {
-  "name": "gulp-font-switcher",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "./",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "options": {
-        "main": "libs/gulp-font-switcher/index.ts",
-        "outputPath": "libs/gulp-font-switcher/build",
-        "outputFileName": "index.js",
-        "deleteOutputPath": true,
-        "tsConfig": "libs/gulp-font-switcher/tsconfig.json",
-        "babelConfig": "tools/config/babel/babel.config.json",
-        "webpackConfig": "tools/config/webpack/webpack.config.js"
-      }
-    }
-  }
+	"name": "gulp-font-switcher",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "./",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/webpack:webpack",
+			"options": {
+				"main": "libs/gulp-font-switcher/index.ts",
+				"outputPath": "libs/gulp-font-switcher/build",
+				"outputFileName": "index.js",
+				"deleteOutputPath": true,
+				"tsConfig": "libs/gulp-font-switcher/tsconfig.json",
+				"babelConfig": "tools/config/babel/babel.config.json",
+				"webpackConfig": "tools/config/webpack/webpack.config.js"
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/gulp-font-switcher/**/*.{js,ts,json}"]
+			}
+		}
+	}
 }

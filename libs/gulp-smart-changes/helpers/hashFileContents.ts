@@ -1,10 +1,10 @@
-import { createHash } from "crypto";
+import { createHash } from 'node:crypto';
 
-import { InvalidFormatError } from "@shared/utils";
-import { isString } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isString } from '@shared/helpers/typeHelpers';
 
 interface HashFileContentsProps {
-  content: string;
+	content: string;
 }
 
 /**
@@ -17,19 +17,19 @@ interface HashFileContentsProps {
  * @throws {InvalidFormatError} - If the content is not a string.
  */
 const hashFileContents = async ({ content }: HashFileContentsProps): Promise<string> => {
-  if (!content || !isString(content)) {
-    throw new InvalidFormatError({
-      fieldName: "hashFileContents",
-      receivedValue: content,
-      expectedType: "string",
-    });
-  }
+	if (!content || !isString(content)) {
+		throw new InvalidFormatError({
+			fieldName: 'hashFileContents',
+			receivedValue: content,
+			expectedType: 'string',
+		});
+	}
 
-  const hash = createHash("blake2b256");
+	const hash = createHash('blake2b256');
 
-  hash.update(content);
+	hash.update(content);
 
-  return hash.digest("hex");
+	return hash.digest('hex');
 };
 
 export default hashFileContents;

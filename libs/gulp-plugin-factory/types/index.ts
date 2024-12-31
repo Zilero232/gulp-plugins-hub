@@ -1,12 +1,12 @@
-import type { Transform } from "node:stream";
+import type { Transform } from 'node:stream';
 
 // Defining the type for the options PluginFactory.
 export interface PluginFactoryOptions {
-  pluginName: string;
-  supportsDirectories?: boolean;
-  supportsAnyType?: boolean;
-  onFile: OnFile;
-  onFinish?: OnFinish;
+	pluginName: string;
+	supportsDirectories?: boolean;
+	supportsAnyType?: boolean;
+	onFile: OnFile;
+	onFinish?: OnFinish;
 }
 
 // Defining the type for the onFile function to be passed.

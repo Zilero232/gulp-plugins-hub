@@ -1,0 +1,46 @@
+{
+	"name": "gulp-winston-logger",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "A Gulp plugin for logging errors with Winston, providing enhanced error handling and reporting features during Gulp tasks.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [],
+	"main": "index.js",
+	"files": [
+		"index.js"
+	],
+	"engines": {
+		"node": ">= 6.0"
+	},
+	"dependencies": {
+		"assert": "^2.1.0",
+		"browserify-zlib": "^0.2.0",
+		"https-browserify": "^1.0.0",
+		"os-browserify": "^0.3.0",
+		"path-browserify": "^1.0.1",
+		"stream-browserify": "^3.0.0",
+		"stream-http": "^3.2.0",
+		"strip-ansi": "^6.0.1",
+		"tty-browserify": "^0.0.1",
+		"url": "^0.11.4",
+		"util": "^0.12.5",
+		"winston": "^3.14.2"
+	},
+	"devDependencies": {
+		"@types/winston": "^2.4.4",
+		"ts-jest": "^29.2.5",
+		"typescript-eslint": "^8.2.0"
+	}
+}

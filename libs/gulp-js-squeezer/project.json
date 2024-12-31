@@ -1,20 +1,27 @@
 {
-  "name": "gulp-js-squeezer",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "./",
-  "projectType": "library",
-  "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "options": {
-        "main": "libs/gulp-js-squeezer/index.ts",
-        "outputPath": "libs/gulp-js-squeezer/build",
-        "outputFileName": "index.js",
-        "deleteOutputPath": true,
-        "tsConfig": "libs/gulp-js-squeezer/tsconfig.json",
-        "babelConfig": "tools/config/babel/babel.config.json",
-        "webpackConfig": "tools/config/webpack/webpack.config.js"
-      }
-    }
-  }
+	"name": "gulp-js-squeezer",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "./",
+	"projectType": "library",
+	"targets": {
+		"build": {
+			"executor": "@nx/webpack:webpack",
+			"options": {
+				"main": "libs/gulp-js-squeezer/index.ts",
+				"outputPath": "libs/gulp-js-squeezer/build",
+				"outputFileName": "index.js",
+				"deleteOutputPath": true,
+				"tsConfig": "libs/gulp-js-squeezer/tsconfig.json",
+				"babelConfig": "tools/config/babel/babel.config.json",
+				"webpackConfig": "tools/config/webpack/webpack.config.js"
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["libs/gulp-js-squeezer/**/*.{js,ts,json}"]
+			}
+		}
+	}
 }

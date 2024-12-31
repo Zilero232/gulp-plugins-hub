@@ -1,14 +1,14 @@
 {
-  "name": "@zilero/workspace-plugin",
-  "version": "1.0.0",
-  "private": true,
-  "generators": "./generators.json",
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "devDependencies": {
-    "@nx/devkit": "^19.8.0",
-    "@swc-node/register": "^1.10.9",
-    "@swc/core": "^1.7.26",
-    "@swc/helpers": "^0.5.13"
-  }
+	"name": "@zilero/workspace-plugin",
+	"type": "commonjs",
+	"version": "1.0.0",
+	"private": true,
+	"generators": "./generators.json",
+	"main": "./src/index.js",
+	"devDependencies": {
+		"@nx/devkit": "^19.8.0",
+		"@swc-node/register": "^1.10.9",
+		"@swc/core": "^1.7.26",
+		"@swc/helpers": "^0.5.13"
+	}
 }

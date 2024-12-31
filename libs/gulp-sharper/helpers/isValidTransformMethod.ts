@@ -1,8 +1,8 @@
-import GulpWinstonError from "@zilero/gulp-winston-error";
+import GulpWinstonLogger from '@zilero/gulp-winston-logger';
 
-import { SupportedTransformMethod } from "../types";
+import { SupportedTransformMethod } from '../types';
 
-import { PLUGIN_NAME } from "../constants";
+import { PLUGIN_NAME } from '../constants';
 
 /**
  * Checks if the given key is a valid transform method.
@@ -12,19 +12,19 @@ import { PLUGIN_NAME } from "../constants";
  * @returns true if the key is a valid transform method, false otherwise.
  */
 const isValidTransformMethod = (key: string): boolean => {
-  const keys = Object.values(SupportedTransformMethod) as string[];
+	const keys = Object.values(SupportedTransformMethod) as string[];
 
-  if (!keys.includes(key)) {
-    GulpWinstonError({
-      pluginName: PLUGIN_NAME,
-      message: `${key} is not a valid transform method. It will be ignored.`,
-      options: {
-        level: "warn",
-      },
-    });
-  }
+	if (!keys.includes(key)) {
+		GulpWinstonLogger({
+			pluginName: PLUGIN_NAME,
+			message: `${key} is not a valid transform method. It will be ignored.`,
+			options: {
+				level: 'warn',
+			},
+		});
+	}
 
-  return keys.includes(key);
+	return keys.includes(key);
 };
 
 export default isValidTransformMethod;

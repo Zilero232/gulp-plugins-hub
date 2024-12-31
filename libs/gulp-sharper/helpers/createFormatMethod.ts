@@ -1,12 +1,12 @@
-import { InvalidFormatError } from "@shared/utils";
-import { isObject } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isObject } from '@shared/helpers/typeHelpers';
 
-import { InitialSharp, FormatOptions, SupportedFormatMethod } from "../types";
+import type { FormatOptions, InitialSharp, SupportedFormatMethod } from '../types';
 
 interface CreateFormatMethod<T extends SupportedFormatMethod> {
-  pipeline: InitialSharp;
-  options: FormatOptions[T];
-  method: T;
+	pipeline: InitialSharp;
+	options: FormatOptions[T];
+	method: T;
 }
 
 /**
@@ -19,16 +19,16 @@ interface CreateFormatMethod<T extends SupportedFormatMethod> {
  * @returns {InitialSharp} - The modified sharp pipeline.
  */
 const createFormatMethod = <T extends SupportedFormatMethod>({ pipeline, options, method }: CreateFormatMethod<T>): InitialSharp => {
-  if (!isObject(options)) {
-    throw new InvalidFormatError({
-      fieldName: `CreateSharpMethod: ${method}`,
-      receivedValue: options,
-      expectedType: "object",
-    });
-  }
+	if (!isObject(options)) {
+		throw new InvalidFormatError({
+			fieldName: `CreateSharpMethod: ${method}`,
+			receivedValue: options,
+			expectedType: 'object',
+		});
+	}
 
-  // Dynamically calling the method on the pipeline.
-  return (pipeline[method] as (opts: FormatOptions[T]) => InitialSharp)(options);
+	// Dynamically calling the method on the pipeline.
+	return (pipeline[method] as (opts: FormatOptions[T]) => InitialSharp)(options);
 };
 
 export default createFormatMethod;

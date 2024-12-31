@@ -1,9 +1,9 @@
-import keyMatchesPattern from "../../helpers/keyMatchesPattern";
+import keyMatchesPattern from '../../helpers/keyMatchesPattern';
 
-import { GulpPluginManagerOptions } from "../../types";
+import type { GulpPluginManagerOptions } from '../../types';
 
-interface MatchPatternProps extends Pick<GulpPluginManagerOptions, "patternOptions"> {
-  key: string;
+interface MatchPatternProps extends Pick<GulpPluginManagerOptions, 'patternOptions'> {
+	key: string;
 }
 
 /**
@@ -23,67 +23,67 @@ interface MatchPatternProps extends Pick<GulpPluginManagerOptions, "patternOptio
  * @returns {boolean} - True or false depending on whether the key matches the given pattern.
  */
 export const matchPattern = ({ key, patternOptions = {} }: MatchPatternProps): boolean => {
-  const {
-    patterns = [],
-    overridePatterns = false,
-    excludePatterns = [],
-    overrideExcludePatterns = false,
-    useFullMatchRegex = false,
-    allowPartialMatchString = false,
-  } = patternOptions;
+	const {
+		patterns = [],
+		overridePatterns = false,
+		excludePatterns = [],
+		overrideExcludePatterns = false,
+		useFullMatchRegex = false,
+		allowPartialMatchString = false,
+	} = patternOptions;
 
-  // Basic Search patterns.
-  const basePatterns = ["gulp-*", "gulp.*", "@*/gulp{-,.}*"];
+	// Basic Search patterns.
+	const basePatterns = ['gulp-*', 'gulp.*', '@*/gulp{-,.}*'];
 
-  // Basic patterns for exclusion.
-  const baseExcludePatterns = [
-    "@types/*",
-    "test-*",
-    "mocha",
-    "chai",
-    "jest",
-    "sinon",
-    "*.tmp",
-    "*.bak",
-    "*.log",
-    "@*/sandbox",
-    "*/sandbox-*",
-    "grunt-*",
-    "webpack-*",
-    "eslint-*",
-    "stylelint-*",
-    "babel-*",
-  ];
+	// Basic patterns for exclusion.
+	const baseExcludePatterns = [
+		'@types/*',
+		'test-*',
+		'mocha',
+		'chai',
+		'jest',
+		'sinon',
+		'*.tmp',
+		'*.bak',
+		'*.log',
+		'@*/sandbox',
+		'*/sandbox-*',
+		'grunt-*',
+		'webpack-*',
+		'eslint-*',
+		'stylelint-*',
+		'babel-*',
+	];
 
-  //Apply or replace basic patterns if `override Patterns` is set to true.
-  const searchPatterns = overridePatterns ? patterns : [...basePatterns, ...patterns];
+	// Apply or replace basic patterns if `override Patterns` is set to true.
+	const searchPatterns = overridePatterns ? patterns : [...basePatterns, ...patterns];
 
-  // Apply or replace basic exclusion patterns if `overrideExcludePatterns` is set to true.
-  const finalExcludePatterns = overrideExcludePatterns ? excludePatterns : [...baseExcludePatterns, ...excludePatterns];
+	// Apply or replace basic exclusion patterns if `overrideExcludePatterns` is set to true.
+	const finalExcludePatterns = overrideExcludePatterns ? excludePatterns : [...baseExcludePatterns, ...excludePatterns];
 
-  // Checking for excluded patterns.
-  const isExcluded = finalExcludePatterns.some((pattern) =>
-    keyMatchesPattern({
-      key,
-      pattern,
-      options: { useFullMatchRegex, allowPartialMatchString },
-    })
-  );
+	// Checking for excluded patterns.
+	const isExcluded = finalExcludePatterns.some((pattern) =>
+		keyMatchesPattern({
+			key,
+			pattern,
+			options: { useFullMatchRegex, allowPartialMatchString },
+		}),
+	);
 
-  // Return false if the key matches the excluded pattern.
-  if (isExcluded) {
-    return false;
-  }
+	// Return false if the key matches the excluded pattern.
+	if (isExcluded) {
+		return false;
+	}
 
-  // Checking for enabled patterns.
-  const isMatch = searchPatterns.some((pattern) =>
-    keyMatchesPattern({
-      key,
-      pattern,
-      options: { useFullMatchRegex, allowPartialMatchString },
-    })
-  );
+	// Checking for enabled patterns.
+	const isMatch = searchPatterns.some((pattern) =>
+		keyMatchesPattern({
+			key,
+			pattern,
+			options: { useFullMatchRegex, allowPartialMatchString },
+		}),
+	);
 
-  // Return true or false depending on the result of the check.
-  return isMatch;
+	// Return true or false depending on the result of the check.
+	return isMatch;
 };

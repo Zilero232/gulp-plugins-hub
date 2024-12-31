@@ -1,15 +1,15 @@
-import GulpWinstonError from "@zilero/gulp-winston-error";
+import GulpWinstonLogger from '@zilero/gulp-winston-logger';
 
-import { isBoolean, isRegExp, isString } from "@shared/helpers/typeHelpers";
+import { isBoolean, isRegExp, isString } from '@shared/helpers/typeHelpers';
 
-import { PatternOptions } from "../types";
+import type { PatternOptions } from '../types';
 
-import { PLUGIN_NAME } from "../constants";
+import { PLUGIN_NAME } from '../constants';
 
 interface KeyMatchesPatternProps {
-  key: string;
-  pattern: string | RegExp;
-  options?: Pick<PatternOptions, "allowPartialMatchString" | "useFullMatchRegex">;
+	key: string;
+	pattern: string | RegExp;
+	options?: Pick<PatternOptions, 'allowPartialMatchString' | 'useFullMatchRegex'>;
 }
 
 /**
@@ -20,47 +20,47 @@ interface KeyMatchesPatternProps {
  * For regular expression patterns, it can perform either a full match or a partial match based on the
  * `useFullMatchRegex` option.
  *
- * If the pattern is neither a string nor a regular expression, a warning is logged using GulpWinstonError.
+ * If the pattern is neither a string nor a regular expression, a warning is logged using GulpWinstonLogger.
  *
  * @param {KeyMatchesPatternProps} props - The properties for matching the key against the pattern.
  * @param {string} props.key - The key to be matched.
  * @param {string | RegExp} props.pattern - The pattern to match the key against.
  * @param {object} [props.options] - The optional matching rules.
- * @param {boolean} [props.options.allowPartialMatchString=false] - Whether to allow partial matches for strings.
- * @param {boolean} [props.options.useFullMatchRegex=false] - Whether to use full matches for regular expressions.
+ * @param {boolean} [props.options.allowPartialMatchString] - Whether to allow partial matches for strings.
+ * @param {boolean} [props.options.useFullMatchRegex] - Whether to use full matches for regular expressions.
  *
  * @returns {boolean} - Returns true if the key matches the pattern, otherwise false.
  */
 const keyMatchesPattern = ({ key, pattern, options = {} }: KeyMatchesPatternProps): boolean => {
-  const { allowPartialMatchString = false, useFullMatchRegex = false } = options;
+	const { allowPartialMatchString = false, useFullMatchRegex = false } = options;
 
-  if (isString(pattern)) {
-    // Partial match for strings.
-    if (allowPartialMatchString && isBoolean(allowPartialMatchString)) {
-      return key.includes(pattern);
-    }
+	if (isString(pattern)) {
+		// Partial match for strings.
+		if (allowPartialMatchString && isBoolean(allowPartialMatchString)) {
+			return key.includes(pattern);
+		}
 
-    return key === pattern;
-  }
+		return key === pattern;
+	}
 
-  if (isRegExp(pattern)) {
-    // Full match for regular expressions.
-    if (useFullMatchRegex && isBoolean(useFullMatchRegex)) {
-      return new RegExp(`^${pattern.source}$`).test(key);
-    }
+	if (isRegExp(pattern)) {
+		// Full match for regular expressions.
+		if (useFullMatchRegex && isBoolean(useFullMatchRegex)) {
+			return new RegExp(`^${pattern.source}$`).test(key);
+		}
 
-    return pattern.test(key);
-  }
+		return pattern.test(key);
+	}
 
-  GulpWinstonError({
-    pluginName: PLUGIN_NAME,
-    message: `Pattern is not a valid string or RegExp: ${pattern}. It will be ignored.`,
-    options: {
-      level: "warn",
-    },
-  });
+	GulpWinstonLogger({
+		pluginName: PLUGIN_NAME,
+		message: `Pattern is not a valid string or RegExp: ${pattern}. It will be ignored.`,
+		options: {
+			level: 'warn',
+		},
+	});
 
-  return false;
+	return false;
 };
 
 export default keyMatchesPattern;

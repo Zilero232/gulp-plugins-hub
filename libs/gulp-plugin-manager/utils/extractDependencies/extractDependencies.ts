@@ -1,16 +1,17 @@
-import GulpWinstonError from "@zilero/gulp-winston-error";
+import GulpWinstonLogger from '@zilero/gulp-winston-logger';
 
-import { InvalidFormatError } from "@shared/utils";
-import { isArray, isObject } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isArray, isObject } from '@shared/helpers/typeHelpers';
 
-import { matchPattern } from "..";
+import { matchPattern } from '..';
 
-import { GulpPluginManagerOptions, ScopeDependencyTypes, ScopeDependencyValues } from "../../types";
+import type { GulpPluginManagerOptions, ScopeDependencyValues } from '../../types';
+import { ScopeDependencyTypes } from '../../types';
 
-import { PLUGIN_NAME } from "../../constants";
+import { PLUGIN_NAME } from '../../constants';
 
-interface ExtractDependenciesProps extends Pick<GulpPluginManagerOptions, "patternOptions" | "scopes"> {
-  packageJsonObject: ScopeDependencyValues;
+interface ExtractDependenciesProps extends Pick<GulpPluginManagerOptions, 'patternOptions' | 'scopes'> {
+	packageJsonObject: ScopeDependencyValues;
 }
 
 /**
@@ -18,7 +19,7 @@ interface ExtractDependenciesProps extends Pick<GulpPluginManagerOptions, "patte
  *
  * @param {ExtractDependenciesProps} props - The properties to configure the  dependency extraction.
  * @param {ScopeDependencyValues} props.packageJsonObject - The package.json object.
- * @param {string[]} [props.scopes=["dependencies", "devDependencies", "peerDependencies"]] - The dependency scopes to extract.
+ * @param {string[]} [props.scopes] - The dependency scopes to extract.
  * @param {PatternOptions} [props.patternOptions] - Options for matching  patterns.
  *
  * @returns {Record<string, string>} An object with the extracted dependencies.
@@ -28,59 +29,59 @@ interface ExtractDependenciesProps extends Pick<GulpPluginManagerOptions, "patte
  * @throws {InvalidFormatError} If the patterns is not an array.
  */
 export const extractDependencies = ({ packageJsonObject, scopes = [], patternOptions = {} }: ExtractDependenciesProps) => {
-  const dependencies: Record<string, string> = {};
+	const dependencies: Record<string, string> = {};
 
-  if (!packageJsonObject || !isObject(packageJsonObject)) {
-    throw new InvalidFormatError({
-      fieldName: "ExtractDependencies: packageJsonObject",
-      receivedValue: packageJsonObject,
-      expectedType: "array",
-    });
-  }
+	if (!packageJsonObject || !isObject(packageJsonObject)) {
+		throw new InvalidFormatError({
+			fieldName: 'ExtractDependencies: packageJsonObject',
+			receivedValue: packageJsonObject,
+			expectedType: 'array',
+		});
+	}
 
-  if (!scopes || !isArray(scopes)) {
-    throw new InvalidFormatError({
-      fieldName: "ExtractDependencies: scopes",
-      receivedValue: scopes,
-      expectedType: "array",
-    });
-  }
+	if (!scopes || !isArray(scopes)) {
+		throw new InvalidFormatError({
+			fieldName: 'ExtractDependencies: scopes',
+			receivedValue: scopes,
+			expectedType: 'array',
+		});
+	}
 
-  if (!patternOptions && !isArray(patternOptions)) {
-    throw new InvalidFormatError({
-      fieldName: "ExtractDependencies: patterns",
-      receivedValue: patternOptions,
-      expectedType: "array",
-    });
-  }
+	if (!patternOptions && !isArray(patternOptions)) {
+		throw new InvalidFormatError({
+			fieldName: 'ExtractDependencies: patterns',
+			receivedValue: patternOptions,
+			expectedType: 'array',
+		});
+	}
 
-  scopes.forEach((scope) => {
-    const dependencyTypesValues = Object.values(ScopeDependencyTypes);
+	scopes.forEach((scope) => {
+		const dependencyTypesValues = Object.values(ScopeDependencyTypes);
 
-    if (!packageJsonObject[scope]) {
-      GulpWinstonError({
-        pluginName: PLUGIN_NAME,
-        message: `Current scope '${scope}' not available in package.json. Available scopes: ${dependencyTypesValues}`,
-      });
-    }
+		if (!packageJsonObject[scope]) {
+			GulpWinstonLogger({
+				pluginName: PLUGIN_NAME,
+				message: `Current scope '${scope}' not available in package.json. Available scopes: ${dependencyTypesValues}`,
+			});
+		}
 
-    let count = 0;
+		let count = 0;
 
-    Object.keys(packageJsonObject[scope]).forEach((key) => {
-      // // Limit on the number of results if maxResults is specified.
-      if (patternOptions.maxResults && count >= patternOptions.maxResults) {
-        return;
-      }
+		Object.keys(packageJsonObject[scope]).forEach((key) => {
+			// // Limit on the number of results if maxResults is specified.
+			if (patternOptions.maxResults && count >= patternOptions.maxResults) {
+				return;
+			}
 
-      // Checking the key for matching patterns (string or regular expression).
-      if (matchPattern({ key, patternOptions })) {
-        dependencies[key] = packageJsonObject[scope][key];
+			// Checking the key for matching patterns (string or regular expression).
+			if (matchPattern({ key, patternOptions })) {
+				dependencies[key] = packageJsonObject[scope][key];
 
-        // Increase the counter by 1 if a match is found.
-        count++;
-      }
-    });
-  });
+				// Increase the counter by 1 if a match is found.
+				count++;
+			}
+		});
+	});
 
-  return dependencies;
+	return dependencies;
 };

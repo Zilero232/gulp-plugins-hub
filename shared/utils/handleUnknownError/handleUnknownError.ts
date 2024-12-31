@@ -1,4 +1,4 @@
-import GulpWinstonError from "@zilero/gulp-winston-error";
+import GulpWinstonLogger from "@zilero/gulp-winston-logger";
 
 import { InvalidFormatError } from "@shared/utils";
 import { isFunction } from "@shared/helpers/typeHelpers";
@@ -12,7 +12,7 @@ interface HandleUnknownError<TErrorResult = unknown, TSuccessResult = unknown> {
 }
 
 /**
- * Handles an unknown error by passing it to the GulpWinstonError plugin
+ * Handles an unknown error by passing it to the GulpWinstonLogger plugin
  * for logging and error handling. If the error is not an instance of the
  * Error class, a generic error message is logged.
  */
@@ -42,7 +42,7 @@ export function handleUnknownError<TErrorResult, TSuccessResult>({
   if (error instanceof Error) {
     const typedError = error as NodeJS.ErrnoException;
 
-    GulpWinstonError({
+    GulpWinstonLogger({
       pluginName,
       message,
       error,
@@ -53,7 +53,7 @@ export function handleUnknownError<TErrorResult, TSuccessResult>({
       return onError(typedError);
     }
   } else {
-    GulpWinstonError({
+    GulpWinstonLogger({
       pluginName,
       message: message || "An unknown error occurred",
     });

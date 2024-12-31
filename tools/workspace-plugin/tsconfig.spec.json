@@ -1,7 +1,7 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": ["jest", "node"]
-  },
-  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "jest.config.ts"]
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"types": ["jest", "node"]
+	},
+	"include": ["src/**/*.test.ts", "src/**/*.spec.ts", "jest.config.ts"]
 }

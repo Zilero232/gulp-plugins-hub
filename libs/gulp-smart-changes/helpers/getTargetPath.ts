@@ -1,11 +1,11 @@
-import path from "node:path";
+import path from 'node:path';
 
-import { InvalidFormatError } from "@shared/utils";
-import { isString } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isString } from '@shared/helpers/typeHelpers';
 
 interface GetTargetPathProps {
-  pathRelative: string;
-  destination: string;
+	pathRelative: string;
+	destination: string;
 }
 
 /**
@@ -20,23 +20,23 @@ interface GetTargetPathProps {
  * @throws {InvalidFormatError} - If the pathRelative or destination is not a string.
  */
 const getTargetPath = ({ pathRelative, destination }: GetTargetPathProps): string => {
-  if (!pathRelative || !isString(pathRelative)) {
-    throw new InvalidFormatError({
-      fieldName: "getTargetPath",
-      receivedValue: pathRelative,
-      expectedType: "string",
-    });
-  }
+	if (!pathRelative || !isString(pathRelative)) {
+		throw new InvalidFormatError({
+			fieldName: 'getTargetPath',
+			receivedValue: pathRelative,
+			expectedType: 'string',
+		});
+	}
 
-  if (!pathRelative || !isString(pathRelative)) {
-    throw new InvalidFormatError({
-      fieldName: "getTargetPath",
-      receivedValue: destination,
-      expectedType: "string",
-    });
-  }
+	if (!pathRelative || !isString(pathRelative)) {
+		throw new InvalidFormatError({
+			fieldName: 'getTargetPath',
+			receivedValue: destination,
+			expectedType: 'string',
+		});
+	}
 
-  return path.resolve(destination, pathRelative); // Get the relative path.
+	return path.resolve(destination, pathRelative); // Get the relative path.
 };
 
 export default getTargetPath;

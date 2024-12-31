@@ -1,87 +1,90 @@
 {
-  "name": "@zilero/gulp-plugins-hub",
-  "description": "A powerful toolkit for managing Gulp plugins in monorepos. Optimized for fast CI/CD environments, this package simplifies the use of multiple Gulp plugins within a single repository, enabling efficient parallel task execution.",
-  "version": "1.0.0",
-  "license": "MIT",
-  "private": true,
-  "author": {
-    "name": "Artemev Alexandr",
-    "url": "https://github.com/Zilero232"
-  },
-  "keywords": [
-    "gulp",
-    "gulp-plugins",
-    "gulp-tasks",
-    "gulp-monorepo",
-    "gulp-workspaces",
-    "task-runner",
-    "gulp-automation",
-    "gulp-pipeline",
-    "streaming-build",
-    "build-automation",
-    "continuous-integration",
-    "CI/CD",
-    "nodejs",
-    "frontend-build",
-    "workflow-automation",
-    "gulp-scripts",
-    "gulp-tasks-management",
-    "vinyl",
-    "nx",
-    "plugin-management",
-    "monorepo-tools"
-  ],
-  "bugs": {
-    "url": "https://github.com/Zilero232/gulp-plugins-hub"
-  },
-  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-  "repository": {
-    "url": "https://github.com/Zilero232/gulp-plugins-hub"
-  },
-  "workspaces": [
-    "libs/*"
-  ],
-  "scripts": {
-    "prepare": "husky",
-    "generator-plugin": "nx g @zilero/workspace-plugin:create-folder-plugin",
-    "check-format": "nx format:check --all",
-    "test": "nx run-many -t test",
-    "build": "nx run-many --target build --parallel 8 --exclude nx-dev",
-    "lint-inspector": "npx @eslint/config-inspector",
-    "graph": "nx graph",
-    "v:local-registry": "nx local-registry dev-config-hub",
-    "v:adduser": "pnpm adduser --registry http://localhost:4873/",
-    "v:set-password": "pnpm profile set password --registry http://localhost:4873/",
-    "v:publish": "pnpm publish --registry http://localhost:4873/"
-  },
-  "devDependencies": {
-    "@babel/preset-env": "^7.25.7",
-    "@babel/preset-typescript": "^7.25.7",
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
-    "@commitlint/format": "^19.5.0",
-    "@eslint/js": "^9.9.0",
-    "@nx/jest": "^19.6.5",
-    "@nx/js": "19.6.1",
-    "@nx/webpack": "^19.6.2",
-    "@nx/workspace": "19.6.1",
-    "@types/eslint-config-prettier": "^6.11.3",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^22.5.0",
-    "@types/vinyl": "^2.0.12",
-    "beachball": "^2.47.1",
-    "commitlint": "^19.5.0",
-    "conventional-changelog-atom": "^5.0.0",
-    "eslint": "^9.9.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "globals": "^15.9.0",
-    "husky": "^9.1.6",
-    "nx": "19.6.1",
-    "verdaccio": "^5.32.2",
-    "vinyl": "^3.0.0"
-  },
-  "dependencies": {
-    "chalk": "4.1.2"
-  }
+	"name": "@zilero/gulp-plugins-hub",
+	"type": "module",
+	"version": "1.0.0",
+	"private": true,
+	"description": "A powerful toolkit for managing Gulp plugins in monorepos. Optimized for fast CI/CD environments, this package simplifies the use of multiple Gulp plugins within a single repository, enabling efficient parallel task execution.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"keywords": [
+		"gulp",
+		"gulp-plugins",
+		"gulp-tasks",
+		"gulp-monorepo",
+		"gulp-workspaces",
+		"task-runner",
+		"gulp-automation",
+		"gulp-pipeline",
+		"streaming-build",
+		"build-automation",
+		"continuous-integration",
+		"CI/CD",
+		"nodejs",
+		"frontend-build",
+		"workflow-automation",
+		"gulp-scripts",
+		"gulp-tasks-management",
+		"vinyl",
+		"nx",
+		"plugin-management",
+		"monorepo-tools"
+	],
+	"scripts": {
+		"prepare": "husky",
+		"generator-plugin": "nx g @zilero/workspace-plugin:create-folder-plugin",
+		"check-format": "nx format:check --all",
+		"test": "nx run-many -t test",
+		"build": "nx run-many --target build --parallel 8 --exclude nx-dev",
+		"lint-inspector": "npx @eslint/config-inspector",
+		"graph": "nx graph",
+		"v:local-registry": "nx local-registry dev-config-hub",
+		"v:adduser": "pnpm adduser --registry http://localhost:4873/",
+		"v:set-password": "pnpm profile set password --registry http://localhost:4873/",
+		"v:publish": "pnpm publish --registry http://localhost:4873/"
+	},
+	"dependencies": {
+		"chalk": "4.1.2"
+	},
+	"devDependencies": {
+		"@antfu/eslint-config": "^3.8.0",
+		"@babel/preset-env": "^7.26.0",
+		"@babel/preset-typescript": "^7.26.0",
+		"@commitlint/cli": "^19.5.0",
+		"@commitlint/config-conventional": "^19.5.0",
+		"@commitlint/format": "^19.5.0",
+		"@eslint/js": "^9.13.0",
+		"@nx/eslint": "20.0.6",
+		"@nx/jest": "^20.0.6",
+		"@nx/js": "20.0.6",
+		"@nx/webpack": "^20.0.6",
+		"@nx/workspace": "20.0.6",
+		"@types/eslint-config-prettier": "^6.11.3",
+		"@types/jest": "^29.5.14",
+		"@types/node": "^22.8.0",
+		"@types/vinyl": "^2.0.12",
+		"beachball": "^2.47.1",
+		"commitlint": "^19.5.0",
+		"conventional-changelog-atom": "^5.0.0",
+		"eslint": "^9.13.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-format": "^0.1.2",
+		"eslint-plugin-prettier": "^5.2.1",
+		"globals": "^15.11.0",
+		"husky": "^9.1.6",
+		"nx": "20.0.6",
+		"prettier": "^3.3.3",
+		"verdaccio": "^6.0.1",
+		"vinyl": "^3.0.0"
+	},
+	"packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228"
 }

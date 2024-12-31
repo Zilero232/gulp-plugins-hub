@@ -1,41 +1,41 @@
 {
-  "name": "gulp-plugin-factory",
-  "description": "A Gulp plugin factory for easily creating custom Gulp plugins with minimal setup, simplifying the development process.",
-  "version": "1.0.0",
-  "license": "MIT",
-  "author": {
-    "name": "Artemev Alexandr",
-    "url": "https://github.com/Zilero232"
-  },
-  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Zilero232/gulp-plugins-hub"
-  },
-  "bugs": {
-    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-  },
-  "keywords": [
-    "gulp",
-    "plugin",
-    "factory",
-    "custom",
-    "development",
-    "tooling"
-  ],
-  "engines": {
-    "node": ">= 6.0"
-  },
-  "files": [
-    "index.js"
-  ],
-  "main": "index.js",
-  "devDependencies": {
-    "@types/through2": "^2.0.41",
-    "@types/vinyl": "^2.0.12",
-    "vinyl": "^3.0.0"
-  },
-  "dependencies": {
-    "through2": "^4.0.2"
-  }
+	"name": "gulp-plugin-factory",
+	"version": "1.0.0",
+	"description": "A Gulp plugin factory for easily creating custom Gulp plugins with minimal setup, simplifying the development process.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [
+		"gulp",
+		"plugin",
+		"factory",
+		"custom",
+		"development",
+		"tooling"
+	],
+	"main": "index.js",
+	"files": [
+		"index.js"
+	],
+	"engines": {
+		"node": ">= 6.0"
+	},
+	"dependencies": {
+		"through2": "^4.0.2"
+	},
+	"devDependencies": {
+		"@types/through2": "^2.0.41",
+		"@types/vinyl": "^2.0.12",
+		"vinyl": "^3.0.0"
+	}
 }

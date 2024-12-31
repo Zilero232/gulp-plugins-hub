@@ -1,1 +1,1 @@
-export { shouldExcludeFile } from "./shouldExcludeFile/shouldExcludeFile";
+export { shouldExcludeFile } from './shouldExcludeFile/shouldExcludeFile';

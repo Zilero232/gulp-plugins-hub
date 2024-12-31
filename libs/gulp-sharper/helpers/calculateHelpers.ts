@@ -1,5 +1,5 @@
-import { InvalidFormatError } from "@shared/utils";
-import { isNumber } from "@shared/helpers/typeHelpers";
+import { InvalidFormatError } from '@shared/utils';
+import { isNumber } from '@shared/helpers/typeHelpers';
 
 /**
  * Converts bytes to kilobytes and formats the result to two decimal places.
@@ -10,15 +10,15 @@ import { isNumber } from "@shared/helpers/typeHelpers";
  * @throws {Error} - Throws an error if the input is not a number.
  */
 export const convertBytesToKB = (sizeInBytes: number): string => {
-  if (!isNumber(sizeInBytes)) {
-    throw new InvalidFormatError({
-      fieldName: "СonvertBytesToKB: sizeInBytes",
-      receivedValue: sizeInBytes,
-      expectedType: "number",
-    });
-  }
+	if (!isNumber(sizeInBytes)) {
+		throw new InvalidFormatError({
+			fieldName: 'СonvertBytesToKB: sizeInBytes',
+			receivedValue: sizeInBytes,
+			expectedType: 'number',
+		});
+	}
 
-  return (sizeInBytes / 1024).toFixed(2);
+	return (sizeInBytes / 1024).toFixed(2);
 };
 
 /**
@@ -31,21 +31,21 @@ export const convertBytesToKB = (sizeInBytes: number): string => {
  * @throws {Error} - Throws an error if the input is not a number.
  */
 export const calculateReductionPercentage = (originalSize: number, compressedSize: number): string => {
-  if (!isNumber(originalSize)) {
-    throw new InvalidFormatError({
-      fieldName: "СalculateReductionPercentage: originalSize",
-      receivedValue: originalSize,
-      expectedType: "number",
-    });
-  }
+	if (!isNumber(originalSize)) {
+		throw new InvalidFormatError({
+			fieldName: 'СalculateReductionPercentage: originalSize',
+			receivedValue: originalSize,
+			expectedType: 'number',
+		});
+	}
 
-  if (!isNumber(originalSize)) {
-    throw new InvalidFormatError({
-      fieldName: "СalculateReductionPercentage: compressedSize",
-      receivedValue: compressedSize,
-      expectedType: "number",
-    });
-  }
+	if (!isNumber(originalSize)) {
+		throw new InvalidFormatError({
+			fieldName: 'СalculateReductionPercentage: compressedSize',
+			receivedValue: compressedSize,
+			expectedType: 'number',
+		});
+	}
 
-  return ((1 - compressedSize / originalSize) * 100).toFixed(2);
+	return ((1 - compressedSize / originalSize) * 100).toFixed(2);
 };

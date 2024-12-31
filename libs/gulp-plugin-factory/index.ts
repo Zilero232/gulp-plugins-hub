@@ -1,9 +1,9 @@
-import { createFileTransformHandler } from "./handlers/createFileTransformHandler";
-import { createOnFinishHandler } from "./handlers/createOnFinishHandler";
+import { createFileTransformHandler } from './handlers/createFileTransformHandler';
+import { createOnFinishHandler } from './handlers/createOnFinishHandler';
 
-import { createThroughStream } from "./utils";
+import { createThroughStream } from './utils';
 
-import type { PluginFactoryOptions, TransformStream } from "./types";
+import type { PluginFactoryOptions, TransformStream } from './types';
 
 /**
  * Creates a Gulp plugin that can be used to transform files.
@@ -18,10 +18,10 @@ import type { PluginFactoryOptions, TransformStream } from "./types";
  * @returns A Gulp plugin that can be used to transform files.
  */
 const PluginFactory = (options: PluginFactoryOptions): TransformStream => {
-  const fileTransformHandler = createFileTransformHandler(options);
-  const onFinishHandler = createOnFinishHandler(options);
+	const fileTransformHandler = createFileTransformHandler(options);
+	const onFinishHandler = createOnFinishHandler(options);
 
-  return createThroughStream(fileTransformHandler, onFinishHandler);
+	return createThroughStream(fileTransformHandler, onFinishHandler);
 };
 
 export default PluginFactory;

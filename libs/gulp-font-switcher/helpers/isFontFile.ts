@@ -1,9 +1,9 @@
-import { isString } from "@shared/helpers/typeHelpers";
+import { isString } from '@shared/helpers/typeHelpers';
 
-import { FontType } from "../types";
+import { FontType } from '../types';
 
 interface IsFontFileProps {
-  extname: string;
+	extname: string;
 }
 
 /**
@@ -14,11 +14,11 @@ interface IsFontFileProps {
  * @returns {boolean} true if the file is a font file, false otherwise.
  */
 const isFontFile = ({ extname }: IsFontFileProps) => {
-  if (!extname || !isString(extname)) {
-    return false;
-  }
+	if (!extname || !isString(extname)) {
+		return false;
+	}
 
-  return Object.values(FontType).includes(extname.toLowerCase() as FontType);
+	return Object.values(FontType).includes(extname.toLowerCase() as FontType);
 };
 
 export default isFontFile;

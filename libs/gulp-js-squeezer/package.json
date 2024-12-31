@@ -1,29 +1,29 @@
 {
-  "name": "gulp-js-squeezer",
-  "description": "",
-  "version": "1.0.0",
-  "license": "MIT",
-  "author": {
-    "name": "Artemev Alexandr",
-    "url": "https://github.com/Zilero232"
-  },
-  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Zilero232/gulp-plugins-hub"
-  },
-  "bugs": {
-    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-  },
-  "keywords": [],
-  "engines": {
-    "node": ">= 6.0"
-  },
-  "files": [
-    "index.js"
-  ],
-  "main": "index.js",
-  "dependencies": {
-    "terser": "^5.34.1"
-  }
+	"name": "gulp-js-squeezer",
+	"version": "1.0.0",
+	"description": "",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [],
+	"main": "index.js",
+	"files": [
+		"index.js"
+	],
+	"engines": {
+		"node": ">= 6.0"
+	},
+	"dependencies": {
+		"terser": "^5.34.1"
+	}
 }
