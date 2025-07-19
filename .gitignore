@@ -1,0 +1,43 @@
+# compiled output
+/coverage
+dist
+.turbo
+*.log
+tmp
+
+# dependencies
+node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Local dev files
+.env.local
+.bashrc
+
+# We don't commit a CHANELGELOG.md file to the repo, we only create Github releases
+CHANGELOG.md
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PNPM
+pnpm-lock.yaml
+
+# misc
+npm-debug.log
+yarn-error.log
+
+# System Files
+.DS_Store
+Thumbs.db
