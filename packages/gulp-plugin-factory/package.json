@@ -1,0 +1,52 @@
+{
+	"name": "@zilero/gulp-plugin-factory",
+	"version": "1.0.0",
+	"description": "A Gulp plugin factory for easily creating custom Gulp plugins with minimal setup, simplifying the development process.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [
+		"gulp",
+		"plugin",
+		"factory",
+		"custom",
+		"development",
+		"tooling"
+	],
+  "exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+	"files": [
+		"dist/"
+	],
+	"engines": {
+		"node": ">= 6.0"
+	},
+  "dependencies": {
+		"through2": "^4.0.2"
+	},
+	"devDependencies": {
+		"@types/through2": "^2.0.41"
+	}
+}

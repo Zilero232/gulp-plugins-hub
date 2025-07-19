@@ -1,0 +1,43 @@
+{
+	"name": "@zilero/gulp-pug-compiler",
+	"version": "1.0.0",
+	"description": "A Gulp plugin that can be used to compile PUG files.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [],
+  "exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+	"engines": {
+		"node": ">= 6.0"
+	},
+	"dependencies": {
+		"pug": "^3.0.3",
+		"@zilero/gulp-plugin-factory": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/pug": "^2.0.10"
+	}
+}

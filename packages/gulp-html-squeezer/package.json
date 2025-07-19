@@ -1,0 +1,43 @@
+{
+	"name": "@zilero/gulp-html-squeezer",
+	"version": "1.0.0",
+	"description": "A Gulp plugin that can be used to squeeze HTML files.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [],
+  "exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+	"engines": {
+		"node": ">= 6.0"
+	},
+	"dependencies": {
+		"html-minifier-terser": "^7.2.0",
+    "@zilero/gulp-plugin-factory": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/html-minifier-terser": "^7.0.2"
+	}
+}

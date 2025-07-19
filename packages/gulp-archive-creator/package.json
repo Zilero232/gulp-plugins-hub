@@ -1,0 +1,48 @@
+{
+	"name": "@zilero/gulp-archive-creator",
+	"version": "1.0.0",
+	"description": "",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [],
+  "exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+	"files": [
+		"dist"
+	],
+	"engines": {
+		"node": ">= 6.0"
+	},
+	"dependencies": {
+		"archiver": "^7.0.1",
+		"concat-stream": "^2.0.0",
+    "@zilero/gulp-plugin-factory": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/archiver": "^6.0.2",
+		"@types/concat-stream": "^2.0.3"
+	}
+}

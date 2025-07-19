@@ -1,0 +1,32 @@
+{
+  "name": "sborka_gulp",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "clear": "gulp clear",
+    "build": "gulp"
+  },
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+  "repository": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub"
+  },
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub"
+  },
+  "devDependencies": {
+    "@types/gulp": "^4.0.17",
+    "@swc/register": "^0.1.10"
+  },
+  "dependencies": {
+    "@zilero/gulp-archive-creator": "workspace:*",
+    "@zilero/gulp-html-squeezer": "workspace:*",
+    "@zilero/gulp-pug-compiler": "workspace:*",
+    "@zilero/gulp-refilename": "workspace:*",
+    "gulp": "^5.0.0"
+  }
+}

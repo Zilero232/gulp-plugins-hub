@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+   "target": "es2022",
+    "lib": ["es2022"],
+
+    "baseUrl": ".",
+    "rootDir": ".",
+
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "allowJs": true,
+
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "preserveConstEnums": true,
+
+    "skipLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "types": ["node"]
+	},
+  "include": ["@types/**/*.d.ts", "packages/**/*.ts", "examples/**/*.ts"],
+  "exclude": ["node_modules"]
+}

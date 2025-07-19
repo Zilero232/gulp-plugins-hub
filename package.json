@@ -1,0 +1,79 @@
+{
+	"name": "gulp-plugins-hub",
+	"type": "module",
+	"version": "1.0.0",
+	"private": true,
+	"packageManager": "pnpm@10.13.1",
+	"description": "A powerful toolkit for managing Gulp plugins in monorepos. Optimized for fast CI/CD environments, this package simplifies the use of multiple Gulp plugins within a single repository, enabling efficient parallel task execution.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"workspaces": [
+		"packages/*",
+		"examples/*"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"keywords": [
+		"gulp",
+		"gulp-plugins",
+		"gulp-tasks",
+		"gulp-monorepo",
+		"gulp-workspaces",
+		"task-runner",
+		"gulp-automation",
+		"gulp-pipeline",
+		"streaming-build",
+		"build-automation",
+		"continuous-integration",
+		"CI/CD",
+		"nodejs",
+		"frontend-build",
+		"workflow-automation",
+		"gulp-scripts",
+		"gulp-tasks-management",
+		"vinyl",
+		"plugin-management",
+		"monorepo-tools"
+	],
+	"scripts": {
+		"prepare": "husky",
+		"commit": "git-cz",
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint:check": "turbo run lint",
+		"lint": "turbo run lint",
+		"clean": "turbo run clean",
+		"type-check": "turbo run type-check",
+		"test": "turbo run test",
+		"publish": "turbo run build && changeset publish"
+	},
+	"dependencies": {
+		"chalk": "5.4.1",
+		"vinyl": "^3.0.1",
+		"zod": "^4.0.5"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.29.5",
+		"@types/node": "^24.0.14",
+		"@types/vinyl": "^2.0.12",
+		"@zilero/eslint": "^1.2.10",
+		"commit-jazzer": "^1.1.5",
+		"husky": "^9.1.7",
+		"tsup": "^8.5.0",
+		"turbo": "^2.5.5",
+		"typescript": "^5.8.3"
+	},
+	"config": {
+		"commitizen": {
+			"path": "node_modules/commit-jazzer"
+		}
+	}
+}
