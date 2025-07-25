@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-folder-clone",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A Gulp plugin that can be used to clone a folder.",
 	"author": {
 		"name": "Artemev Alexandr",
@@ -16,33 +16,33 @@
 		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
 	},
 	"keywords": [],
-  "exports": {
+	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.js"
 		}
 	},
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
-  },
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts"
+	},
 	"engines": {
 		"node": ">= 20.0"
 	},
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "@zilero/gulp-plugin-factory": "workspace:*"
-  },
-  "peerDependencies": {
-    "gulp": "^4.0.0"
-  }
+	"publishConfig": {
+		"access": "public"
+	},
+	"dependencies": {
+		"@zilero/gulp-plugin-factory": "workspace:*"
+	},
+	"peerDependencies": {
+		"gulp": "^4.0.0"
+	}
 }

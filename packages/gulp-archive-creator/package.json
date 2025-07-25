@@ -1,20 +1,20 @@
 {
-	"name": "@zilero/gulp-archive-creator",
-	"version": "1.0.0",
+  "name": "@zilero/gulp-archive-creator",
+  "version": "1.0.1",
   "description": "A Gulp plugin for creating archives (zip, tar) from vinyl file streams with configurable compression options",
-	"author": {
-		"name": "Artemev Alexandr",
-		"url": "https://github.com/Zilero232"
-	},
-	"license": "MIT",
-	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"bugs": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-	},
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zilero232/gulp-plugins-hub"
+  },
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
   "keywords": [
     "gulp",
     "plugin",
@@ -30,12 +30,12 @@
     "compress"
   ],
   "exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.js"
-		}
-	},
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -46,18 +46,18 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint src/**/*.ts"
   },
-	"engines": {
-		"node": ">= 20.0"
-	},
-	"dependencies": {
-		"archiver": "^7.0.1",
-		"concat-stream": "^2.0.0",
+  "engines": {
+    "node": ">= 20.0"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "concat-stream": "^2.0.0",
     "@zilero/gulp-plugin-factory": "workspace:*"
-	},
-	"devDependencies": {
-		"@types/archiver": "^6.0.2",
-		"@types/concat-stream": "^2.0.3"
-	},
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.2",
+    "@types/concat-stream": "^2.0.3"
+  },
   "publishConfig": {
     "access": "public"
   },
