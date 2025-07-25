@@ -37,6 +37,7 @@ jobs:
       - name: Release
         uses: changesets/action@v1
         with:
+          version: pnpm run version
           publish: pnpm run release
           title: "release: 🚀 release packages"
           commit: "release: 🚀 release packages"
