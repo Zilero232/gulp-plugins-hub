@@ -21,9 +21,6 @@ node_modules
 .env.local
 .bashrc
 
-# We don't commit a CHANELGELOG.md file to the repo, we only create Github releases
-CHANGELOG.md
-
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
