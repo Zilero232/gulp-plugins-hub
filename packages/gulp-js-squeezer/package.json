@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-js-squeezer",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A Gulp plugin that can be used to minify JavaScript files.",
 	"author": {
 		"name": "Artemev Alexandr",
@@ -16,31 +16,31 @@
 		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
 	},
 	"keywords": [],
-  "exports": {
+	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.js"
 		}
 	},
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
-  },
-  "engines": {
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts"
+	},
+	"engines": {
 		"node": ">= 20.0"
 	},
 	"dependencies": {
 		"terser": "^5.34.1",
-    "@zilero/gulp-plugin-factory": "workspace:*"
+		"@zilero/gulp-plugin-factory": "workspace:*"
 	},
-  "publishConfig": {
-    "access": "public"
-  },
-  "peerDependencies": {
-    "gulp": "^4.0.0"
-  }
+	"publishConfig": {
+		"access": "public"
+	},
+	"peerDependencies": {
+		"gulp": "^4.0.0"
+	}
 }

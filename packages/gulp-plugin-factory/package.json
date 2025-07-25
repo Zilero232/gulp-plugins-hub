@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-plugin-factory",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A utility library for creating type-safe Gulp plugins with streamlined error handling, file transformation, and TypeScript support",
 	"author": {
 		"name": "Artemev Alexandr",
@@ -17,48 +17,48 @@
 	},
 	"keywords": [
 		"gulp",
-    "plugin",
-    "factory",
-    "typescript",
-    "stream",
-    "vinyl",
-    "transform",
-    "development",
-    "utility",
-    "builder",
-    "type-safe",
-    "error-handling"
+		"plugin",
+		"factory",
+		"typescript",
+		"stream",
+		"vinyl",
+		"transform",
+		"development",
+		"utility",
+		"builder",
+		"type-safe",
+		"error-handling"
 	],
-  "exports": {
+	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.js"
 		}
 	},
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
-  },
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts"
+	},
 	"engines": {
 		"node": ">= 20.0"
 	},
-  "dependencies": {
+	"dependencies": {
 		"through2": "^4.0.2"
 	},
 	"devDependencies": {
 		"@types/through2": "^2.0.41"
 	},
-  "publishConfig": {
-    "access": "public"
-  },
-  "peerDependencies": {
-    "gulp": "^4.0.0"
-  }
+	"publishConfig": {
+		"access": "public"
+	},
+	"peerDependencies": {
+		"gulp": "^4.0.0"
+	}
 }

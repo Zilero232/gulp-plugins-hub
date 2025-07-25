@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-file-exclude",
-	"version": "1.0.0",
-  "description": "Gulp plugin for excluding files based on patterns",
+	"version": "1.0.1",
+	"description": "Gulp plugin for excluding files based on patterns",
 	"author": {
 		"name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"
@@ -15,38 +15,38 @@
 	"bugs": {
 		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
 	},
-  "keywords": [
-    "gulp",
-    "exclude",
-    "files"
-  ],
-  "exports": {
+	"keywords": [
+		"gulp",
+		"exclude",
+		"files"
+	],
+	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.js"
 		}
 	},
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
-  },
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts"
+	},
 	"engines": {
 		"node": ">= 20.0"
 	},
 	"dependencies": {
-    "@zilero/gulp-plugin-factory": "workspace:*"
+		"@zilero/gulp-plugin-factory": "workspace:*"
 	},
-  "publishConfig": {
-    "access": "public"
-  },
-  "peerDependencies": {
-    "gulp": "^4.0.0"
-  }
+	"publishConfig": {
+		"access": "public"
+	},
+	"peerDependencies": {
+		"gulp": "^4.0.0"
+	}
 }

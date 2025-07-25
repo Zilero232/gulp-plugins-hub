@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-pug-compiler",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A Gulp plugin for compiling Pug templates to HTML with support for layouts, includes, and custom options",
 	"author": {
 		"name": "Artemev Alexandr",
@@ -16,34 +16,34 @@
 		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
 	},
 	"keywords": [
-    "gulp",
-    "plugin",
-    "pug",
-    "template",
-    "compiler",
-    "html",
-    "jade",
-    "preprocessor",
-    "templating",
-    "static-site"
-  ],
-  "exports": {
+		"gulp",
+		"plugin",
+		"pug",
+		"template",
+		"compiler",
+		"html",
+		"jade",
+		"preprocessor",
+		"templating",
+		"static-site"
+	],
+	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js",
 			"require": "./dist/index.js"
 		}
 	},
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
-  },
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts"
+	},
 	"engines": {
 		"node": ">= 20.0"
 	},
@@ -54,10 +54,10 @@
 	"devDependencies": {
 		"@types/pug": "^2.0.10"
 	},
-  "publishConfig": {
-    "access": "public"
-  },
-  "peerDependencies": {
-    "gulp": "^4.0.0"
-  }
+	"publishConfig": {
+		"access": "public"
+	},
+	"peerDependencies": {
+		"gulp": "^4.0.0"
+	}
 }
