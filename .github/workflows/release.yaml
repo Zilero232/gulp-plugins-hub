@@ -17,7 +17,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -44,5 +43,5 @@ jobs:
           title: "release: 🚀 release packages"
           commit: "release: 🚀 release packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.GULP_PLUGIN_HUB_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GULP_PLUGIN_HUB_NPM_TOKEN }}
