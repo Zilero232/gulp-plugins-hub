@@ -31,9 +31,6 @@ CHANGELOG.md
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# PNPM
-pnpm-lock.yaml
-
 # misc
 npm-debug.log
 yarn-error.log
