@@ -1,6 +1,7 @@
 {
 	"name": "@zilero/gulp-pug-compiler",
 	"version": "1.0.1",
+  "type": "module",
 	"description": "A Gulp plugin for compiling Pug templates to HTML with support for layouts, includes, and custom options",
 	"author": {
 		"name": "Artemev Alexandr",

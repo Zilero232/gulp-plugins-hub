@@ -1,3 +1,4 @@
+import type FileVinyl from 'vinyl';
 import type { Transform } from 'node:stream';
 
 // Defining the type for the options PluginFactory.

@@ -32,6 +32,9 @@ node_modules
 npm-debug.log
 yarn-error.log
 
+# docs
+docs
+
 # System Files
 .DS_Store
 Thumbs.db

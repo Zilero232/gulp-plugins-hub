@@ -1,3 +1,5 @@
+import type FileVinyl from 'vinyl';
+
 // Options for the GulpFolderClone plugin.
 export interface GulpFolderCloneOptions {
   logProgress?: boolean;

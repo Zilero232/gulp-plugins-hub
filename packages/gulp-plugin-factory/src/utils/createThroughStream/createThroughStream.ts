@@ -1,3 +1,4 @@
+import type FileVinyl from 'vinyl';
 import type { TransformCallback } from 'through2';
 
 import through2 from 'through2';

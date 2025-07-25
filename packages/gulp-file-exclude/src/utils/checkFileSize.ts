@@ -1,3 +1,5 @@
+import type FileVinyl from 'vinyl';
+
 import type { GulpFileExcludeOptions } from '../types';
 
 interface CheckFileSize {

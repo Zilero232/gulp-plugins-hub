@@ -1,3 +1,5 @@
+import type FileVinyl from 'vinyl';
+
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 
 import type { GulpFolderCloneOptions } from './types';

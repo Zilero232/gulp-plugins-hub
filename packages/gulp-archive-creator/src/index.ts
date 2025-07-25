@@ -1,4 +1,5 @@
 import type { Transform as TransformStream } from 'node:stream';
+import type FileVinyl from 'vinyl';
 
 import GulpPluginFactory from "@zilero/gulp-plugin-factory";
 

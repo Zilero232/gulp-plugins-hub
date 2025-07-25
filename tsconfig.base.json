@@ -24,6 +24,6 @@
 
     "types": ["node"]
 	},
-  "include": ["@types/**/*.d.ts", "packages/**/*.ts", "examples/**/*.ts"],
+  "include": ["packages/**/*.ts", "examples/**/*.ts"],
   "exclude": ["node_modules"]
 }

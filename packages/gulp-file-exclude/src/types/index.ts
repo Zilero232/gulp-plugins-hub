@@ -1,3 +1,5 @@
+import type FileVinyl from 'vinyl';
+
 // Definition of the options for the GulpFileExclude plugin.
 export interface GulpFileExcludeOptions {
   patterns?: (string | RegExp)[];

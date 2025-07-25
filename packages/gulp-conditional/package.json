@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-conditional",
-	"type": "module",
 	"version": "1.0.1",
+	"type": "module",
 	"description": "A Gulp plugin for executing different functions based on specified conditions, enabling flexible task management in Gulp workflows.",
 	"author": {
 		"name": "Artemev Alexandr",
