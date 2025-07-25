@@ -4,8 +4,9 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "clear": "gulp clear",
-    "build": "gulp"
+    "clear": "rimraf dist",
+    "gulp:dev": "pnpm clear && gulp --watch",
+    "gulp:build": "pnpm clear && gulp"
   },
   "author": {
     "name": "Artemev Alexandr",
@@ -25,8 +26,12 @@
   "dependencies": {
     "@zilero/gulp-archive-creator": "workspace:*",
     "@zilero/gulp-html-squeezer": "workspace:*",
+    "@zilero/gulp-js-squeezer": "workspace:*",
     "@zilero/gulp-pug-compiler": "workspace:*",
     "@zilero/gulp-refilename": "workspace:*",
+    "@zilero/gulp-folder-clone": "workspace:*",
+    "@zilero/gulp-file-exclude": "workspace:*",
+    "@zilero/gulp-conditional": "workspace:*",
     "gulp": "^5.0.0"
   }
 }

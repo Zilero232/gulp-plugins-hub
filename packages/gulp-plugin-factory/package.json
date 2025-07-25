@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-plugin-factory",
 	"version": "1.0.0",
-	"description": "A Gulp plugin factory for easily creating custom Gulp plugins with minimal setup, simplifying the development process.",
+	"description": "A utility library for creating type-safe Gulp plugins with streamlined error handling, file transformation, and TypeScript support",
 	"author": {
 		"name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"
@@ -17,11 +17,17 @@
 	},
 	"keywords": [
 		"gulp",
-		"plugin",
-		"factory",
-		"custom",
-		"development",
-		"tooling"
+    "plugin",
+    "factory",
+    "typescript",
+    "stream",
+    "vinyl",
+    "transform",
+    "development",
+    "utility",
+    "builder",
+    "type-safe",
+    "error-handling"
 	],
   "exports": {
 		".": {
@@ -30,23 +36,29 @@
 			"require": "./dist/index.js"
 		}
 	},
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "type-check": "tsc --noEmit",
     "lint": "eslint src/**/*.ts"
   },
-	"files": [
-		"dist/"
-	],
 	"engines": {
-		"node": ">= 6.0"
+		"node": ">= 20.0"
 	},
   "dependencies": {
 		"through2": "^4.0.2"
 	},
 	"devDependencies": {
 		"@types/through2": "^2.0.41"
-	}
+	},
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "gulp": "^4.0.0"
+  }
 }

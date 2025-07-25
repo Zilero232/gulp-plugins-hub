@@ -13,14 +13,7 @@ import defaultOptions from './config/PluginOptionsDefault';
 import { PLUGIN_NAME } from './constants';
 
 /**
- * A Gulp plugin that can be used to create archives of files in a stream.
- *
- * The plugin will create an archive with the specified format and add all files
- * in the stream to it, while logging progress if enabled. On completion, it will
- * log the result, including the number of files processed and the final size of
- * the archive.
- *
- * @returns A Gulp plugin that can be used to create archives of files in a stream.
+ * Creates a Gulp plugin that can be used to create archives of files in a stream.
  *
  * @example
  * import GulpArchiveCreator from "@zilero/gulp-archive-creator";

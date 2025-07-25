@@ -1,12 +1,13 @@
 import type { Options } from 'tsup';
 
 const baseConfig: Options = {
-  format: ['cjs', 'esm'],
+  format: ['esm', 'cjs'],
   dts: true,
   splitting: false,
   sourcemap: false,
-  clean: true,
-  minify: true
+  clean: false,
+  minify: true,
+  silent: true
 };
 
 export default baseConfig;

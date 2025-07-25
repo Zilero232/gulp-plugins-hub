@@ -19,18 +19,12 @@ export const createThroughStream = (transformer: Transformer, flusher: Flusher):
 	}
 
   const transformFunction: TransformFunction = async function(this, file, encoding, callback) {
-			if (file.isNull()) {
-        // If the file is null, call the callback with the file.
-				return callback(new Error('File is null.'));
-			}
-
-			if (file.isStream()) {
-				// If the file is not a stream, throw an error.
-				return callback(new Error('Streaming not supported.'));
-			}
-
 			try {
-				const result = await transformer(file, encoding, this);
+        const result = await transformer(file, encoding, this);
+
+        if (result instanceof Error) {
+          return callback(result);
+        }
 
 				if (result) {
           // If the result is not null, call the callback with the result.

@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-refilename",
 	"version": "1.0.0",
-	"description": "A Gulp plugin that can be used to rename files.",
+  "description": "A powerful Gulp plugin for flexible file renaming with pattern matching and custom transformations support",
 	"author": {
 		"name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"
@@ -17,9 +17,12 @@
 	},
 	"keywords": [
 		"gulp",
-		"plugin",
-		"rename",
-		"refilename"
+    "plugin",
+    "rename",
+    "refilename",
+    "file",
+    "stream",
+    "vinyl"
 	],
 	"exports": {
 		".": {
@@ -28,17 +31,26 @@
 			"require": "./dist/index.js"
 		}
 	},
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "type-check": "tsc --noEmit",
     "lint": "eslint src/**/*.ts"
   },
 	"engines": {
-		"node": ">= 6.0"
+		"node": ">= 20.0"
 	},
   "dependencies": {
 		"@zilero/gulp-plugin-factory": "workspace:*"
-	}
+	},
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "gulp": "^4.0.0"
+  }
 }

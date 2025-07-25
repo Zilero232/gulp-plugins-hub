@@ -1,0 +1,52 @@
+{
+	"name": "@zilero/gulp-file-exclude",
+	"version": "1.0.0",
+  "description": "Gulp plugin for excluding files based on patterns",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+  "keywords": [
+    "gulp",
+    "exclude",
+    "files"
+  ],
+  "exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+	"engines": {
+		"node": ">= 20.0"
+	},
+	"dependencies": {
+    "@zilero/gulp-plugin-factory": "workspace:*"
+	},
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "gulp": "^4.0.0"
+  }
+}

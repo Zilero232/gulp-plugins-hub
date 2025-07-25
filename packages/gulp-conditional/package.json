@@ -1,0 +1,60 @@
+{
+	"name": "@zilero/gulp-conditional",
+	"type": "module",
+	"version": "1.0.0",
+	"description": "A Gulp plugin for executing different functions based on specified conditions, enabling flexible task management in Gulp workflows.",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [
+		"gulp",
+		"conditional",
+		"functions",
+		"task management",
+		"plugin",
+		"workflow"
+	],
+  "exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		}
+	},
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+	"engines": {
+		"node": ">= 20.0"
+	},
+  "dependencies": {
+    "@zilero/gulp-plugin-factory": "workspace:*",
+    "through2": "^4.0.2"
+	},
+  "devDependencies": {
+    "@types/through2": "^2.0.41"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "gulp": "^4.0.0"
+  }
+}

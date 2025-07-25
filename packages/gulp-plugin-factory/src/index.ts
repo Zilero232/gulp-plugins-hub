@@ -8,15 +8,6 @@ import { createThroughStream } from './utils';
 /**
  * Creates a Gulp plugin that can be used to transform files.
  *
- * @remarks
- * The plugin will call the onFile function for each file in the stream, passing
- * the file, encoding, and stream as arguments. If the onFile function throws an
- * error, it will be caught and handled by the handleUnknownError function.
- *
- * The plugin will also call the onFinish function once the stream is finished.
- *
- * @returns A Gulp plugin that can be used to transform files.
- *
  * @example
  * ```ts
  * import PluginFactory from '@zilero/gulp-plugin-factory';

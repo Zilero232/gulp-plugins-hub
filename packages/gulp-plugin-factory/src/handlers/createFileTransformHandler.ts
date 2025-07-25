@@ -1,7 +1,5 @@
 import type { PluginFactoryOptions, Transformer } from '../types';
 
-import { checkIsFile } from '../utils';
-
 /**
  * Creates a file transform handler for a gulp plugin.
  *
@@ -15,26 +13,29 @@ import { checkIsFile } from '../utils';
  * @returns {Transformer} A transformer function that takes a file, encoding, and stream as arguments and returns a File or void.
  */
 export function createFileTransformHandler(options: PluginFactoryOptions): Transformer {
-  const {
-    pluginName,
-    supportsDirectories = false,
-    supportsAnyType = false,
-    onFile,
-  } = options;
+  const { pluginName, onFile } = options;
 
   const fileTransformHandler: Transformer = async function(file, encoding, stream) {
-    // If the plugin does not support any type of file and the file is a directory, return the original file.
-		if (!supportsAnyType && !supportsDirectories && file.isDirectory()) {
-			return file;
-		}
+    // If the file is a directory, return.
+    if (file.isDirectory()) {
+      return;
+    }
+
+    if (file.isNull()) {
+      // If the file is null, call the callback with the file.
+      return new Error('File is null.');
+    }
+
+    if (file.isStream()) {
+      // If the file is not a stream, throw an error.
+      return new Error('Streaming not supported.');
+    }
 
 		try {
 			// Call the onFile function with the file, encoding, and stream as arguments.
 			const result = await onFile(file, encoding, stream);
 
-      if (!checkIsFile(result)) {
-        return result;
-      }
+      return result;
 		} catch (error: unknown) {
 			// Catch any errors thrown by the onFile function and handle them with the handleUnknownError function.
 			throw new Error(`${pluginName}: ${error}`);

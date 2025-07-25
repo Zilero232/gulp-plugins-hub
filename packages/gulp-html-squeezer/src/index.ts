@@ -3,17 +3,12 @@ import { minify } from 'html-minifier-terser';
 
 import type { GulpHtmlSqueezerOptions } from './types';
 
-import { PLUGIN_NAME } from './constants';
 import defaultOptions from './config/PluginOptionsDefault';
+
+import { PLUGIN_NAME } from './constants';
 
 /**
  * A Gulp plugin that can be used to minify HTML files.
- *
- * The plugin processes the HTML content of each file in the stream, minifying it
- * and logging the results. If the file is not a Buffer, it is skipped.
- *
- * The plugin also provides statistics on the number of files processed and the
- * number of errors encountered.
  *
  * @example
  * import GulpHtmlSqueezer from "@zilero/gulp-html-squeezer";

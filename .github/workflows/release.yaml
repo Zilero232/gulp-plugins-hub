@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Release
+        uses: changesets/action@v1
+        with:
+          publish: pnpm run release
+          title: "release: 🚀 release packages"
+          commit: "release: 🚀 release packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GULP_PLUGIN_HUB_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GULP_PLUGIN_HUB_NPM_TOKEN }}

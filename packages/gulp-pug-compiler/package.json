@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-pug-compiler",
 	"version": "1.0.0",
-	"description": "A Gulp plugin that can be used to compile PUG files.",
+	"description": "A Gulp plugin for compiling Pug templates to HTML with support for layouts, includes, and custom options",
 	"author": {
 		"name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"
@@ -15,7 +15,18 @@
 	"bugs": {
 		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
 	},
-	"keywords": [],
+	"keywords": [
+    "gulp",
+    "plugin",
+    "pug",
+    "template",
+    "compiler",
+    "html",
+    "jade",
+    "preprocessor",
+    "templating",
+    "static-site"
+  ],
   "exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -23,15 +34,18 @@
 			"require": "./dist/index.js"
 		}
 	},
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "type-check": "tsc --noEmit",
     "lint": "eslint src/**/*.ts"
   },
 	"engines": {
-		"node": ">= 6.0"
+		"node": ">= 20.0"
 	},
 	"dependencies": {
 		"pug": "^3.0.3",
@@ -39,5 +53,11 @@
 	},
 	"devDependencies": {
 		"@types/pug": "^2.0.10"
-	}
+	},
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "gulp": "^4.0.0"
+  }
 }
