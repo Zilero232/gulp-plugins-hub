@@ -1,4 +1,5 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "name": "Gulp Plugins Hub",
   "entryPointStrategy": "packages",
   "entryPoints": ["packages/*"],
@@ -9,17 +10,21 @@
   "hideGenerator": true,
   "theme": "default",
   "readme": "README.md",
+
+  // Plugins
   "plugin": [
-    "typedoc-plugin-frontmatter",
-    "typedoc-plugin-markdown"
+    "typedoc-material-theme"
   ],
 
-  // Группировка и сортировка
+  // Output
+  "out": "docs",
+
+  // Categorization and sorting
   "categorizeByGroup": true,
   "categoryOrder": ["Plugins", "Utils", "Types", "Configs", "*"],
   "sort": ["source-order", "required-first", "alphabetical"],
 
-  // Настройки отображения
+  // Display settings
   "visibilityFilters": {
     "protected": false,
     "private": false,
@@ -29,7 +34,7 @@
   "searchInComments": true,
   "githubPages": true,
 
-  // Навигация
+  // Navigation
   "navigationLinks": {
     "GitHub": "https://github.com/Zilero232/gulp-plugins-hub",
     "NPM": "https://www.npmjs.com/org/zilero",
@@ -37,7 +42,7 @@
     "Contributing": "CONTRIBUTING.md"
   },
 
-  // Дополнительные настройки
+  // Additional settings
   "cleanOutputDir": true,
   "excludeInternal": true,
   "excludePrivate": true,

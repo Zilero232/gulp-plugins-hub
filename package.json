@@ -57,26 +57,26 @@
 		"release": "pnpm run build && pnpm run version && pnpm run publish"
 	},
 	"dependencies": {
+		"@mxssfd/typedoc-theme": "^1.1.7",
+		"chalk": "5.4.1",
+		"consola": "^3.4.2",
+		"pretty-error": "^4.0.0",
 		"vinyl": "^3.0.1",
-		"zod": "^3.25.76",
-    "chalk": "5.4.1",
-    "consola": "^3.4.2",
-    "pretty-error": "^4.0.0"
+		"zod": "^3.25.76"
 	},
 	"devDependencies": {
-    "@types/through2": "^2.0.41",
-		"@types/vinyl": "^2.0.12",
-		"@types/node": "^24.1.0",
 		"@changesets/cli": "^2.29.5",
+		"@types/node": "^24.1.0",
+		"@types/through2": "^2.0.41",
+		"@types/vinyl": "^2.0.12",
 		"@zilero/eslint": "^1.2.10",
+    "typedoc-material-theme": "^1.4.0",
 		"commit-jazzer": "^1.1.5",
 		"husky": "^9.1.7",
 		"rimraf": "^6.0.1",
 		"tsup": "^8.5.0",
 		"turbo": "^2.5.5",
 		"typedoc": "^0.28.7",
-		"typedoc-plugin-frontmatter": "^1.3.0",
-		"typedoc-plugin-markdown": "^4.7.1",
 		"typescript": "^5.8.3"
 	},
 	"config": {
