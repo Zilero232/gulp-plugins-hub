@@ -3,7 +3,6 @@
 	"version": "1.0.1",
   "type": "module",
 	"description": "A utility library for creating type-safe Gulp plugins with streamlined error handling, file transformation, and TypeScript support",
-  "type": "module",
 	"author": {
     "name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"

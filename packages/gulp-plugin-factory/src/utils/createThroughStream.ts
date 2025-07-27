@@ -2,8 +2,9 @@ import type { TransformFunction, FlushCallback } from 'through2';
 
 import through2 from 'through2';
 
-import type { Flusher, Transformer } from '../types';
 import type { TransformStream } from '@/shared/schemas';
+
+import type { Flusher, Transformer } from '../types';
 
 export const createThroughStream = (transformer: Transformer, flusher: Flusher): TransformStream => {
   const transformFunction: TransformFunction = async function(this, file, encoding, callback) {

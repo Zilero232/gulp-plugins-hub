@@ -1,4 +1,5 @@
 import type { PluginFactoryOptions } from '../schema';
+
 import type { Flusher } from '../types';
 
 // Creates a finish handler function for a gulp plugin.

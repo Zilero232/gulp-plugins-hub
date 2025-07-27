@@ -1,4 +1,5 @@
 import type { PluginFactoryOptions } from '../schema';
+
 import type { Transformer } from '../types';
 
 // Creates a file transform handler for a gulp plugin.
