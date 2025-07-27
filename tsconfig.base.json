@@ -1,10 +1,9 @@
 {
 	"compilerOptions": {
-   "target": "es2022",
-    "lib": ["es2022"],
+    "target": "ES2022",
+    "lib": ["ES2022"],
 
-    "baseUrl": ".",
-    "rootDir": ".",
+    "baseUrl": "./",
 
     "module": "ESNext",
     "moduleDetection": "force",
@@ -22,8 +21,12 @@
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
 
-    "types": ["node"]
+    "types": ["node"],
+
+    "paths": {
+      "@/*": ["./*"]
+    }
 	},
-  "include": ["@types/**/*.d.ts", "packages/**/*.ts", "examples/**/*.ts"],
+  "include": ["packages/**/*.ts", "examples/**/*.ts"],
   "exclude": ["node_modules"]
 }

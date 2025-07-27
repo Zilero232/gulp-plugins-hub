@@ -1,9 +1,4 @@
 {
 	"extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ESNext"  ,
-    "moduleResolution": "bundler"
-  },
   "include": ["./src/**/*.ts", "gulpfile.ts"]
 }

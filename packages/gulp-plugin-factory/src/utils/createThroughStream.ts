@@ -1,23 +1,11 @@
-import type { TransformCallback } from 'through2';
+import type { TransformFunction, FlushCallback } from 'through2';
 
 import through2 from 'through2';
 
-import type { Flusher, Transformer, TransformStream } from '../../types';
-
-type TransformFunction = (this: TransformStream, file: FileVinyl, encoding: BufferEncoding, callback: TransformCallback) => void;
-type FlushFunction = (this: TransformStream, callback: () => void) => void;
+import type { Flusher, Transformer } from '../types';
+import type { TransformStream } from '@/shared/schemas';
 
 export const createThroughStream = (transformer: Transformer, flusher: Flusher): TransformStream => {
-	// Checking for the presence of the transformer function.
-	if (!transformer) {
-		throw new Error('Transformer function is required and must be a function.');
-	}
-
-	// Checking for the presence of the flusher function.
-	if (!flusher) {
-		throw new Error('Flusher function is required and must be a function.');
-	}
-
   const transformFunction: TransformFunction = async function(this, file, encoding, callback) {
 			try {
         const result = await transformer(file, encoding, this);
@@ -38,7 +26,7 @@ export const createThroughStream = (transformer: Transformer, flusher: Flusher):
 			}
   }
 
-   const flushFunction: FlushFunction = async function(this, callback) {
+   const flushFunction: FlushCallback = async function(this, callback) {
     try {
       await flusher(this);
 

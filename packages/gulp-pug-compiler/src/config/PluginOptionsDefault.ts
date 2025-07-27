@@ -1,4 +1,4 @@
-import type { GulpPugCompilerOptions } from '../types';
+import type { GulpPugCompilerOptions } from '../schema';
 
 const defaultOptions: GulpPugCompilerOptions = {
   pluginOptions: {

@@ -1,4 +1,4 @@
-import type { GulpJsSqueezerOptions } from '../types';
+import type { GulpJsSqueezerOptions } from '../schema';
 
 const defaultOptions: GulpJsSqueezerOptions = {
 	pluginOptions: {

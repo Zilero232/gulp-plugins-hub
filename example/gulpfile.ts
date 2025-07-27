@@ -14,7 +14,7 @@ const pugTask = async () => {
     .pipe(GulpPugCompiler({
       pugOptions: {
         pretty: true,
-      }
+      },
     }))
     .pipe(GulpHtmlSqueezer({
       htmlMinifierOptions: {
@@ -47,13 +47,14 @@ const folderCloneTask = () => {
       handlers: [
         {
           condition: () => false,
-          handler: GulpFileExclude({
+          handler: () =>  GulpFileExclude({
             patterns: ['1'],
+            size: [100, 1000],
           }),
         },
         {
-          condition: () => false,
-          handler: GulpFileExclude({
+          condition:  () => true,
+          handler: () => GulpFileExclude({
             patterns: ['2'],
           }),
         },
@@ -75,7 +76,7 @@ const archiveTask = () => {
     .pipe(dest('dist'));
 };
 
-const build = series(folderCloneTask);
+const build = series(pugTask, jsTask, folderCloneTask, archiveTask);
 
 /*
  * Export a default task

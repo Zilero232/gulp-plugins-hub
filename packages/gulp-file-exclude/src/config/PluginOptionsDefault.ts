@@ -1,4 +1,4 @@
-import type { GulpFileExcludeOptions } from '../types';
+import type { GulpFileExcludeOptions } from '../schema';
 
 const defaultOptions: GulpFileExcludeOptions = {
   patterns: [],

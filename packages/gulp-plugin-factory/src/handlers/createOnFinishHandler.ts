@@ -1,11 +1,7 @@
-import type { Flusher, PluginFactoryOptions } from '../types';
+import type { PluginFactoryOptions } from '../schema';
+import type { Flusher } from '../types';
 
-/**
- * Creates a finish handler function for a gulp plugin. If onFinish is not provided, returns a no-op function.
- * Otherwise, it wraps the onFinish function with error handling via handleUnknownError.
-
- * @returns {Flusher} - The wrapped finish handler function.
- */
+// Creates a finish handler function for a gulp plugin.
 export function createOnFinishHandler({ pluginName, onFinish }: PluginFactoryOptions): Flusher {
   const onFinishHandler: Flusher = async function(stream) {
 		try {

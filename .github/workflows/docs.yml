@@ -1,0 +1,54 @@
+name: Generate Documentation
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.13.1
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: 'pnpm'
+
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build packages
+      run: pnpm run build
+
+    - name: Generate documentation
+      run: pnpm run docs
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GULP_PLUGIN_HUB_GITHUB_TOKEN }}
+        publish_dir: ./docs
+
+    - name: Create Pull Request
+      if: github.event_name == 'pull_request'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GULP_PLUGIN_HUB_GITHUB_TOKEN }}
+        commit-message: 'docs: update documentation'
+        title: 'docs: update documentation'
+        body: 'Auto-generated documentation update'
+        branch: docs-update
+        base: ${{ github.head_ref }}

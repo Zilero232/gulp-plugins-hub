@@ -1,10 +1,20 @@
+import { type FileVinyl } from '@/shared/schemas';
+
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 
-import type { GulpFolderCloneOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
+
+import { gulpFolderCloneSchema, type GulpFolderCloneOptions } from './schema';
 
 import defaultOptions from './config/PluginOptionsDefault';
 
 import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpFolderCloneSchema,
+  defaults: defaultOptions,
+});
 
 /**
  * Creates a Gulp plugin that can be used to clone a folder.
@@ -18,7 +28,7 @@ import { PLUGIN_NAME } from './constants';
  *   .pipe(gulp.dest("dist/images"));
  */
 const GulpFolderClone = (options: GulpFolderCloneOptions = {}) => {
-  const { logFinish } = { ...defaultOptions, ...options };
+  const { logFinish } = validateOptions(options);
 
 	let fileCount = 0; // Counter of processed files.
 	let errorCount = 0; // Error Counter.

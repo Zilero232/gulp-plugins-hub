@@ -1,10 +1,10 @@
 import through2 from 'through2';
 
-import type { GulpConditionalOptions } from '../types';
+import type { GulpConditionalOptions } from '../schema';
 
-const defaultOptions: GulpConditionalOptions<ReturnType<typeof through2.obj>> = {
+const defaultOptions: GulpConditionalOptions = {
   handlers: [],
-  defaultHandler: through2.obj(),
+  defaultHandler: () => through2.obj(),
 };
 
 export default defaultOptions;

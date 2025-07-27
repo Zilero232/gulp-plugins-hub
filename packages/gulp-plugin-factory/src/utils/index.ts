@@ -1,1 +1,1 @@
-export { createThroughStream } from './createThroughStream/createThroughStream';
+export { createThroughStream } from './createThroughStream';

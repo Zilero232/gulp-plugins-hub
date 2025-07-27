@@ -1,11 +1,21 @@
+import { type FileVinyl } from '@/shared/schemas';
+
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 import { minify } from 'terser';
 
-import type { GulpJsSqueezerOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
+
+import { gulpJsSqueezerSchema, type GulpJsSqueezerOptions } from './schema';
 
 import defaultOptions from './config/PluginOptionsDefault';
 
 import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpJsSqueezerSchema,
+  defaults: defaultOptions,
+});
 
 /**
  * A Gulp plugin that can be used to minify JavaScript files.
@@ -24,7 +34,7 @@ import { PLUGIN_NAME } from './constants';
  *   .pipe(gulp.dest("dist"));
  */
 const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
-  const { minifyOptions = {}, pluginOptions = {} } = { ...defaultOptions, ...options };
+  const { minifyOptions, pluginOptions } = validateOptions(options);
 
 	let fileCount = 0; // Counter of processed files.
 	let errorCount = 0; // Error Counter.
@@ -38,7 +48,7 @@ const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
 					let content = file.contents.toString();
 
 					// onBeforeMinify call (if passed).
-					const onBeforeModified = pluginOptions.onBeforeMinify ? await pluginOptions.onBeforeMinify(content) : content;
+					const onBeforeModified = pluginOptions?.onBeforeMinify ? await pluginOptions.onBeforeMinify(content) : content;
 
 					// Update the content of the file.
 					if (onBeforeModified) {
@@ -49,7 +59,7 @@ const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
 					content = (await minify(content, minifyOptions)).code ?? '';
 
 					// onAfterMinify call (if passed).
-					const onAfterModified = pluginOptions.onAfterMinify ? await pluginOptions.onAfterMinify(content) : content;
+					const onAfterModified = pluginOptions?.onAfterMinify ? await pluginOptions.onAfterMinify(content) : content;
 
 					// Update the content of the file.
 					if (onAfterModified) {
@@ -66,7 +76,7 @@ const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
 					errorCount++;
 				}
 
-				if (pluginOptions.logProgress) {
+				if (pluginOptions?.logProgress) {
 					console.log(`Minified JS file ${file.relative} successfully.`);
 				}
 
@@ -80,7 +90,7 @@ const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
 		},
 		onFinish: async () => {
 			try {
-				if (pluginOptions.logFinal) {
+				if (pluginOptions?.logFinal) {
 					console.log(`Total files processed: ${fileCount}, Total errors: ${errorCount} JS file(s).`);
 				}
 			} catch (error: unknown) {

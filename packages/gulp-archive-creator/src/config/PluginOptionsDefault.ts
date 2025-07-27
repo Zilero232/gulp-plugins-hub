@@ -1,4 +1,4 @@
-import type { GulpArchiveCreatorOptions } from '../types';
+import type { GulpArchiveCreatorOptions } from '../schema';
 
 const defaultOptions: GulpArchiveCreatorOptions = {
   format: 'zip',
@@ -6,7 +6,6 @@ const defaultOptions: GulpArchiveCreatorOptions = {
 		archiveName: 'archive',
 		createDirectory: false,
 		createEmptyArchive: false,
-		excludeFiles: [],
 		logProgress: true,
 		logFinal: true,
 	},

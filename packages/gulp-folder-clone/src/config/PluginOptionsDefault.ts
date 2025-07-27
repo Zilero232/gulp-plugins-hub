@@ -1,9 +1,7 @@
-import type { GulpFolderCloneOptions } from '../types';
+import type { GulpFolderCloneOptions } from '../schema';
 
 const defaultOptions: GulpFolderCloneOptions = {
-	excludeFiles: [],
 	logFinish: true,
-	overwrite: true,
 };
 
 export default defaultOptions;

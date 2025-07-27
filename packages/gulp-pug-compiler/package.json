@@ -1,6 +1,7 @@
 {
 	"name": "@zilero/gulp-pug-compiler",
 	"version": "1.0.1",
+  "type": "module",
 	"description": "A Gulp plugin for compiling Pug templates to HTML with support for layouts, includes, and custom options",
 	"author": {
 		"name": "Artemev Alexandr",
@@ -29,9 +30,9 @@
 	],
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.js"
+			"types": "./dist/index.d.cts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
 		}
 	},
 	"files": [
@@ -45,11 +46,11 @@
 		"lint": "eslint src/**/*.ts"
 	},
 	"engines": {
-		"node": ">= 20.0"
+		"node": ">= 16.0"
 	},
 	"dependencies": {
-		"pug": "^3.0.3",
-		"@zilero/gulp-plugin-factory": "workspace:*"
+		"@zilero/gulp-plugin-factory": "workspace:*",
+		"pug": "^3.0.3"
 	},
 	"devDependencies": {
 		"@types/pug": "^2.0.10"

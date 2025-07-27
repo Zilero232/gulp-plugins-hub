@@ -1,13 +1,25 @@
+import { type FileVinyl } from '@/shared/schemas';
+
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 
-import type { GulpFileExcludeOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
+
+import type { GulpFileExcludeOptions } from './schema';
 
 import defaultOptions from './config/PluginOptionsDefault';
 
 import { isFileExcluded } from './utils/isFileExcluded';
 import { checkFileSize } from './utils/checkFileSize';
 
+import { gulpFileExcludeSchema } from './schema';
+
 import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpFileExcludeSchema,
+  defaults: defaultOptions,
+});
 
 /**
  * Creates a Gulp plugin that excludes files based on patterns.
@@ -32,8 +44,8 @@ import { PLUGIN_NAME } from './constants';
  *   }))
  *   .pipe(gulp.dest("dist/images"));
  */
-const GulpFileExclude = (options: GulpFileExcludeOptions = {}) => {
-  const { patterns = [], logExcluded, size, onExclude } = { ...defaultOptions, ...options };
+const GulpFileExclude = (options: GulpFileExcludeOptions) => {
+  const { patterns, logExcluded, size, onExclude } = validateOptions(options);
 
   let excludedCount = 0;
 

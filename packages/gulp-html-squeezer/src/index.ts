@@ -1,11 +1,21 @@
+import { type FileVinyl } from '@/shared/schemas';
+
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 import { minify } from 'html-minifier-terser';
 
-import type { GulpHtmlSqueezerOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
+
+import { gulpHtmlSqueezerSchema, type GulpHtmlSqueezerOptions } from './schema';
 
 import defaultOptions from './config/PluginOptionsDefault';
 
 import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpHtmlSqueezerSchema,
+  defaults: defaultOptions,
+});
 
 /**
  * A Gulp plugin that can be used to minify HTML files.
@@ -18,7 +28,7 @@ import { PLUGIN_NAME } from './constants';
  *   .pipe(gulp.dest("dist"));
  */
 const GulpHtmlSqueezer = (options: GulpHtmlSqueezerOptions) => {
-  const { htmlMinifierOptions = {}, pluginOptions = {} } = { ...defaultOptions, ...options };
+  const { htmlMinifierOptions = {}, pluginOptions = {} } = validateOptions(options);
 
 	let fileCount = 0; // Counter of processed files.
 	let errorCount = 0; // Error Counter.

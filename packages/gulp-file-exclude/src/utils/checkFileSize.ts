@@ -1,8 +1,10 @@
-import type { GulpFileExcludeOptions } from '../types';
+import { type FileVinyl } from '@/shared/schemas';
+
+import type { GulpFileExcludeOptions } from '../schema';
 
 interface CheckFileSize {
   file: FileVinyl;
-  size?: Required<GulpFileExcludeOptions>['size'];
+  size?: GulpFileExcludeOptions['size'];
 }
 
 /**

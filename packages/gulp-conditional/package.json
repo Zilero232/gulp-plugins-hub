@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-conditional",
-	"type": "module",
 	"version": "1.0.1",
+	"type": "module",
 	"description": "A Gulp plugin for executing different functions based on specified conditions, enabling flexible task management in Gulp workflows.",
 	"author": {
 		"name": "Artemev Alexandr",
@@ -26,9 +26,9 @@
 	],
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"require": "./dist/index.js"
+			"types": "./dist/index.d.cts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
 		}
 	},
 	"files": [
@@ -42,14 +42,11 @@
 		"lint": "eslint src/**/*.ts"
 	},
 	"engines": {
-		"node": ">= 20.0"
+		"node": ">= 16.0"
 	},
 	"dependencies": {
 		"@zilero/gulp-plugin-factory": "workspace:*",
-		"through2": "^4.0.2"
-	},
-	"devDependencies": {
-		"@types/through2": "^2.0.41"
+    "through2": "^4.0.2"
 	},
 	"publishConfig": {
 		"access": "public"

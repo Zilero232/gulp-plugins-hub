@@ -7,7 +7,12 @@ const baseConfig: Options = {
   sourcemap: false,
   clean: false,
   minify: true,
-  silent: true
+  silent: true,
+  treeshake: true,
+  outDir: 'dist',
+  outExtension: ({ format }) => ({
+    js: format === 'cjs' ? '.cjs' : '.mjs'
+  })
 };
 
 export default baseConfig;

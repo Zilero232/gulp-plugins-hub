@@ -1,0 +1,53 @@
+{
+  "name": "Gulp Plugins Hub",
+  "entryPointStrategy": "packages",
+  "entryPoints": ["packages/*"],
+  "packageOptions": {
+    "entryPoints": ["src/index.ts"]
+  },
+  "includeVersion": true,
+  "hideGenerator": true,
+  "theme": "default",
+  "readme": "README.md",
+  "plugin": [
+    "typedoc-plugin-frontmatter",
+    "typedoc-plugin-markdown"
+  ],
+
+  // Группировка и сортировка
+  "categorizeByGroup": true,
+  "categoryOrder": ["Plugins", "Utils", "Types", "Configs", "*"],
+  "sort": ["source-order", "required-first", "alphabetical"],
+
+  // Настройки отображения
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": true
+  },
+  "searchInComments": true,
+  "githubPages": true,
+
+  // Навигация
+  "navigationLinks": {
+    "GitHub": "https://github.com/Zilero232/gulp-plugins-hub",
+    "NPM": "https://www.npmjs.com/org/zilero",
+    "Changelog": "CHANGELOG.md",
+    "Contributing": "CONTRIBUTING.md"
+  },
+
+  // Дополнительные настройки
+  "cleanOutputDir": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "disableSources": true,
+  "gitRevision": "master",
+
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": true
+  }
+}

@@ -1,22 +1,31 @@
+import { type FileVinyl } from '@/shared/schemas';
+
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 
-import type { GulpRefilenameOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
+
+import { gulpRefilenameSchema, type GulpRefilenameOptions } from './schema';
 
 import { PLUGIN_NAME } from './constants';
 
-type GulpRefilenameProps = string | GulpRefilenameOptions;
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpRefilenameSchema,
+});
 
-const GulpRefilename = (options: GulpRefilenameProps) => {
+const GulpRefilename = (options: GulpRefilenameOptions) => {
+  const pluginOptions = validateOptions(options);
+
 	return GulpPluginFactory({
 		pluginName: PLUGIN_NAME,
 		onFile: async (file: FileVinyl) => {
 			let newFileName: string = '';
 
 			// Logic based on the type of `options`.
-			if (typeof options === 'string') {
-				newFileName = options; // Simple renaming.
-			} else if (typeof options === 'object') {
-				const { prefix = '', suffix = '', extname = file.extname, dirname = file.dirname, multiExt = false } = options;
+			if (typeof pluginOptions === 'string') {
+				newFileName = pluginOptions; // Simple renaming.
+			} else if (typeof pluginOptions === 'object') {
+				const { prefix = '', suffix = '', extname = file.extname, dirname = file.dirname, multiExt = false } = pluginOptions;
 
 				// Forming a new file name.
 				const baseName = multiExt ? file.relative.replace(/(\.[^/.]+)+$/, '') : file.stem;

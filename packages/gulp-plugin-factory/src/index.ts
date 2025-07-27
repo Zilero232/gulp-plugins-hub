@@ -1,9 +1,19 @@
-import type { PluginFactoryOptions, TransformStream } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
 
 import { createFileTransformHandler } from './handlers/createFileTransformHandler';
 import { createOnFinishHandler } from './handlers/createOnFinishHandler';
 
+import { pluginFactoryOptionsSchema } from './schema';
+import { type PluginFactoryOptions } from './schema';
+
 import { createThroughStream } from './utils';
+
+import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: pluginFactoryOptionsSchema
+});
 
 /**
  * Creates a Gulp plugin that can be used to transform files.
@@ -22,21 +32,12 @@ import { createThroughStream } from './utils';
  *   }
  * });
  */
-const PluginFactory = (options: PluginFactoryOptions): TransformStream => {
-  const { onFile, onFinish } = options;
+const PluginFactory = (options: PluginFactoryOptions) => {
+  // Validate options using Zod schema.
+  const validatedOptions = validateOptions(options);
 
-	// Checking for the presence of the onFile function.
-	if (!onFile || typeof onFile !== 'function') {
-		throw new Error('onFile function is required and must be a function.');
-	}
-
-	// Checking for the presence of the onFinish function.
-	if (onFinish && typeof onFinish !== 'function') {
-		throw new Error('onFinish function is required and must be a function.');
-	}
-
-	const fileTransformHandler = createFileTransformHandler(options);
-	const onFinishHandler = createOnFinishHandler(options);
+	const fileTransformHandler = createFileTransformHandler(validatedOptions);
+	const onFinishHandler = createOnFinishHandler(validatedOptions);
 
 	return createThroughStream(fileTransformHandler, onFinishHandler);
 };

@@ -1,8 +1,18 @@
 import through2 from 'through2';
 
-import type { ConditionalHandler, GulpConditionalOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
 
 import defaultOptions from './config/PluginOptionsDefault';
+
+import { gulpConditionalSchema, type GulpConditionalOptions } from './schema';
+
+import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpConditionalSchema,
+  defaults: defaultOptions,
+});
 
 /**
  * Conditional plugin that allows you to execute different handlers based on conditions.
@@ -36,21 +46,17 @@ import defaultOptions from './config/PluginOptionsDefault';
  *   }))
  *   .pipe(gulp.dest("dist"));
  */
-const GulpConditional = <T = ReturnType<typeof through2.obj>>(options: GulpConditionalOptions<T>) => {
-  const { handlers, defaultHandler } = { ...defaultOptions, ...options };
-
-  if (!handlers.length) {
-    throw new Error('At least one handler is required');
-  }
+const GulpConditional = (options: GulpConditionalOptions) => {
+  const { handlers, defaultHandler } = validateOptions(options);
 
   try {
     // Find the first matching handler
-    const matchedHandler = handlers.find(({ condition }: ConditionalHandler<T>) =>
+    const matchedHandler = handlers.find(({ condition }) =>
       typeof condition === 'function' ? condition() : Boolean(condition)
     );
 
     // Use the matched handler or defaultHandler
-    return matchedHandler?.handler || defaultHandler || through2.obj();
+    return matchedHandler ? matchedHandler.handler() : defaultHandler?.() ?? through2.obj();
   } catch (error) {
     const stream = through2.obj();
 

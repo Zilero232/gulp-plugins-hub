@@ -1,12 +1,21 @@
-import GulpPluginFactory from "@zilero/gulp-plugin-factory";
+import { type FileVinyl } from '@/shared/schemas';
 
+import GulpPluginFactory from "@zilero/gulp-plugin-factory";
 import { render } from 'pug';
 
-import type { GulpPugCompilerOptions } from './types';
+import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
+
+import { gulpPugCompilerSchema, type GulpPugCompilerOptions } from './schema';
 
 import defaultOptions from './config/PluginOptionsDefault';
 
 import { PLUGIN_NAME } from './constants';
+
+const validateOptions = createPluginOptions({
+  name: PLUGIN_NAME,
+  schema: gulpPugCompilerSchema,
+  defaults: defaultOptions,
+});
 
 /**
  * A Gulp plugin that can be used to compile PUG files.
@@ -24,7 +33,7 @@ import { PLUGIN_NAME } from './constants';
  *   .pipe(gulp.dest("dist"));
  */
 const GulpPugCompiler = (options: GulpPugCompilerOptions) => {
-  const { pugOptions = {}, pluginOptions = {} } = { ...defaultOptions, ...options };
+  const { pugOptions = {}, pluginOptions = {} } = validateOptions(options);
 
 	let fileCount = 0; // Counter of processed files.
 	let errorCount = 0; // Error Counter.
