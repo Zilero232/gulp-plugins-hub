@@ -1,10 +1,10 @@
 {
 	"name": "@zilero/gulp-plugin-factory",
-	"version": "1.0.1",
-  "type": "module",
+	"version": "1.0.2",
+	"type": "module",
 	"description": "A utility library for creating type-safe Gulp plugins with streamlined error handling, file transformation, and TypeScript support",
 	"author": {
-    "name": "Artemev Alexandr",
+		"name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"
 	},
 	"license": "MIT",
@@ -51,7 +51,7 @@
 		"node": ">= 16.0"
 	},
 	"dependencies": {
-    "through2": "^4.0.2"
+		"through2": "^4.0.2"
 	},
 	"publishConfig": {
 		"access": "public"
