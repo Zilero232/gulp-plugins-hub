@@ -80,16 +80,8 @@ gulp.task('complex-rename', () => {
     .pipe(GulpRefilename({
       prefix: 'processed-',
       suffix: '-v1',
-      extname: '.min.js',
-      multiExt: true
+      extname: '.js',
     }))
-    .pipe(gulp.dest('dist'));
-});
-
-// Simple rename
-gulp.task('simple-rename', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpRefilename('new-name.js'))
     .pipe(gulp.dest('dist'));
 });
 ```
