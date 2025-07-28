@@ -13,6 +13,7 @@ const validateOptions = createPluginOptions({
   schema: gulpRefilenameSchema,
 });
 
+// A Gulp plugin that can be used to rename files.
 const GulpRefilename = (options: GulpRefilenameOptions) => {
   const pluginOptions = validateOptions(options);
 

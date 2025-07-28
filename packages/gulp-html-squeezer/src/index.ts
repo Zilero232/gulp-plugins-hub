@@ -17,16 +17,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * A Gulp plugin that can be used to minify HTML files.
- *
- * @example
- * import GulpHtmlSqueezer from "@zilero/gulp-html-squeezer";
- *
- * gulp.src("src/*.html")
- *   .pipe(GulpHtmlSqueezer())
- *   .pipe(gulp.dest("dist"));
- */
+// A Gulp plugin that can be used to minify HTML files.
 const GulpHtmlSqueezer = (options: GulpHtmlSqueezerOptions) => {
   const { htmlMinifierOptions = {}, pluginOptions = {} } = validateOptions(options);
 

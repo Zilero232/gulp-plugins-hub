@@ -14,38 +14,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * Conditional plugin that allows you to execute different handlers based on conditions.
- *
- * @example
- * import GulpConditional from "@zilero/gulp-conditional";
- *
- * gulp.src("src/*.js")
- *   .pipe(GulpConditional({
- *     handlers: [
- *       {
- *         condition: () => true,
- *         handler: GulpJsSqueezer({
- *           minifyOptions: {
- *             compress: {
- *               drop_console: true,
- *             },
- *           },
- *         }),
- *       },
- *       {
- *         condition: () => false,
- *         handler: GulpFileExclude({
- *           patterns: ['2'],
- *         }),
- *       },
- *     ],
- *     defaultHandler: GulpFileExclude({
- *       patterns: ['3'],
- *     }),
- *   }))
- *   .pipe(gulp.dest("dist"));
- */
+// Conditional plugin that allows you to execute different handlers based on conditions.
 const GulpConditional = (options: GulpConditionalOptions) => {
   const { handlers, defaultHandler } = validateOptions(options);
 

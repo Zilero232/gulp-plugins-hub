@@ -16,17 +16,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * Creates a Gulp plugin that can be used to clone a folder.
- *
- * @example
- * import GulpFolderClone from '@zilero/gulp-folder-clone';
- *
- * // Clone single files
- * gulp.src("src/images/*.png")
- *   .pipe(GulpFolderClone())
- *   .pipe(gulp.dest("dist/images"));
- */
+// Creates a Gulp plugin that can be used to clone a folder.
 const GulpFolderClone = (options: GulpFolderCloneOptions = {}) => {
   const { logFinish } = validateOptions(options);
 

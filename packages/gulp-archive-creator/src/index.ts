@@ -21,16 +21,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * Creates a Gulp plugin that can be used to create archives of files in a stream.
- *
- * @example
- * import GulpArchiveCreator from "@zilero/gulp-archive-creator";
- *
- * gulp.src("src/*.{html,css,js}")
- *   .pipe(GulpArchiveCreator())
- *   .pipe(gulp.dest("dist"));
- */
+// Creates a Gulp plugin that can be used to create archives of files in a stream.
 const GulpArchiveCreator = (options: GulpArchiveCreatorOptions) => {
   const { format, archiveOptions, pluginOptions } = validateOptions(options);
 

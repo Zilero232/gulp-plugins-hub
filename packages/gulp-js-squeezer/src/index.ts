@@ -17,22 +17,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * A Gulp plugin that can be used to minify JavaScript files.
- *
- * The plugin processes the JavaScript content of each file in the stream, minifying it
- * and logging the results. If the file is not a Buffer, it is skipped.
- *
- * The plugin also provides statistics on the number of files processed and the
- * number of errors encountered.
- *
- * @example
- * import GulpJsSqueezer from "@zilero/gulp-js-squeezer";
- *
- * gulp.src("src/*.js")
- *   .pipe(GulpJsSqueezer())
- *   .pipe(gulp.dest("dist"));
- */
+// A Gulp plugin that can be used to minify JavaScript files.
 const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
   const { minifyOptions, pluginOptions } = validateOptions(options);
 

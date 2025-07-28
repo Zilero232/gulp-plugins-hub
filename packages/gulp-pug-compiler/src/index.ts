@@ -17,21 +17,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * A Gulp plugin that can be used to compile PUG files.
- *
- * The plugin checks for the presence of a .pug file extension and compiles the
- * PUG content into HTML. It also supports the use of functions onBeforeCompile
- * and onAfterCompile to modify the content of the file before and after the
- * compilation process.
- *
- * @example
- * import GulpPugCompiler from "@zilero/gulp-pug-compiler";
- *
- * gulp.src("src/*.pug")
- *   .pipe(GulpPugCompiler())
- *   .pipe(gulp.dest("dist"));
- */
+// A Gulp plugin that can be used to compile PUG files.
 const GulpPugCompiler = (options: GulpPugCompilerOptions) => {
   const { pugOptions = {}, pluginOptions = {} } = validateOptions(options);
 

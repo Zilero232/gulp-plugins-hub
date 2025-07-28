@@ -21,29 +21,7 @@ const validateOptions = createPluginOptions({
   defaults: defaultOptions,
 });
 
-/**
- * Creates a Gulp plugin that excludes files based on patterns.
- *
- * @example
- * import GulpFileExclude from '@zilero/gulp-file-exclude';
- *
- * // Exclude files by patterns
- * gulp.src("src/images/*.png")
- *   .pipe(GulpFileExclude({
- *     patterns: [
- *       '.test.',
- *       /\.spec\./,
- *     ],
- *     size: [
- *       10, // min size in bytes
- *       100, // max size in bytes
- *     ],
- *     onExclude: async (file) => {
- *       return true;
- *     },
- *   }))
- *   .pipe(gulp.dest("dist/images"));
- */
+// Creates a Gulp plugin that excludes files based on patterns.
 const GulpFileExclude = (options: GulpFileExcludeOptions) => {
   const { patterns, logExcluded, size, onExclude } = validateOptions(options);
 

@@ -1,75 +1,134 @@
-# 🌟 Gulp Plugins Hub
+<div align="center">
 
-Welcome to the world of Gulp plugins by Zilero! 🎉 This package is built on nx.js and provides a powerful set of tools to enhance your workflow. Each plugin is designed to simplify various tasks in the build and development process, allowing you to focus on creating amazing projects.
+<img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" width="200" alt="Gulp Logo">
 
-## 📦 Install the Package
+<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Plugins+Hub;Stream+Processing+Made+Easy;Type-Safe+Gulp+Plugins" alt="Typing SVG" />
 
-To install the plugin, use the following command:
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org)
+[![Gulp](https://img.shields.io/badge/Gulp-Ready-cf4647.svg)](https://gulpjs.com)
+
+</div>
+
+<p align="center">
+  <a href="#about">About</a> •
+  <a href="#plugins">Plugins</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#features">Features</a> •
+  <a href="#example">Example</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#contributing">Contributing</a> •
+  <a href="#support">Support</a>
+</p>
+
+## 🎯 About
+
+Welcome to **Gulp Plugins Hub** – a collection of powerful, type-safe Gulp plugins designed to supercharge your development workflow. Built with modern development practices in mind, our plugins offer seamless integration, exceptional performance, and extensive customization options.
+
+## 📦 Plugins
+
+### 🏭 Core Tools
+[<img src="https://img.shields.io/npm/v/@zilero/gulp-plugin-factory.svg" alt="Version">](packages/gulp-plugin-factory)
+- [**gulp-plugin-factory**](packages/gulp-plugin-factory/README.md) - Create type-safe Gulp plugins
+- [**gulp-conditional**](packages/gulp-conditional/README.md) - Conditional stream processing
+
+### 📁 File Management
+[<img src="https://img.shields.io/npm/v/@zilero/gulp-archive-creator.svg" alt="Version">](packages/gulp-archive-creator)
+- [**gulp-archive-creator**](packages/gulp-archive-creator/README.md) - Create archives from streams
+- [**gulp-folder-clone**](packages/gulp-folder-clone/README.md) - Clone with transformations
+- [**gulp-refilename**](packages/gulp-refilename/README.md) - Pattern-based renaming
+- [**gulp-file-exclude**](packages/gulp-file-exclude/README.md) - Smart file filtering
+
+### ⚡ Optimization
+[<img src="https://img.shields.io/npm/v/@zilero/gulp-js-squeezer.svg" alt="Version">](packages/gulp-js-squeezer)
+- [**gulp-js-squeezer**](packages/gulp-js-squeezer/README.md) - JavaScript optimization
+- [**gulp-html-squeezer**](packages/gulp-html-squeezer/README.md) - HTML minification
+- [**gulp-pug-compiler**](packages/gulp-pug-compiler/README.md) - Pug compilation
+
+## 🚀 Installation
 
 ```bash
-npm install gulp-conditional
+# Using npm
+npm install @zilero/[plugin-name] --save-dev
+
+# Using yarn
+yarn add @zilero/[plugin-name] --dev
+
+# Using pnpm
+pnpm add @zilero/[plugin-name] --save-dev
 ```
 
-## 🛠️ Available Plugins
+## ✨ Features
 
-Вот краткий обзор доступных плагинов и их функциональности:
+<div align="center">
 
-- **gulp-conditional**: Allows you to conditionally run Gulp tasks based on specified conditions. 🎭
+| Feature | Description |
+|---------|-------------|
+| 🔒 **Type Safety** | Full TypeScript support with accurate types |
+| 🚀 **Performance** | Optimized stream processing for speed |
+| 📦 **Modularity** | Use only what you need |
+| 🛠️ **Configurable** | Extensive options for customization |
+| 📝 **Logging** | Detailed progress and error reporting |
+| 🔄 **Hooks** | Pre/Post processing capabilities |
 
-- **gulp-folder-clone**: Clones folders, making it convenient for backups or working with templates. 📁
+</div>
 
-- **gulp-font-switcher**: Converts fonts, simplifying font switching in your project and allowing for quick style changes. 🔤
+## 📝 Example
 
-- **gulp-html-squeezer**: Compresses HTML files, reducing their size and improving performance. ⚡️
+```typescript
+import { src, dest } from 'gulp';
 
-- **gulp-js-squeeze**: Optimizes JavaScript by removing unnecessary code and comments. 🚀
+import GulpConditional from '@zilero/gulp-conditional';
+import GulpJsSqueezer from '@zilero/gulp-js-squeezer';
+import GulpArchiveCreator from '@zilero/gulp-archive-creator';
 
-- **gulp-plugin-factory**: Allows you to create custom Gulp plugins with minimal effort. 🏗️
-
-- **gulp-plugin-manager**: Manages your plugins, simplifying their integration and configuration. 🛠️
-
-- **gulp-pug-compiler**: Compiles Pug templates into HTML, enhancing code readability and maintainability. 📄
-
-- **gulp-refilename**: Allows you to rename files during the build process. 🔄
-
-- **gulp-scss-squeezer**: Optimizes SCSS files for reduced size and improved load speed. 🎨
-
-- **gulp-sharper**: Enhances image quality by reducing their size without loss of quality. 🖼️
-
-- **gulp-smart-changes**: Tracks file changes, processes only modified files, and automatically restarts Gulp tasks. 🔄
-
-- **gulp-zip-creator**: Creates ZIP archives from your files and folders for convenient storage and transfer. 📦
-
-- **gulp-winston-logger**: Integrates Winston for error handling and logging in your Gulp tasks. 📝
+export const build = () => {
+  return src('src/**/*.js')
+    .pipe(GulpConditional({
+      handlers: [{
+        condition: () => process.env.NODE_ENV === 'production',
+        handler: () => GulpJsSqueezer({
+          minifyOptions: { compress: true }
+        })
+      }]
+    }))
+    .pipe(GulpArchiveCreator({
+      format: 'zip',
+      pluginOptions: {
+        archiveName: 'build'
+      }
+    }))
+    .pipe(dest('dist'));
+};
+```
 
 ## 📚 Documentation
 
-Each plugin has its own documentation detailing usage and examples. Refer to the documentation in the respective repositories for more information.
-
-## 🚀 Example Usage
-
-Here’s an example of how you can use one of the plugins in your `gulpfile.js`:
-
-```javascript
-const gulp = require("gulp");
-const htmlSqueezer = require("gulp-html-squeezer");
-
-gulp.task("compress-html", () => {
-  return gulp.src("src/**/*.html").pipe(htmlSqueezer()).pipe(gulp.dest("dist"));
-});
-```
+Detailed documentation for each plugin is available in their respective directories. Click the plugin names above to learn more.
 
 ## 🤝 Contributing
 
-If you would like to contribute to the project, please create a pull request or leave feedback. I am always open to new ideas and improvements!
+We love your input! Check out our [Contributing Guide](CONTRIBUTING.md) to get started.
 
-## 💬 Community
+## 💬 Support
 
-Discuss the plugins with other users in GitHub Issues or in our chat.
+- 📫 [Report a bug](https://github.com/zilero/gulp-plugins-hub/issues)
+- 💡 [Request a feature](https://github.com/zilero/gulp-plugins-hub/issues)
+- 🤝 [Join our community](https://github.com/zilero/gulp-plugins-hub/discussions)
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT © [Zilero](LICENSE)
 
-## Thank you for using the Gulp Plugins Hub by Zilero! 🌟 Your feedback and suggestions will help us make them even better!
+---
 
+<div align="center">
+
+### Show your support
+
+⭐️ Star us on GitHub — it motivates us a lot!
+
+Made with ❤️ by [Zilero](https://github.com/zilero)
+
+</div>

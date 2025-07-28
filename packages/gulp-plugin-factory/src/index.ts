@@ -15,23 +15,7 @@ const validateOptions = createPluginOptions({
   schema: pluginFactoryOptionsSchema
 });
 
-/**
- * Creates a Gulp plugin that can be used to transform files.
- *
- * @example
- * ```ts
- * import PluginFactory from '@zilero/gulp-plugin-factory';
- *
- * const plugin = PluginFactory({
- *   onFile: async (file) => {
- *     // Do something with the file
- *     return file;
- *   },
- *   onFinish: async (stream) => {
- *     // Do something with the stream
- *   }
- * });
- */
+// Creates a Gulp plugin that can be used to transform files.
 const PluginFactory = (options: PluginFactoryOptions) => {
   // Validate options using Zod schema.
   const validatedOptions = validateOptions(options);
