@@ -50,7 +50,11 @@
 	},
 	"dependencies": {
 		"@zilero/gulp-plugin-factory": "workspace:*",
-		"pug": "^3.0.3"
+		"pug": "^3.0.3",
+		"zod": "^3.25.76",
+    "chalk": "5.4.1",
+		"consola": "^3.4.2",
+		"pretty-error": "^4.0.0"
 	},
 	"devDependencies": {
 		"@types/pug": "^2.0.10"

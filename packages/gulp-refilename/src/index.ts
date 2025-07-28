@@ -2,15 +2,19 @@ import { type FileVinyl } from '@/shared/schemas';
 
 import GulpPluginFactory from '@zilero/gulp-plugin-factory';
 
+
 import { createPluginOptions } from '@/shared/utils/plugin-options/createPluginOptions';
 
 import { gulpRefilenameSchema, type GulpRefilenameOptions } from './schema';
+
+import defaultOptions from './config/PluginOptionsDefault';
 
 import { PLUGIN_NAME } from './constants';
 
 const validateOptions = createPluginOptions({
   name: PLUGIN_NAME,
   schema: gulpRefilenameSchema,
+  defaults: defaultOptions,
 });
 
 // A Gulp plugin that can be used to rename files.
@@ -18,34 +22,41 @@ const GulpRefilename = (options: GulpRefilenameOptions) => {
   const pluginOptions = validateOptions(options);
 
 	return GulpPluginFactory({
-		pluginName: PLUGIN_NAME,
-		onFile: async (file: FileVinyl) => {
-			let newFileName: string = '';
+    pluginName: PLUGIN_NAME,
+    onFile: async (file: FileVinyl) => {
+      // Simple rename if options is string
+      if (typeof pluginOptions === 'string') {
+        file.stem = pluginOptions;
 
-			// Logic based on the type of `options`.
-			if (typeof pluginOptions === 'string') {
-				newFileName = pluginOptions; // Simple renaming.
-			} else if (typeof pluginOptions === 'object') {
-				const { prefix = '', suffix = '', extname = file.extname, dirname = file.dirname, multiExt = false } = pluginOptions;
+      // Complex rename if options is object
+      } else {
+        const { dirname, stem, extname, prefix, suffix } = pluginOptions || {};
 
-				// Forming a new file name.
-				const baseName = multiExt ? file.relative.replace(/(\.[^/.]+)+$/, '') : file.stem;
+        // Get base name considering multiple extensions
+        const baseName = stem || file.stem;
 
-				// Forming a new file name.
-				newFileName = `${dirname}/${prefix}${baseName}${suffix}${extname}`;
-			}
+        // Set new filename with prefix and suffix
+        file.stem = `${prefix}${baseName}${suffix}`;
 
-			// Setting a new file path.
-			file.path = file.base + newFileName;
+        // Update extension if provided
+        if (extname) {
+          file.extname = extname.startsWith('.') ? extname : `.${extname}`;
+        }
 
-			// Renaming the sourcemap, if it exists.
-			if (file.sourceMap) {
-				file.sourceMap.file = newFileName;
-			}
+        // Update directory if provided
+        if (dirname) {
+          file.dirname = dirname;
+        }
+      }
 
-			return file;
-		},
-	});
+      // Update sourcemap if exists
+      if (file.sourceMap) {
+        file.sourceMap.file = file.relative;
+      }
+
+      return file;
+    },
+  });
 };
 
 export default GulpRefilename;

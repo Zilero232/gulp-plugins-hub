@@ -47,14 +47,20 @@ gulp.task('rename', () => {
 
 ## ⚙️ Options
 
-### Simple String
+#### dirname
 - Type: `string`
-- Required: `false`
-- Direct filename replacement
+- Default: `original directory`
+- Change directory path
 
-### Object Options
-- Type: `object`
-- Required: `false`
+### stem
+- Type: `string`
+- Default: `''`
+- Change filename
+
+#### extname
+- Type: `string`
+- Default: `original extension`
+- Change file extension
 
 #### prefix
 - Type: `string`
@@ -65,21 +71,6 @@ gulp.task('rename', () => {
 - Type: `string`
 - Default: `''`
 - Add suffix to filename
-
-#### extname
-- Type: `string`
-- Default: `original extension`
-- Change file extension
-
-#### dirname
-- Type: `string`
-- Default: `original directory`
-- Change directory path
-
-#### multiExt
-- Type: `boolean`
-- Default: `false`
-- Handle multiple extensions
 
 ## 📝 Example
 

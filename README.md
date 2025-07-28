@@ -37,19 +37,16 @@ Welcome to **Gulp Plugins Hub** – a collection of powerful, type-safe Gulp plu
 ## 📦 Plugins
 
 ### 🏭 Core Tools
-[<img src="https://img.shields.io/npm/v/@zilero/gulp-plugin-factory.svg" alt="Version">](packages/gulp-plugin-factory)
 - [**gulp-plugin-factory**](packages/gulp-plugin-factory/README.md) - Create type-safe Gulp plugins
 - [**gulp-conditional**](packages/gulp-conditional/README.md) - Conditional stream processing
 
 ### 📁 File Management
-[<img src="https://img.shields.io/npm/v/@zilero/gulp-archive-creator.svg" alt="Version">](packages/gulp-archive-creator)
 - [**gulp-archive-creator**](packages/gulp-archive-creator/README.md) - Create archives from streams
 - [**gulp-folder-clone**](packages/gulp-folder-clone/README.md) - Clone with transformations
 - [**gulp-refilename**](packages/gulp-refilename/README.md) - Pattern-based renaming
 - [**gulp-file-exclude**](packages/gulp-file-exclude/README.md) - Smart file filtering
 
 ### ⚡ Optimization
-[<img src="https://img.shields.io/npm/v/@zilero/gulp-js-squeezer.svg" alt="Version">](packages/gulp-js-squeezer)
 - [**gulp-js-squeezer**](packages/gulp-js-squeezer/README.md) - JavaScript optimization
 - [**gulp-html-squeezer**](packages/gulp-html-squeezer/README.md) - HTML minification
 - [**gulp-pug-compiler**](packages/gulp-pug-compiler/README.md) - Pug compilation

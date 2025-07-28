@@ -7,22 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      chalk:
-        specifier: 5.4.1
-        version: 5.4.1
-      consola:
-        specifier: ^3.4.2
-        version: 3.4.2
-      pretty-error:
-        specifier: ^4.0.0
-        version: 4.0.0
-      vinyl:
-        specifier: ^3.0.1
-        version: 3.0.1
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.5
@@ -108,15 +92,27 @@ importers:
       archiver:
         specifier: ^7.0.1
         version: 7.0.1
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
       concat-stream:
         specifier: ^2.0.0
         version: 2.0.0
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
       vinyl:
         specifier: ^3.0.1
         version: 3.0.1
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/archiver':
         specifier: ^6.0.2
@@ -130,42 +126,90 @@ importers:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
       through2:
         specifier: ^4.0.2
         version: 4.0.2
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/gulp-file-exclude:
     dependencies:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/gulp-folder-clone:
     dependencies:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/gulp-html-squeezer:
     dependencies:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
       html-minifier-terser:
         specifier: ^7.2.0
         version: 7.2.0
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/html-minifier-terser':
         specifier: ^7.0.2
@@ -176,33 +220,69 @@ importers:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
       terser:
         specifier: ^5.34.1
         version: 5.43.1
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/gulp-plugin-factory:
     dependencies:
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
       through2:
         specifier: ^4.0.2
         version: 4.0.2
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/gulp-pug-compiler:
     dependencies:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
       pug:
         specifier: ^3.0.3
         version: 3.0.3
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/pug':
         specifier: ^2.0.10
@@ -213,9 +293,36 @@ importers:
       '@zilero/gulp-plugin-factory':
         specifier: workspace:*
         version: link:../gulp-plugin-factory
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       gulp:
         specifier: ^4.0.0
         version: 4.0.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+
+  shared:
+    dependencies:
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
+      pretty-error:
+        specifier: ^4.0.0
+        version: 4.0.0
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
 packages:
 

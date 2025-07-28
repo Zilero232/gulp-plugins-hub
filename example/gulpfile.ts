@@ -21,11 +21,13 @@ const pugTask = async () => {
         collapseWhitespace: true,
       },
     }))
-    // .pipe(GulpRefilename({
-    //   basename: 'test',
-    //   prefix: 'test-',
-    //   suffix: '-test',
-    // }))
+    .pipe(GulpRefilename({
+      stem: 'test',
+      prefix: 'prefix-',
+      suffix: '-suffix',
+      dirname: 'dist/custom-folder',
+      extname: '.bat',
+    }))
     .pipe(dest('dist'));
 };
 
