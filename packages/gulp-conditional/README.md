@@ -4,10 +4,10 @@
 
 🔀 Powerful Gulp plugin for conditional stream processing.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

@@ -4,10 +4,10 @@
 
 🚫 Powerful Gulp plugin for excluding files based on patterns and conditions.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

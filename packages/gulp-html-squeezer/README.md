@@ -4,10 +4,10 @@
 
 📄 Powerful Gulp plugin for HTML minification using html-minifier-terser.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

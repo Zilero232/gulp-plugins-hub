@@ -4,10 +4,10 @@
 
 📝 Powerful Gulp plugin for flexible file renaming with advanced pattern support.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

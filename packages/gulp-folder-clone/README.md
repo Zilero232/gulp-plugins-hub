@@ -4,10 +4,10 @@
 
 📂 Powerful Gulp plugin for cloning folders and files with transformation support.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

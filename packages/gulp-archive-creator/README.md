@@ -4,10 +4,10 @@
 
 🗄️ Powerful Gulp plugin for creating archives (zip, tar, etc.) from your stream files.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

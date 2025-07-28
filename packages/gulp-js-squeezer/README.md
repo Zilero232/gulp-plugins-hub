@@ -4,10 +4,10 @@
 
 📦 Powerful Gulp plugin for JavaScript minification with Terser.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

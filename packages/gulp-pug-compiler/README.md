@@ -4,10 +4,10 @@
 
 🏗️ Powerful Gulp plugin for Pug template compilation with hooks support.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

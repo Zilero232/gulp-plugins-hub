@@ -4,10 +4,10 @@
 
 🏭 Core factory for creating type-safe Gulp plugins with ease.
 
-[Installation](#installation) •
-[Usage](#usage) •
-[Options](#options) •
-[Example](#example)
+[Installation](#-installation) •
+[Usage](#-usage) •
+[Options](#-options) •
+[Example](#-example)
 
 </div>
 

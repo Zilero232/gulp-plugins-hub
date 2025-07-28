@@ -1,8 +1,16 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" width="200" alt="Gulp Logo">
+  <img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" width="200" alt="Gulp Logo">
+  
+</div>
+
+<div align="center">
 
 <img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Plugins+Hub;Stream+Processing+Made+Easy;Type-Safe+Gulp+Plugins" alt="Typing SVG" />
+
+</div>
+
+<div align="center">
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -12,14 +20,14 @@
 </div>
 
 <p align="center">
-  <a href="#about">About</a> •
-  <a href="#plugins">Plugins</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#features">Features</a> •
-  <a href="#example">Example</a> •
-  <a href="#documentation">Documentation</a> •
-  <a href="#contributing">Contributing</a> •
-  <a href="#support">Support</a>
+  <a href="#-about">About</a> •
+  <a href="#-plugins">Plugins</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-example">Example</a> •
+  <a href="#-documentation">Documentation</a> •
+  <a href="#-contributing">Contributing</a> •
+  <a href="#-support">Support</a>
 </p>
 
 ## 🎯 About
