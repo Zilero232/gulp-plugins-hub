@@ -1,5 +1,11 @@
 # @zilero/gulp-plugin-factory
 
+## 1.0.3
+
+### Patch Changes
+
+- 279c98c: Update README and refactor refilename plugin
+
 ## 1.0.2
 
 ### Patch Changes

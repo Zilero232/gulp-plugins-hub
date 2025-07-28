@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-html-squeezer",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"type": "module",
 	"description": "A Gulp plugin for advanced HTML minification and optimization with Terser, supporting custom compression rules",
 	"author": {
@@ -38,7 +38,7 @@
 		"html-minifier-terser": "^7.2.0",
 		"@zilero/gulp-plugin-factory": "workspace:*",
 		"zod": "^3.25.76",
-    "chalk": "5.4.1",
+		"chalk": "5.4.1",
 		"consola": "^3.4.2",
 		"pretty-error": "^4.0.0"
 	},

@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-js-squeezer",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"type": "module",
 	"description": "A Gulp plugin that can be used to minify JavaScript files.",
 	"author": {
@@ -37,8 +37,8 @@
 	"dependencies": {
 		"terser": "^5.34.1",
 		"@zilero/gulp-plugin-factory": "workspace:*",
-	  "zod": "^3.25.76",
-    "chalk": "5.4.1",
+		"zod": "^3.25.76",
+		"chalk": "5.4.1",
 		"consola": "^3.4.2",
 		"pretty-error": "^4.0.0"
 	},
