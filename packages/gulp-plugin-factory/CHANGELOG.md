@@ -1,5 +1,11 @@
 # @zilero/gulp-plugin-factory
 
+## 1.0.4
+
+### Patch Changes
+
+- 3559097: Added a new plugins, sass compiler and fonts convert
+
 ## 1.0.3
 
 ### Patch Changes

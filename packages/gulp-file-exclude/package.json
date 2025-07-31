@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-file-exclude",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"type": "module",
 	"description": "Gulp plugin for excluding files based on patterns",
 	"author": {
