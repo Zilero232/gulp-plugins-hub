@@ -10,8 +10,6 @@ const minifyOptionsSchema = z.custom<MinifyOptions>();
 
 // Schema for plugin options.
 const pluginOptionsSchema = z.object({
-  logFinal: z.boolean().optional(),
-  logProgress: z.boolean().optional(),
   onAfterMinify: functionSchema.optional(),
   onBeforeMinify: functionSchema.optional(),
 });

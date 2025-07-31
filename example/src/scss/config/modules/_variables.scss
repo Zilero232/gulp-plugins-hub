@@ -1,0 +1,29 @@
+@use 'sass:map';
+
+// Colors
+$colors: (
+  'primary': #007bff,
+  'secondary': #6c757d,
+  'success': #28a745,
+  'danger': #dc3545,
+  'light': #f8f9fa,
+  'dark': #343a40,
+  'white': #ffffff,
+  'muted': rgba(255, 255, 255, 0.6)
+);
+
+// Breakpoints
+$breakpoints: (
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px
+);
+
+// Spacing
+$spacer: 1rem;
+
+// Layout
+$spacer: 1rem;
+$header-height: 80px;
+$container-max-width: 1200px;

@@ -10,10 +10,7 @@ const pugOptionsSchema = z.custom<Options>();
 
 // Schema for plugin options.
 const pluginOptionsSchema = z.object({
-  logFinal: z.boolean().optional(),
-  logProgress: z.boolean().optional(),
   onAfterCompile: functionSchema.optional(),
-  onBeforeCompile: functionSchema.optional(),
 });
 
 // Main schema for plugin.

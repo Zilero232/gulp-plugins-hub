@@ -1,0 +1,40 @@
+extends ../templates/layout.pug
+
+block content
+    section.about-hero
+        .container
+            h1.section-title About Us
+            p.lead We're passionate about creating amazing web experiences
+
+    section.team
+        .container
+            h2.section-title Our Team
+            .grid.grid-3
+                .card
+                    img.card-image(src="images/team1.jpg" alt="Team Member")
+                    h3.card-title John Doe
+                    p.card-text CEO & Founder
+
+                .card
+                    img.card-image(src="images/team2.jpg" alt="Team Member")
+                    h3.card-title Jane Smith
+                    p.card-text Lead Developer
+
+                .card
+                    img.card-image(src="images/team3.jpg" alt="Team Member")
+                    h3.card-title Mike Johnson
+                    p.card-text Designer
+
+    section.values
+        .container
+            h2.section-title Our Values
+            .grid.grid-2
+                .value-card
+                    i.fas.fa-heart
+                    h3 Passion
+                    p We love what we do and it shows in our work
+
+                .value-card
+                    i.fas.fa-lightbulb
+                    h3 Innovation
+                    p Always pushing boundaries and exploring new ideas

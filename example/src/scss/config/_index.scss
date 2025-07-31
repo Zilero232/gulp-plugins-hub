@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use 'sass:math';
+
+// Forward all variables
+@forward './modules/variables';
+
+// Use variables locally
+@use './modules/variables' as *;
+
+// Functions
+@function rem($pixels) {
+  @return math.div($pixels, 16) * 1rem;
+}
+
+@function color($key) {
+  @return map.get($colors, $key);
+}
+
+// Mixins
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $gap: 0) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+}
+
+@mixin media-up($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media (min-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  }
+}
+
+@mixin grid($columns: 12, $gap: $spacer) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+}
+
+@mixin animate($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}

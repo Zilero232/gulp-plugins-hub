@@ -1,10 +1,7 @@
 import type { GulpJsSqueezerOptions } from '../schema';
 
 const defaultOptions: GulpJsSqueezerOptions = {
-	pluginOptions: {
-		logProgress: true,
-		logFinal: true,
-	},
+	pluginOptions: {},
 };
 
 export default defaultOptions;

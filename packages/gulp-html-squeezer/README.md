@@ -5,7 +5,6 @@
 📄 Powerful Gulp plugin for HTML minification using html-minifier-terser.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -30,22 +29,6 @@ yarn add @zilero/gulp-html-squeezer --dev
 pnpm add @zilero/gulp-html-squeezer --save-dev
 ```
 
-## 📋 Usage
-
-```typescript
-import GulpHtmlSqueezer from "@zilero/gulp-html-squeezer";
-
-gulp.task('minify', () => {
-  return gulp.src('src/**/*.html')
-    .pipe(GulpHtmlSqueezer({
-      htmlMinifierOptions: {
-        collapseWhitespace: true
-      }
-    }))
-    .pipe(gulp.dest('dist'));
-});
-```
-
 ## ⚙️ Options
 
 ### htmlMinifierOptions
@@ -56,16 +39,6 @@ gulp.task('minify', () => {
 ### pluginOptions
 - Type: `object`
 - Required: `false`
-
-#### pluginOptions.logProgress
-- Type: `boolean`
-- Default: `true`
-- Log each file processing
-
-#### pluginOptions.logFinal
-- Type: `boolean`
-- Default: `true`
-- Log final statistics
 
 #### pluginOptions.onBeforeMinify
 - Type: `(content: string) => Promise<string> | string`
@@ -91,7 +64,6 @@ gulp.task('advanced-minify', () => {
         removeEmptyAttributes: true
       },
       pluginOptions: {
-        logProgress: true,
         onBeforeMinify: (content) => {
           // Custom pre-processing
           return content;

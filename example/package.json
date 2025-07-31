@@ -25,10 +25,12 @@
     "@zilero/gulp-conditional": "workspace:*",
     "@zilero/gulp-file-exclude": "workspace:*",
     "@zilero/gulp-folder-clone": "workspace:*",
+    "@zilero/gulp-font-switcher": "workspace:*",
     "@zilero/gulp-html-squeezer": "workspace:*",
     "@zilero/gulp-js-squeezer": "workspace:*",
     "@zilero/gulp-pug-compiler": "workspace:*",
     "@zilero/gulp-refilename": "workspace:*",
+    "@zilero/gulp-scss-compiler": "workspace:*",
     "gulp": "^5.0.0",
     "ts-node": "^10.9.2"
   }

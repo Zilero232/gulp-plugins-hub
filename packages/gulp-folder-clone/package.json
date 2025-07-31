@@ -37,17 +37,17 @@
 	"engines": {
 		"node": ">= 16.0"
 	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"dependencies": {
-		"@zilero/gulp-plugin-factory": "workspace:*",
+    "@zilero/gulp-plugin-factory": "workspace:*",
 		"zod": "^3.25.76",
     "chalk": "5.4.1",
 		"consola": "^3.4.2",
 		"pretty-error": "^4.0.0"
 	},
-	"peerDependencies": {
-		"gulp": "^4.0.0"
-	}
+  "publishConfig": {
+    "access": "public"
+	},
+  "peerDependencies": {
+    "gulp": "^4.0.0"
+  }
 }

@@ -5,7 +5,6 @@
 📦 Powerful Gulp plugin for JavaScript minification with Terser.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -30,22 +29,6 @@ yarn add @zilero/gulp-js-squeezer --dev
 pnpm add @zilero/gulp-js-squeezer --save-dev
 ```
 
-## 📋 Usage
-
-```typescript
-import GulpJsSqueezer from "@zilero/gulp-js-squeezer";
-
-gulp.task('minify', () => {
-  return gulp.src('src/**/*.js')
-    .pipe(GulpJsSqueezer({
-      minifyOptions: {
-        compress: true
-      }
-    }))
-    .pipe(gulp.dest('dist'));
-});
-```
-
 ## ⚙️ Options
 
 ### minifyOptions
@@ -56,16 +39,6 @@ gulp.task('minify', () => {
 ### pluginOptions
 - Type: `object`
 - Required: `false`
-
-#### pluginOptions.logProgress
-- Type: `boolean`
-- Default: `true`
-- Log each file processing
-
-#### pluginOptions.logFinal
-- Type: `boolean`
-- Default: `true`
-- Log final statistics
 
 #### pluginOptions.onBeforeMinify
 - Type: `(content: string) => Promise<string> | string`
@@ -91,7 +64,6 @@ gulp.task('advanced-minify', () => {
         mangle: true
       },
       pluginOptions: {
-        logProgress: true,
         onBeforeMinify: (content) => {
           // Custom pre-processing
           return content;

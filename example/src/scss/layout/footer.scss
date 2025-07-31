@@ -1,0 +1,66 @@
+@use 'sass:map';
+
+@use '../config' as *;
+
+.footer {
+  background: color(dark);
+  color: color(white);
+  padding: rem(60) 0 rem(24);
+
+  &__container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: 0 rem(16);
+  }
+
+  &__grid {
+    @include grid(4, rem(24));
+    margin-bottom: rem(24);
+
+    @include media-up('lg') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media-up('sm') {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__column {
+    &-title {
+      font-size: rem(18);
+      font-weight: 600;
+      margin-bottom: rem(16);
+    }
+  }
+
+  &__list {
+    @include flex(column, flex-start, stretch, rem(16));
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    a {
+      color: color(muted);
+      text-decoration: none;
+      @include animate(color);
+
+      &:hover {
+        color: color(white);
+      }
+    }
+  }
+
+  &__bottom {
+    @include flex(row, space-between, center);
+
+    padding-top: rem(24);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    @include media-up('sm') {
+      flex-direction: column;
+      gap: rem(16);
+      text-align: center;
+    }
+  }
+}

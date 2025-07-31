@@ -1,0 +1,28 @@
+.grid {
+  display: grid;
+  gap: var(--spacing-lg);
+
+  &-2 {
+      grid-template-columns: repeat(2, 1fr);
+  }
+
+  &-3 {
+      grid-template-columns: repeat(3, 1fr);
+  }
+
+  &-4 {
+      grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 1024px) {
+      &-4 {
+          grid-template-columns: repeat(2, 1fr);
+      }
+  }
+
+  @media (max-width: 768px) {
+      &-2, &-3 {
+          grid-template-columns: 1fr;
+      }
+  }
+}

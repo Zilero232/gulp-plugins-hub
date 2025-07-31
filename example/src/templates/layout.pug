@@ -1,0 +1,29 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title Example Project
+        link(rel="stylesheet" href="scss/main.css")
+
+    body
+        header.header
+            .container
+                nav.nav
+                    .logo Example
+                    ul.nav-list
+                        li: a(href="/") Home
+                        li: a(href="/about") About
+                        li: a(href="/services") Services
+                        li: a(href="/contact") Contact
+
+        main
+            block content
+
+        footer.footer
+            .container
+                .footer-content
+                    p &copy; 2024 Example
+                    .social-links
+                        a(href="#") GitHub
+                        a(href="#") Twitter

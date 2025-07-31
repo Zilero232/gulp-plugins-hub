@@ -1,8 +1,41 @@
 footer.footer
-  //- This is a footer.
-  p.footer__text &copy; 2025 Example. All rights reserved.
-  ul.footer__list
-    li.footer__item
-      a.footer__link(href="https://github.com/Zilero232") GitHub
-    li.footer__item
-  script(src="../js/main.js")
+    .container
+        .footer-grid
+            .footer-brand
+                .logo
+                    img(src="images/logo.svg" alt="Logo")
+                    span Example
+                p Building the future of web development
+                .social-links
+                    a(href="#"): i.fab.fa-github
+                    a(href="#"): i.fab.fa-twitter
+                    a(href="#"): i.fab.fa-linkedin
+
+            .footer-links
+                h4 Product
+                ul
+                    li: a(href="#") Features
+                    li: a(href="#") Pricing
+                    li: a(href="#") Documentation
+                    li: a(href="#") Updates
+
+            .footer-links
+                h4 Company
+                ul
+                    li: a(href="#") About
+                    li: a(href="#") Blog
+                    li: a(href="#") Careers
+                    li: a(href="#") Contact
+
+            .footer-newsletter
+                h4 Stay Updated
+                p Subscribe to our newsletter
+                .newsletter-form
+                    input(type="email" placeholder="Enter your email")
+                    button.btn.btn-primary Subscribe
+
+        .footer-bottom
+            p &copy; 2024 Example. All rights reserved.
+            ul.footer-legal
+                li: a(href="#") Privacy Policy
+                li: a(href="#") Terms of Service

@@ -5,7 +5,6 @@
 📝 Powerful Gulp plugin for flexible file renaming with advanced pattern support.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -28,21 +27,6 @@ npm install @zilero/gulp-refilename --save-dev
 yarn add @zilero/gulp-refilename --dev
 # or
 pnpm add @zilero/gulp-refilename --save-dev
-```
-
-## 📋 Usage
-
-```typescript
-import GulpRefilename from "@zilero/gulp-refilename";
-
-gulp.task('rename', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpRefilename({
-      prefix: 'new-',
-      suffix: '-min'
-    }))
-    .pipe(gulp.dest('dist'));
-});
 ```
 
 ## ⚙️ Options

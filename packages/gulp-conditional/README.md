@@ -5,7 +5,6 @@
 🔀 Powerful Gulp plugin for conditional stream processing.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -28,25 +27,6 @@ npm install @zilero/gulp-conditional --save-dev
 yarn add @zilero/gulp-conditional --dev
 # or
 pnpm add @zilero/gulp-conditional --save-dev
-```
-
-## 📋 Usage
-
-```typescript
-import GulpConditional from "@zilero/gulp-conditional";
-
-gulp.task('process', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpConditional({
-      handlers: [
-        {
-          condition: () => process.env.NODE_ENV === 'production',
-          handler: () => someProductionPlugin()
-        }
-      ]
-    }))
-    .pipe(gulp.dest('dist'));
-});
 ```
 
 ## ⚙️ Options

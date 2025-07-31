@@ -1,0 +1,43 @@
+extends ../templates/layout.pug
+
+block content
+    section.contact-hero
+        .container
+            h1.section-title Contact Us
+            p.lead Get in touch with our team
+
+    section.contact-content
+        .container
+            .grid.grid-2
+                .contact-form
+                    form
+                        .form-group
+                            label(for="name") Name
+                            input#name(type="text" required)
+
+                        .form-group
+                            label(for="email") Email
+                            input#email(type="email" required)
+
+                        .form-group
+                            label(for="message") Message
+                            textarea#message(rows="5" required)
+
+                        button.btn.btn-primary(type="submit") Send Message
+
+                .contact-info
+                    .info-card
+                        i.fas.fa-map-marker-alt
+                        h3 Address
+                        p 123 Example Street
+                        p City, Country
+
+                    .info-card
+                        i.fas.fa-phone
+                        h3 Phone
+                        p +1 234 567 890
+
+                    .info-card
+                        i.fas.fa-envelope
+                        h3 Email
+                        p contact@example.com

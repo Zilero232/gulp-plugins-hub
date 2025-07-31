@@ -5,7 +5,6 @@
 🗄️ Powerful Gulp plugin for creating archives (zip, tar, etc.) from your stream files.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -28,23 +27,6 @@ npm install @zilero/gulp-archive-creator --save-dev
 yarn add @zilero/gulp-archive-creator --dev
 # or
 pnpm add @zilero/gulp-archive-creator --save-dev
-```
-
-## 📋 Usage
-
-```typescript
-import GulpArchiveCreator from "@zilero/gulp-archive-creator";
-
-gulp.task('archive', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpArchiveCreator({
-      format: 'zip',
-      pluginOptions: {
-        archiveName: 'my-archive'
-      }
-    }))
-    .pipe(gulp.dest('dist'));
-});
 ```
 
 ## ⚙️ Options
@@ -79,16 +61,6 @@ gulp.task('archive', () => {
 - Default: `false`
 - Create archive even if no files were processed
 
-#### pluginOptions.logProgress
-- Type: `boolean`
-- Default: `true`
-- Log each file added to archive
-
-#### pluginOptions.logFinal
-- Type: `boolean`
-- Default: `true`
-- Log final statistics
-
 ## 📝 Example
 
 ```typescript
@@ -102,7 +74,6 @@ gulp.task('create-archive', () => {
       pluginOptions: {
         archiveName: 'project-build',
         createEmptyArchive: false,
-        logProgress: true
       }
     })
     .pipe(gulp.dest('dist'));

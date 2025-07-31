@@ -5,9 +5,11 @@ import GulpPugCompiler from '@zilero/gulp-pug-compiler';
 import GulpHtmlSqueezer from '@zilero/gulp-html-squeezer';
 import GulpRefilename from '@zilero/gulp-refilename';
 import GulpJsSqueezer from '@zilero/gulp-js-squeezer';
-import GulpFolderClone from '@zilero/gulp-folder-clone';
+// import GulpFolderClone from '@zilero/gulp-folder-clone';
 import GulpFileExclude from '@zilero/gulp-file-exclude';
 import GulpConditional from '@zilero/gulp-conditional';
+import GulpScssCompiler from '@zilero/gulp-scss-compiler';
+import GulpFontSwitcher from '@zilero/gulp-font-switcher';
 
 const pugTask = async () => {
   return src('src/**/*.pug')
@@ -20,13 +22,6 @@ const pugTask = async () => {
       htmlMinifierOptions: {
         collapseWhitespace: true,
       },
-    }))
-    .pipe(GulpRefilename({
-      stem: 'test',
-      prefix: 'prefix-',
-      suffix: '-suffix',
-      dirname: 'dist/custom-folder',
-      extname: '.bat',
     }))
     .pipe(dest('dist'));
 };
@@ -41,6 +36,16 @@ const jsTask = () => {
       },
     }))
     .pipe(dest('dist'));
+};
+
+const scssTask = () => {
+  return src('src/**/*.scss')
+    .pipe(GulpScssCompiler({
+      scssOptions: {
+        sourceMap: true,
+      }
+    }))
+    .pipe(dest('dist/css'));
 };
 
 const folderCloneTask = () => {
@@ -62,8 +67,17 @@ const folderCloneTask = () => {
         },
       ],
     }))
-    .pipe(GulpFolderClone())
     .pipe(dest('dist/images'));
+};
+
+const fontSwitcherTask = () => {
+  return src('src/**/*.{otf,ttf}')
+    .pipe(GulpFontSwitcher({
+      pluginOptions: {
+        format: 'woff2',
+      },
+    }))
+    .pipe(dest('dist'));
 };
 
 const archiveTask = () => {
@@ -72,13 +86,17 @@ const archiveTask = () => {
       format: 'tar',
       pluginOptions: {
         archiveName: 'example2',
-        logFinal: true,
       }
+    }))
+    .pipe(GulpRefilename({
+      stem: 'test',
+      prefix: 'prefix-',
+      suffix: '-suffix',
     }))
     .pipe(dest('dist'));
 };
 
-const build = series(pugTask, jsTask, folderCloneTask, archiveTask);
+const build = series(pugTask, jsTask, scssTask, folderCloneTask, fontSwitcherTask, archiveTask);
 
 /*
  * Export a default task

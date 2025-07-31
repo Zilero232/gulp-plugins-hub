@@ -6,8 +6,6 @@ const defaultOptions: GulpArchiveCreatorOptions = {
 		archiveName: 'archive',
 		createDirectory: false,
 		createEmptyArchive: false,
-		logProgress: true,
-		logFinal: true,
 	},
 };
 

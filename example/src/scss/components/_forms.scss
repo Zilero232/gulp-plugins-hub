@@ -1,0 +1,40 @@
+.form-group {
+  margin-bottom: var(--spacing-md);
+
+  label {
+      display: block;
+      margin-bottom: var(--spacing-xs);
+      font-weight: 500;
+  }
+
+  input, textarea {
+      width: 100%;
+      padding: var(--spacing-sm);
+      border: 1px solid var(--text-light);
+      border-radius: 0.5rem;
+
+      &:focus {
+          outline: none;
+          border-color: var(--primary);
+      }
+  }
+}
+
+.info-card {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+
+  i {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: var(--spacing-sm);
+  }
+
+  h3 {
+      margin-bottom: var(--spacing-xs);
+  }
+
+  p {
+      color: var(--text-light);
+  }
+}

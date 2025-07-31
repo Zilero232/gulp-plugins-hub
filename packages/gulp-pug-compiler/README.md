@@ -5,7 +5,6 @@
 🏗️ Powerful Gulp plugin for Pug template compilation with hooks support.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -30,22 +29,6 @@ yarn add @zilero/gulp-pug-compiler --dev
 pnpm add @zilero/gulp-pug-compiler --save-dev
 ```
 
-## 📋 Usage
-
-```typescript
-import GulpPugCompiler from "@zilero/gulp-pug-compiler";
-
-gulp.task('compile', () => {
-  return gulp.src('src/**/*.pug')
-    .pipe(GulpPugCompiler({
-      pugOptions: {
-        pretty: true
-      }
-    }))
-    .pipe(gulp.dest('dist'));
-});
-```
-
 ## ⚙️ Options
 
 ### pugOptions
@@ -56,21 +39,6 @@ gulp.task('compile', () => {
 ### pluginOptions
 - Type: `object`
 - Required: `false`
-
-#### pluginOptions.logProgress
-- Type: `boolean`
-- Default: `true`
-- Log each file compilation
-
-#### pluginOptions.logFinal
-- Type: `boolean`
-- Default: `true`
-- Log final statistics
-
-#### pluginOptions.onBeforeCompile
-- Type: `(content: string) => Promise<string> | string`
-- Required: `false`
-- Transform content before compilation
 
 #### pluginOptions.onAfterCompile
 - Type: `(content: string) => Promise<string> | string`
@@ -91,11 +59,6 @@ gulp.task('advanced-compile', () => {
         }
       },
       pluginOptions: {
-        logProgress: true,
-        onBeforeCompile: (content) => {
-          // Custom pre-processing
-          return content;
-        },
         onAfterCompile: (content) => {
           // Custom post-processing
           return content;

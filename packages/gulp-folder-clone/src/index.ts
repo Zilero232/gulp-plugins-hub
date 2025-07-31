@@ -18,10 +18,7 @@ const validateOptions = createPluginOptions({
 
 // Creates a Gulp plugin that can be used to clone a folder.
 const GulpFolderClone = (options: GulpFolderCloneOptions = {}) => {
-  const { logFinish } = validateOptions(options);
-
-	let fileCount = 0; // Counter of processed files.
-	let errorCount = 0; // Error Counter.
+  validateOptions(options);
 
 	return GulpPluginFactory({
 		pluginName: PLUGIN_NAME,
@@ -34,21 +31,9 @@ const GulpFolderClone = (options: GulpFolderCloneOptions = {}) => {
           file = modifiedFile;
         }
 
-        // Increment the file count.
-        fileCount++;
-
         return file;
 			} catch (error: unknown) {
-				console.error('An error occurred during file cloning', error);
-			}
-		},
-		onFinish: async () => {
-			try {
-				if (logFinish) {
-          console.log(`Total files cloned: ${fileCount}, Total errors: ${errorCount} file(s).`);
-				}
-			} catch (error: unknown) {
-				console.error('An error occurred during the finalization of the plugin.', error);
+				throw new Error(`An error occurred during file cloning.`, { cause: error });
 			}
 		},
 	});

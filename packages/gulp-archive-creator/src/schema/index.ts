@@ -7,8 +7,6 @@ const pluginOptionsSchema = z.object({
   archiveName: z.string(),
   createDirectory: z.boolean().optional(),
   createEmptyArchive: z.boolean().optional(),
-  logFinal: z.boolean().optional(),
-  logProgress: z.boolean().optional(),
 });
 
 // Main schema for plugin.

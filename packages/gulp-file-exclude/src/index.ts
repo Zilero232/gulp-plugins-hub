@@ -23,9 +23,7 @@ const validateOptions = createPluginOptions({
 
 // Creates a Gulp plugin that excludes files based on patterns.
 const GulpFileExclude = (options: GulpFileExcludeOptions) => {
-  const { patterns, logExcluded, size, onExclude } = validateOptions(options);
-
-  let excludedCount = 0;
+  const { patterns, size, onExclude } = validateOptions(options);
 
   return GulpPluginFactory({
     pluginName: PLUGIN_NAME,
@@ -36,35 +34,24 @@ const GulpFileExclude = (options: GulpFileExcludeOptions) => {
         // Check if file is excluded by size
         const isSizeExcluded = checkFileSize({ file, size });
         if (isSizeExcluded) {
-          excludedCount++;
-
-          return console.info(`Excluding file: ${filePath} by size`);
+          return;
         }
 
         // Check if file is excluded by pattern
         const isPatternExcluded = isFileExcluded({ filePath, patterns });
         if (isPatternExcluded) {
-          excludedCount++;
-
-          return console.info(`Excluding file: ${filePath} by pattern`);
+          return;
         }
 
         // Check if file is excluded by onExclude
         const isOnExcludeExcluded = onExclude && await onExclude(file);
         if (isOnExcludeExcluded) {
-          excludedCount++;
-
-          return console.info(`Excluding by onExclude file: ${filePath}`);
+          return;
         }
 
         return file;
       } catch (error: unknown) {
-        console.error('An error occurred during file exclusion', error);
-      }
-    },
-    onFinish: async () => {
-      if (logExcluded) {
-        console.log(`Total files excluded: ${excludedCount}`);
+        throw new Error(`An error occurred during file exclusion.`, { cause: error });
       }
     },
   });

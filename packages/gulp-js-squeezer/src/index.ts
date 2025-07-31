@@ -18,11 +18,8 @@ const validateOptions = createPluginOptions({
 });
 
 // A Gulp plugin that can be used to minify JavaScript files.
-const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
-  const { minifyOptions, pluginOptions } = validateOptions(options);
-
-	let fileCount = 0; // Counter of processed files.
-	let errorCount = 0; // Error Counter.
+const GulpJsSqueezer = (options: GulpJsSqueezerOptions = {}) => {
+  const { minifyOptions = {}, pluginOptions = {} } = validateOptions(options);
 
 	return GulpPluginFactory({
 		pluginName: PLUGIN_NAME,
@@ -33,53 +30,25 @@ const GulpJsSqueezer = (options: GulpJsSqueezerOptions) => {
 					let content = file.contents.toString();
 
 					// onBeforeMinify call (if passed).
-					const onBeforeModified = pluginOptions?.onBeforeMinify ? await pluginOptions.onBeforeMinify(content) : content;
-
-					// Update the content of the file.
-					if (onBeforeModified) {
-						content = onBeforeModified;
+          if (pluginOptions.onBeforeMinify) {
+            content = await pluginOptions.onBeforeMinify(content);
 					}
 
 					// Minify the JS content.
 					content = (await minify(content, minifyOptions)).code ?? '';
 
-					// onAfterMinify call (if passed).
-					const onAfterModified = pluginOptions?.onAfterMinify ? await pluginOptions.onAfterMinify(content) : content;
-
-					// Update the content of the file.
-					if (onAfterModified) {
-						content = onAfterModified;
-					}
-
-					// Increasing the counter of processed files.
-					fileCount++;
+          if (pluginOptions.onAfterMinify) {
+            // onAfterMinify call (if passed).
+            content = await pluginOptions.onAfterMinify(content);
+          }
 
 					// Update the contents of the file.
 					file.contents = Buffer.from(content);
-				} else {
-					// Increasing the count of missed files.
-					errorCount++;
 				}
-
-				if (pluginOptions?.logProgress) {
-					console.log(`Minified JS file ${file.relative} successfully.`);
-				}
-
-				// Increasing the counter of processed files.
-				fileCount++;
 
 				return file;
 			} catch (error: unknown) {
-				console.error(`An error occurred while processing file ${file.relative}.`, error);
-			}
-		},
-		onFinish: async () => {
-			try {
-				if (pluginOptions?.logFinal) {
-					console.log(`Total files processed: ${fileCount}, Total errors: ${errorCount} JS file(s).`);
-				}
-			} catch (error: unknown) {
-				console.error(`An error occurred while logging the final result.`, error);
+				throw new Error(`An error occurred while processing file ${file.relative}.`, { cause: error });
 			}
 		},
 	});

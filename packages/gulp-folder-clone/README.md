@@ -5,7 +5,6 @@
 📂 Powerful Gulp plugin for cloning folders and files with transformation support.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -30,35 +29,11 @@ yarn add @zilero/gulp-folder-clone --dev
 pnpm add @zilero/gulp-folder-clone --save-dev
 ```
 
-## 📋 Usage
-
-```typescript
-import GulpFolderClone from "@zilero/gulp-folder-clone";
-
-gulp.task('clone', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpFolderClone({
-      logFinish: true
-    }))
-    .pipe(gulp.dest('dist'));
-});
-```
-
 ## ⚙️ Options
 
 ### pluginOptions
 - Type: `object`
 - Required: `false`
-
-#### pluginOptions.logFinish
-- Type: `boolean`
-- Default: `true`
-- Log final statistics after cloning
-
-#### pluginOptions.logProgress
-- Type: `boolean`
-- Default: `false`
-- Log progress during cloning
 
 #### pluginOptions.onBeforeCopy
 - Type: `(file: Vinyl) => Promise<Vinyl> | Vinyl`

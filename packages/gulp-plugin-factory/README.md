@@ -5,7 +5,6 @@
 🏭 Core factory for creating type-safe Gulp plugins with ease.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -28,22 +27,6 @@ npm install @zilero/gulp-plugin-factory --save-dev
 yarn add @zilero/gulp-plugin-factory --dev
 # or
 pnpm add @zilero/gulp-plugin-factory --save-dev
-```
-
-## 📋 Usage
-
-```typescript
-import GulpPluginFactory from "@zilero/gulp-plugin-factory";
-
-const myPlugin = (options = {}) => {
-  return GulpPluginFactory({
-    pluginName: 'MyCustomPlugin',
-    onFile: async (file) => {
-      // Transform file here
-      return file;
-    }
-  });
-};
 ```
 
 ## ⚙️ Options

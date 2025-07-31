@@ -1,11 +1,22 @@
 header.header
-  //- This is a header.
-  h1.header__title Example
-  nav.header__nav
-    ul.header__list
-      li.header__item
-        a.header__link(href="#") Home
-      li.header__item
-        a.header__link(href="#") About
-      li.header__item
-        a.header__link(href="#") Contact
+    .container
+        nav.nav
+            .logo
+                img(src="images/logo.svg" alt="Logo")
+                span Example
+            ul.nav-list
+                li: a(href="#") Home
+                li: a(href="#") Features
+                li: a(href="#") Pricing
+                li: a(href="#") Testimonials
+                li: a(href="#").btn.btn-primary Get Started
+
+        .hero
+            .hero-content
+                h1.hero-title Transform Your Workflow
+                p.hero-subtitle Powerful tools for modern development
+                .hero-buttons
+                    button.btn.btn-primary Get Started
+                    button.btn.btn-outline Watch Demo
+            .hero-image
+                img(src="images/hero.png" alt="Hero Image")

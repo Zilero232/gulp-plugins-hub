@@ -5,7 +5,6 @@
 🚫 Powerful Gulp plugin for excluding files based on patterns and conditions.
 
 [Installation](#-installation) •
-[Usage](#-usage) •
 [Options](#-options) •
 [Example](#-example)
 
@@ -30,21 +29,6 @@ yarn add @zilero/gulp-file-exclude --dev
 pnpm add @zilero/gulp-file-exclude --save-dev
 ```
 
-## 📋 Usage
-
-```typescript
-import GulpFileExclude from "@zilero/gulp-file-exclude";
-
-gulp.task('filter', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpFileExclude({
-      patterns: ['.test.', '.spec.'],
-      size: [1000, 1000000] // 1KB to 1MB
-    }))
-    .pipe(gulp.dest('dist'));
-});
-```
-
 ## ⚙️ Options
 
 ### patterns
@@ -58,11 +42,6 @@ gulp.task('filter', () => {
 - Required: `false`
 - Default: `[]`
 - File size limits [min, max] in bytes
-
-### logExcluded
-- Type: `boolean`
-- Default: `true`
-- Log excluded files statistics
 
 ### onExclude
 - Type: `(file: Vinyl) => Promise<boolean>`

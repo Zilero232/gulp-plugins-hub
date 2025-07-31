@@ -1,0 +1,70 @@
+{
+	"name": "@zilero/gulp-font-switcher",
+	"version": "1.0.0",
+	"description": "A powerful Gulp plugin for font optimization and compression",
+	"author": {
+		"name": "Artemev Alexandr",
+		"url": "https://github.com/Zilero232"
+	},
+	"license": "MIT",
+	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Zilero232/gulp-plugins-hub"
+	},
+	"bugs": {
+		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+	},
+	"keywords": [
+    "gulpplugin",
+    "gulp",
+    "font",
+    "fontmin",
+    "converter",
+    "ttf",
+    "otf",
+    "woff",
+    "woff2",
+    "eot",
+    "svg",
+    "webfont",
+    "subsetting",
+    "optimization",
+    "compression",
+    "font-face"
+  ],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.cts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"clean": "rimraf dist",
+		"type-check": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts"
+	},
+	"engines": {
+		"node": ">= 16.0"
+	},
+	"dependencies": {
+		"@zilero/gulp-plugin-factory": "workspace:*",
+		"chalk": "5.4.1",
+		"consola": "^3.4.2",
+		"fontmin": "^2.0.2",
+		"pretty-error": "^4.0.0",
+		"zod": "^3.25.76"
+	},
+	"peerDependencies": {
+		"gulp": "^4.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

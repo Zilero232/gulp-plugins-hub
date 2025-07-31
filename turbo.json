@@ -19,5 +19,6 @@
     "type-check": {
       "outputs": []
     }
-  }
+  },
+  "concurrency": "12"
 }

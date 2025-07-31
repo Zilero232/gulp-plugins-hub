@@ -1,0 +1,59 @@
+extends ../templates/layout.pug
+
+block content
+    section.services-hero
+        .container
+            h1.section-title Our Services
+            p.lead Comprehensive solutions for your business
+
+    section.services-grid
+        .container
+            .grid.grid-3
+                .service-card
+                    i.fas.fa-code
+                    h3 Web Development
+                    p Custom websites and applications
+                    a.btn.btn-primary(href="#") Learn More
+
+                .service-card
+                    i.fas.fa-mobile-alt
+                    h3 Mobile Apps
+                    p Native and cross-platform solutions
+                    a.btn.btn-primary(href="#") Learn More
+
+                .service-card
+                    i.fas.fa-cloud
+                    h3 Cloud Services
+                    p Scalable cloud infrastructure
+                    a.btn.btn-primary(href="#") Learn More
+
+    section.pricing
+        .container
+            h2.section-title Pricing Plans
+            .grid.grid-3
+                .price-card
+                    h3 Basic
+                    .price $99/mo
+                    ul.features
+                        li 5 Projects
+                        li Basic Support
+                        li 1GB Storage
+                    a.btn.btn-outline(href="#") Choose Plan
+
+                .price-card.featured
+                    h3 Pro
+                    .price $199/mo
+                    ul.features
+                        li Unlimited Projects
+                        li Priority Support
+                        li 10GB Storage
+                    a.btn.btn-primary(href="#") Choose Plan
+
+                .price-card
+                    h3 Enterprise
+                    .price Custom
+                    ul.features
+                        li Custom Solutions
+                        li 24/7 Support
+                        li Unlimited Storage
+                    a.btn.btn-outline(href="#") Contact Us
