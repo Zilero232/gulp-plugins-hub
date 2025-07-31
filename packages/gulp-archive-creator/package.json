@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-archive-creator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "description": "A Gulp plugin for creating archives (zip, tar) from vinyl file streams with configurable compression options",
   "author": {
@@ -57,8 +57,8 @@
     "vinyl": "^3.0.1",
     "zod": "^3.25.76",
     "chalk": "5.4.1",
-		"consola": "^3.4.2",
-		"pretty-error": "^4.0.0"
+    "consola": "^3.4.2",
+    "pretty-error": "^4.0.0"
   },
   "devDependencies": {
     "@types/archiver": "^6.0.2",

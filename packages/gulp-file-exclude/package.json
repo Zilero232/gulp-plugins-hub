@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-file-exclude",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"type": "module",
 	"description": "Gulp plugin for excluding files based on patterns",
 	"author": {
@@ -44,7 +44,7 @@
 	"dependencies": {
 		"@zilero/gulp-plugin-factory": "workspace:*",
 		"zod": "^3.25.76",
-    "chalk": "5.4.1",
+		"chalk": "5.4.1",
 		"consola": "^3.4.2",
 		"pretty-error": "^4.0.0"
 	},

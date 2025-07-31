@@ -1,5 +1,13 @@
 # @zilero/gulp-file-exclude
 
+## 1.0.3
+
+### Patch Changes
+
+- 279c98c: Update README and refactor refilename plugin
+- Updated dependencies [279c98c]
+  - @zilero/gulp-plugin-factory@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes
