@@ -1,6 +1,6 @@
 {
 	"name": "@zilero/gulp-html-squeezer",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"type": "module",
 	"description": "A Gulp plugin for advanced HTML minification and optimization with Terser, supporting custom compression rules",
 	"author": {

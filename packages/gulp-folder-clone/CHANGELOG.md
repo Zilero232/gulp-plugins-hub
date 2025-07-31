@@ -1,5 +1,13 @@
 # @zilero/gulp-folder-clone
 
+## 1.0.4
+
+### Patch Changes
+
+- 3559097: Added a new plugins, sass compiler and fonts convert
+- Updated dependencies [3559097]
+  - @zilero/gulp-plugin-factory@1.0.4
+
 ## 1.0.3
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
 	"name": "@zilero/gulp-scss-compiler",
-	"version": "1.0.0",
-  "description": "A powerful Gulp plugin for SCSS optimization with embedded Sass compiler and advanced configuration options for optimal SCSS processing",
+	"version": "1.0.1",
+	"description": "A powerful Gulp plugin for SCSS optimization with embedded Sass compiler and advanced configuration options for optimal SCSS processing",
 	"author": {
 		"name": "Artemev Alexandr",
 		"url": "https://github.com/Zilero232"
@@ -15,20 +15,20 @@
 	"bugs": {
 		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
 	},
-  "keywords": [
-    "gulp",
-    "gulp-plugin",
-    "scss",
-    "sass",
-    "css",
-    "compiler",
-    "preprocessor",
-    "embedded-sass",
-    "sass-embedded",
-    "sass",
-    "css",
-    "compiler"
-  ],
+	"keywords": [
+		"gulp",
+		"gulp-plugin",
+		"scss",
+		"sass",
+		"css",
+		"compiler",
+		"preprocessor",
+		"embedded-sass",
+		"sass-embedded",
+		"sass",
+		"css",
+		"compiler"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.cts",
@@ -50,14 +50,14 @@
 		"node": ">= 16.0"
 	},
 	"dependencies": {
-    "@zilero/gulp-plugin-factory": "workspace:*",
-    "sass-embedded": "^1.89.2",
-    "zod": "^3.25.76",
-    "chalk": "5.4.1",
+		"@zilero/gulp-plugin-factory": "workspace:*",
+		"sass-embedded": "^1.89.2",
+		"zod": "^3.25.76",
+		"chalk": "5.4.1",
 		"consola": "^3.4.2",
 		"pretty-error": "^4.0.0"
 	},
-  "publishConfig": {
+	"publishConfig": {
 		"access": "public"
 	},
 	"peerDependencies": {
