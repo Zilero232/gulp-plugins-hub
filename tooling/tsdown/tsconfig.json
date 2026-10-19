@@ -1,0 +1,4 @@
+{
+  "extends": "@gulp-plugins-hub/typescript-config/base.json",
+  "include": ["*.ts"]
+}

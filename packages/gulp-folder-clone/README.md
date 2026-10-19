@@ -1,83 +1,33 @@
-<div align="center">
+# @zilero/gulp-folder-clone
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Folder+Clone;Simple+%26+Efficient;Type-Safe+Cloning" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-folder-clone?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-folder-clone)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-folder-clone?color=7c3aed)](./LICENSE)
 
-📂 Powerful Gulp plugin for cloning folders and files with transformation support.
+Copy every file of a gulp stream into one or more extra folders, relative to `file.base`, so a single `dest` writes them all.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 📁 Simple folder and file cloning
-- 🔄 Custom file transformation support
-- 📝 TypeScript support
-- 🚀 Stream-based processing
-- 💡 Progress logging
-- 🛠️ Highly configurable
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-folder-clone --save-dev
-# or
-yarn add @zilero/gulp-folder-clone --dev
-# or
-pnpm add @zilero/gulp-folder-clone --save-dev
+```sh
+npm install --save-dev @zilero/gulp-folder-clone
 ```
 
-## ⚙️ Options
+```js
+import { dest, src } from 'gulp';
+import folderClone from '@zilero/gulp-folder-clone';
 
-### pluginOptions
-- Type: `object`
-- Required: `false`
-
-#### pluginOptions.onBeforeCopy
-- Type: `(file: Vinyl) => Promise<Vinyl> | Vinyl`
-- Required: `false`
-- Transform file before copying
-
-## 📝 Example
-
-```typescript
-gulp.task('clone-with-transform', () => {
-  return gulp.src('src/images/**/*')
-    .pipe(GulpFolderClone({
-      logFinish: true,
-      onBeforeCopy: (file) => {
-        // Custom transformation
-        return file;
-      }
-    }))
-    .pipe(gulp.dest('dist/images'));
-});
+// dist/images/logo.png, dist/backup/images/logo.png and dist/v2/images/logo.png
+export const images = () =>
+  src('src/images/**', { base: 'src', encoding: false })
+    .pipe(folderClone({ dirs: ['backup', 'v2'] }))
+    .pipe(dest('dist'));
 ```
 
-## 🤝 Contributing
+| Option         | Default | Description                                                                                                   |
+| -------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| `dirs`         | —       | One folder or a list inside `file.base` (not absolute, not `'.'`, no `..`) that receive a copy of every file. |
+| `keepOriginal` | `true`  | Emit the original file as well as the copies.                                                                 |
+| `onClone`      | —       | `({ file, dir, original })` for every copy: change it, return another file or `null` to skip it.              |
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+Copies are deep clones, each with its own source map whose `file` points at the copy.
 
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
+**[Documentation](https://zilero232.github.io/gulp-plugins-hub/plugins/folder-clone)** · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+ and gulp 4 or 5. ESM; in CommonJS use `const { folderClone } = require(…)`.
 
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

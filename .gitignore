@@ -1,40 +1,47 @@
-# compiled output
-/coverage
-dist
-.turbo
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+packages/*/dist/
+apps/example/dist/
+apps/example/release/
+.pack/
+.turbo/
+
+# Tests and caches
+coverage/
+.cache/
+.eslintcache
+.cspellcache
+*.tsbuildinfo
+
+# Lockfiles of other package managers: this repo uses bun (bun.lock)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Logs
 *.log
-tmp
 
-# dependencies
-node_modules
+# Local environment
+.env
+.env.*
+!.env.example
+mise.local.toml
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# Local dev files
-.env.local
-.bashrc
-
-# IDE - VSCode
+# Editors
+.idea/
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*~
 
-# misc
-npm-debug.log
-yarn-error.log
-
-# docs
-docs
-
-# System Files
+# OS
 .DS_Store
 Thumbs.db
+
+# Docs site
+apps/docs/.vitepress/cache/
+apps/docs/.vitepress/dist/

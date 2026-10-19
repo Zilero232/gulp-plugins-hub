@@ -1,107 +1,34 @@
-<div align="center">
+# @zilero/gulp-archive-creator
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Archive+Creator;Powerful+%26+Flexible;Type-Safe+%26+Stream-Based" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-archive-creator?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-archive-creator)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-archive-creator?color=7c3aed)](./LICENSE)
 
-🗄️ Powerful Gulp plugin for creating archives (zip, tar, etc.) from your stream files.
+Pack every file of a gulp stream into one zip, tar or tar.gz archive with archiver; entries keep their paths, modification time and mode.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 📦 Support for multiple archive formats (zip, tar)
-- 🔧 Highly configurable
-- 📝 TypeScript support
-- 🚀 Stream-based processing
-- 💡 Progress logging
-- 🛠️ Customizable compression options
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-archive-creator --save-dev
-# or
-yarn add @zilero/gulp-archive-creator --dev
-# or
-pnpm add @zilero/gulp-archive-creator --save-dev
+```sh
+npm install --save-dev @zilero/gulp-archive-creator
 ```
 
-## ⚙️ Options
+```js
+import { dest, src } from 'gulp';
+import archiveCreator from '@zilero/gulp-archive-creator';
 
-### format
-- Type: `string`
-- Required: `true`
-- Default: `'zip'`
-- Supported formats: `'zip'`, `'tar'`
-
-### archiveOptions
-- Type: `ArchiverOptions`
-- Required: `false`
-- Options from [archiver](https://www.npmjs.com/package/archiver) package
-
-### pluginOptions
-- Type: `object`
-- Required: `false`
-
-#### pluginOptions.archiveName
-- Type: `string`
-- Default: `'archive'`
-- Archive name without extension
-
-#### pluginOptions.createDirectory
-- Type: `boolean`
-- Default: `false`
-- Create directory structure in archive
-
-#### pluginOptions.createEmptyArchive
-- Type: `boolean`
-- Default: `false`
-- Create archive even if no files were processed
-
-## 📝 Example
-
-```typescript
-gulp.task('create-archive', () => {
-  return gulp.src(['src/**/*', '!src/**/*.map'])
-    .pipe(GulpArchiveCreator({
-      format: 'zip',
-      archiveOptions: {
-        zlib: { level: 9 } // Maximum compression
-      },
-      pluginOptions: {
-        archiveName: 'project-build',
-        createEmptyArchive: false,
-      }
-    })
-    .pipe(gulp.dest('dist'));
-});
+export const release = () =>
+  src('dist/**', { encoding: false })
+    .pipe(archiveCreator({ name: 'site.zip' }))
+    .pipe(dest('releases'));
 ```
 
-## 🤝 Contributing
+| Option            | Default     | Description                                                                                        |
+| ----------------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| `name`            | `'archive'` | Path inside the output folder (not absolute, no `..`); the format's extension is added if missing. |
+| `format`          | from `name` | `'zip'`, `'tar'` or `'tgz'`; inferred from the extension, else zip.                                |
+| `archiverOptions` | —           | Passed to archiver: `zlib.level` or `store` for zip, `gzipOptions` for tgz.                        |
+| `emptyArchive`    | `false`     | Emit an empty archive when the stream had no files.                                                |
+| `directories`     | `false`     | Add an entry for each directory in the stream.                                                     |
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+Files without contents that are not directories (`read: false`, symbolic links) are skipped. An error from streamed contents, or an error or warning from archiver, is emitted as a `PluginError` and aborts the archive.
 
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
+**[Documentation](https://zilero232.github.io/gulp-plugins-hub/plugins/archive-creator)** · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+ and gulp 4 or 5. ESM; in CommonJS use `const { archiveCreator } = require(…)`.
 
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

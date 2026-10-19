@@ -1,0 +1,19 @@
+{
+  "name": "gulp-plugins-hub-docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The documentation site: VitePress pages, built and deployed to GitHub Pages.",
+  "type": "module",
+  "scripts": {
+    "build": "vitepress build",
+    "dev": "vitepress dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "^5.4.21",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-llms": "^1.14.0"
+  }
+}

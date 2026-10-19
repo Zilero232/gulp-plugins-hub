@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zilero232.github.io/gulp-plugins-hub/sitemap.xml

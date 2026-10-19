@@ -1,0 +1,31 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title #{title} · Example
+        link(rel="preload" href="/fonts/F563-Regular.woff2" as="font" type="font/woff2" crossorigin)
+        link(rel="stylesheet" href="/css/main.css")
+        link(rel="icon" href="/favicon.svg" type="image/svg+xml")
+
+    body(data-page=page)
+        header.header
+            .container
+                nav.nav
+                    a.logo(href="/index.html")
+                        img(src="/images/logo.svg" alt="" width="32" height="32")
+                        | Example
+                    ul.nav-list
+                        each link in navigation
+                            li: a(href=link.href class=link.page === page ? 'active' : undefined)= link.label
+
+        main
+            block content
+
+        footer.footer
+            .container
+                .footer-content
+                    p &copy; #{year} Example · v#{version}
+
+        script(src="/js/vendor.js" defer)
+        script(src="/js/app.js" type="module")

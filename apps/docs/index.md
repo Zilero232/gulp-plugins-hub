@@ -1,0 +1,35 @@
+---
+layout: home
+
+hero:
+  name: gulp-plugins-hub
+  text: Typed plugins for gulp 5
+  tagline: Pug, Sass, Lightning CSS, terser, sharp, fonts, archives and cache-busting — one consistent API, validated options, real errors.
+  image:
+    src: /logo.svg
+    alt: gulp-plugins-hub
+  actions:
+    - theme: brand
+      text: Get started
+      link: /guide/getting-started
+    - theme: alt
+      text: All plugins
+      link: /plugins/
+    - theme: alt
+      text: GitHub
+      link: https://github.com/Zilero232/gulp-plugins-hub
+
+features:
+  - title: Built for gulp 5
+    details: ESM packages for Node.js 22.13+, binary files guarded against gulp 5's UTF-8 default, source maps that work with src and dest's own sourcemaps option.
+  - title: Options checked up front
+    details: Every option is validated when the plugin is created. A typo or a wrong type fails with a list of what is wrong, instead of a build that silently does nothing.
+  - title: Modern engines
+    details: Lightning CSS instead of clean-css and autoprefixer, html-minifier-next, sass-embedded with one compiler per build, sharp for WebP and AVIF, WebAssembly fonts.
+  - title: Follows the gulp guidelines
+    details: Files without contents pass through, errors are PluginErrors prefixed with the plugin name and emitted, never thrown, and gulp is never a dependency.
+  - title: Fully typed
+    details: Written in TypeScript with declarations for every option and hook. Hooks get the Vinyl file, so they can decide per file.
+  - title: Make your own
+    details: The plugin factory the hub is built with turns a transform function into a well-behaved plugin, with testing helpers for Vitest or node:test.
+---

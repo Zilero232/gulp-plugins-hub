@@ -1,53 +1,69 @@
 {
-	"name": "@zilero/gulp-folder-clone",
-	"version": "1.0.4",
-	"type": "module",
-	"description": "A Gulp plugin that can be used to clone a folder.",
-	"author": {
-		"name": "Artemev Alexandr",
-		"url": "https://github.com/Zilero232"
-	},
-	"license": "MIT",
-	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"bugs": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-	},
-	"keywords": [],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.cts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch",
-		"clean": "rimraf dist",
-		"type-check": "tsc --noEmit",
-		"lint": "eslint src/**/*.ts"
-	},
-	"engines": {
-		"node": ">= 16.0"
-	},
-	"dependencies": {
-		"@zilero/gulp-plugin-factory": "workspace:*",
-		"zod": "^3.25.76",
-		"chalk": "5.4.1",
-		"consola": "^3.4.2",
-		"pretty-error": "^4.0.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"peerDependencies": {
-		"gulp": "^4.0.0"
-	}
+  "name": "@zilero/gulp-folder-clone",
+  "version": "1.0.4",
+  "description": "Copy every file of a gulp stream into one or more extra folders in a single pass, with an optional hook to change each copy.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "clone",
+    "copy",
+    "duplicate",
+    "folder",
+    "directory",
+    "mirror"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/folder-clone",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-folder-clone"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

@@ -1,43 +1,45 @@
-# Contributing to gulp-plugin-hub 🎶
+# Contributing
 
-Thank you for your interest in contributing to `gulp-plugin-hub`! We welcome contributions that enhance the functionality of the project or improve the documentation. By contributing, you're helping make this project better for everyone.
+Thanks for helping. Bug reports, ideas and pull requests are welcome.
 
-Please follow the guidelines below to help us make the process smooth for both you and the maintainers.
+## Reporting a bug
 
-## Table of Contents
+Open an issue with the plugin and its version, the options and a few lines of gulpfile, what you expected and what happened (the full error), and your Node.js and gulp versions.
 
-- [Reporting Bugs](#reporting-bugs)
-- [Suggesting Enhancements](#suggesting-enhancements)
-- [Making Changes](#making-changes)
-- [Code Style](#code-style)
-- [Commit Message Guidelines](#commit-message-guidelines)
-- [Pull Request Process](#pull-request-process)
-- [License](#license)
+## Development
 
-## Reporting Bugs
+The toolchain is pinned in [`mise.toml`](mise.toml):
 
-If you find a bug or issue, please open an issue on the GitHub repository. When reporting a bug, please include the following details:
-
-- **Steps to reproduce**: A clear and concise description of what you did to encounter the issue.
-- **Expected behavior**: What you expected to happen.
-- **Actual behavior**: What actually happened.
-- **Environment**: Information about your environment (OS, Node.js version, etc.).
-
-## Suggesting Enhancements
-
-We love ideas for making `gulp-plugin-hub` even better! If you have a suggestion or feature request, feel free to open an issue and describe:
-
-- The problem you're trying to solve.
-- How your idea will help improve the project.
-
-## Making Changes
-
-To get started with contributing code, please fork the repository and create a new branch for your changes. You can do this by running the following commands:
-
-```bash
-# Fork the repository
-git clone https://github.com/Zilero232/gulp-plugin-hub.git
-
-# Create a new branch
-git checkout -b feature/my-new-feature
+```sh
+mise install
+bun install
+bun run test     # every package's tests, the example site built with the packages, the scripts' tests
+bun run verify   # typecheck, lint, format, spelling, unused code
 ```
+
+| Command                 | Does                                               |
+| ----------------------- | -------------------------------------------------- |
+| `bun run build`         | Builds every package (tsdown, checked by publint). |
+| `bun run test:coverage` | Every package's tests with coverage thresholds.    |
+| `bun run example`       | Builds the example site.                           |
+| `bun run docs:dev`      | The documentation site with live reload.           |
+| `bun run fix`           | Applies ESLint and Prettier fixes.                 |
+
+## Adding or changing a plugin
+
+1. Read [ARCHITECTURE.md](ARCHITECTURE.md): the package layout, the code style and the rules every plugin follows.
+2. Follow the layout of an existing package: the public surface at the root of `src/` (`index.ts`, `<name>.ts`, `.schema.ts`, `.types.ts`, `.constants.ts`), internal parts in folders named after what they do.
+3. Build it with `createPlugin` and `parseOptions` from `@zilero/gulp-plugin-factory`.
+4. Test behavior, options validation and errors with `@zilero/gulp-plugin-factory/testing`; compare paths with `getRelativePath`, so the tests pass on Windows.
+5. Document every option in `apps/docs/plugins/<name>.md` and the package README.
+6. Add a changeset: `bun run changeset`.
+
+## Commits and pull requests
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org), checked by commitlint; `bun run commit` asks the questions for you. Before opening a pull request, run `bun run verify` and `bun run test`.
+
+## Releases
+
+Merging to `master` with changesets opens a "version packages" pull request; merging it publishes the changed packages to npm and creates the GitHub releases.
+
+Publishing uses npm trusted publishing, which is configured on a package that already exists on npm. A new package is therefore published once by hand (`npm publish` of its `bun pm pack` tarball, with a maintainer's login), then given the release workflow as its trusted publisher in its npm settings.

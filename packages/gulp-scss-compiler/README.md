@@ -1,117 +1,32 @@
-<div align="center">
+# @zilero/gulp-scss-compiler
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+SCSS+Squeezer;Powerful+%26+Flexible;Smart+SCSS+Compilation" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-scss-compiler?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-scss-compiler)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-scss-compiler?color=7c3aed)](./LICENSE)
 
-📦 Powerful Gulp plugin for SCSS compilation with embedded Sass compiler.
+Compile SCSS and indented Sass with the modern Sass compiler (sass-embedded) in a gulp stream: one compiler process per stream, partials skipped, source maps kept.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 📦 SCSS compilation using embedded Sass
-- 🚀 High-performance processing
-- 🗺️ Source maps support
-- 🔧 Highly configurable
-- 📝 TypeScript support
-- 💡 Progress logging
-- 🛠️ Pre and post processing hooks
-- 🔄 Stream-based processing
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-scss-squeezer --save-dev
-# or
-yarn add @zilero/gulp-scss-squeezer --dev
-# or
-pnpm add @zilero/gulp-scss-squeezer --save-dev
+```sh
+npm install --save-dev @zilero/gulp-scss-compiler
 ```
 
-## ⚙️ Options
+```js
+import { dest, src } from 'gulp';
+import scssCompiler from '@zilero/gulp-scss-compiler';
 
-### scssOptions
-- Type: `Options<'sync'>` (sass-embedded options)
-- Required: `false`
-- Default: `{}`
-- All options from sass-embedded are supported
-
-### pluginOptions
-- Type: `object`
-- Required: `false`
-
-#### pluginOptions.onBeforeCompile
-- Type: `(content: string) => Promise<string>`
-- Required: `false`
-- Transform SCSS content before compilation
-
-#### pluginOptions.onAfterCompile
-- Type: `(content: string) => Promise<string>`
-- Required: `false`
-- Transform CSS content after compilation
-
-## 📝 Example
-
-```typescript
-gulp.task('compile-scss', () => {
-  return gulp.src('src/scss/**/*.scss')
-    .pipe(GulpScssSqueezer({
-      scssOptions: {
-        style: 'compressed',
-      },
-      pluginOptions: {
-        onBeforeCompile: async (content) => {
-          // Custom pre-processing
-          return content;
-        },
-        onAfterCompile: async (content) => {
-          // Custom post-processing
-          return content;
-        }
-      }
-    }))
-    .pipe(gulp.dest('dist/css'));
-});
-
-// With source maps
-gulp.task('compile-scss-with-maps', () => {
-  return gulp.src('src/scss/**/*.scss')
-    .pipe(GulpScssSqueezer({
-      scssOptions: {
-        style: 'expanded',
-        sourceMap: true,
-        sourceMapIncludeSources: true
-      }
-    }))
-    .pipe(gulp.dest('dist/css'));
-});
+export const styles = () =>
+  src('src/styles/**/*.scss', { sourcemaps: true })
+    .pipe(scssCompiler({ sassOptions: { style: 'compressed' } }))
+    .pipe(dest('dist/css', { sourcemaps: '.' }));
 ```
 
-## 🤝 Contributing
+| Option                              | Default | Description                                                     |
+| ----------------------------------- | ------- | --------------------------------------------------------------- |
+| `sassOptions`                       | `{}`    | Sass options: `style`, `loadPaths`, `importers`, `functions`, … |
+| `skipPartials`                      | `true`  | Drop `_*.scss` and `_*.sass` files instead of compiling them.   |
+| `onBeforeCompile`, `onAfterCompile` | —       | `({ content, file }) => string` hooks around Sass.              |
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+Errors point at the stylesheet where they happened, often a partial, and its line. Plain `.css` files pass through.
 
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
+**[Documentation](https://zilero232.github.io/gulp-plugins-hub/plugins/scss-compiler)** · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+ and gulp 4 or 5. ESM; in CommonJS use `const { scssCompiler } = require(…)`.
 
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

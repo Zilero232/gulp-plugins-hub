@@ -1,24 +1,42 @@
 {
-  "$schema": "https://turbo.build/schema.json",
+  "$schema": "https://turborepo.dev/schema.json",
+  "ui": "stream",
+  // The shared configs are workspaces (tooling/*), so their changes reach dependents through the task graph.
+  "globalDependencies": ["mise.toml"],
   "tasks": {
+    // Workspaces import each other's sources (the "@zilero/source" export condition), so typecheck and tests
+    // need no build; `transit` still makes a dependency change invalidate its dependents' caches.
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"],
-      "cache": false
+      "inputs": ["$TURBO_DEFAULT$", "!**/_tests/**", "!README.md", "!CHANGELOG.md"],
+      "outputs": ["dist/**"]
     },
     "dev": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
+      "cache": false,
       "persistent": true
     },
-    "lint": {
-      "outputs": []
+    "typecheck": {
+      "dependsOn": ["transit"]
     },
-    "clean": {
-      "cache": false
+    "test": {
+      "dependsOn": ["transit"],
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!CHANGELOG.md"]
     },
-    "type-check": {
-      "outputs": []
+    // The example runs gulp on the built packages, as a user would: it needs their dist/ first.
+    "gulp-plugins-hub-example#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "gulp-plugins-hub-docs#build": {
+      "outputs": [".vitepress/dist/**"]
+    },
+    "gulp-plugins-hub-example#test": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "release/**"]
     }
-  },
-  "concurrency": "12"
+  }
 }

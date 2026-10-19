@@ -1,0 +1,13 @@
+{
+  "name": "@gulp-plugins-hub/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The TypeScript settings every workspace extends.",
+  "type": "module",
+  "exports": {
+    "./base.json": "./base.json"
+  },
+  "dependencies": {
+    "@siberiacancode/tsconfig": "^1.2.0"
+  }
+}

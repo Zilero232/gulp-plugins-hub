@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'F563';
+  font-display: swap;
+  src:
+    url('../fonts/F563-Regular.woff2') format('woff2'),
+    url('../fonts/F563-Regular.woff') format('woff');
+}
+
+:root {
+  --primary: #7c3aed;
+  --primary-dark: #5b21b6;
+  --accent: #06b6d4;
+  --text: #111827;
+  --text-light: #6b7280;
+  --font-primary: 'F563', system-ui, sans-serif;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+h1,
+.h1 {
+  font-size: var(--h1-size);
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h2,
+.h2 {
+  font-size: var(--h2-size);
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+h3,
+.h3 {
+  font-size: var(--h3-size);
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}

@@ -1,148 +1,41 @@
-<div align="center">
+# @zilero/gulp-plugin-factory
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Plugin+Factory;Powerful+%26+Flexible;Plugin+Creation+Made+Easy" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-plugin-factory?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-plugin-factory)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-plugin-factory?color=7c3aed)](./LICENSE)
 
-🏭 Core factory for creating type-safe Gulp plugins with ease.
+Build typed gulp plugins in a few lines. A stream factory that follows the gulp plugin guidelines, option validation with any Standard Schema, source map helpers and testing helpers. Every `@zilero/gulp-*` plugin is built with it.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 🛠️ Easy plugin creation
-- 🔒 Type-safe by design
-- 📝 TypeScript support
-- 🚀 Stream-based processing
-- 💡 Error handling
-- 🔄 Async support
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-plugin-factory --save-dev
-# or
-yarn add @zilero/gulp-plugin-factory --dev
-# or
-pnpm add @zilero/gulp-plugin-factory --save-dev
+```sh
+npm install @zilero/gulp-plugin-factory
 ```
 
-## ⚙️ Options
+```ts
+import { createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import { z } from 'zod';
 
-### pluginName
-- Type: `string`
-- Required: `true`
-- Min length: 5 characters
-- Plugin identifier for error messages
+const schema = z.object({ text: z.string().min(1) }).strict();
 
-### onFile
-- Type: `(file: Vinyl, encoding: string, stream: Transform) => Promise<Vinyl | void>`
-- Required: `true`
-- File transformation handler
+export const banner = (options: z.input<typeof schema>) => {
+  const { text } = parseOptions({ name: 'gulp-banner', schema, options });
 
-### onFinish
-- Type: `(stream: Transform) => Promise<void>`
-- Required: `false`
-- Stream completion handler
-
-## 📝 Example
-
-```typescript
-import GulpPluginFactory from "@zilero/gulp-plugin-factory";
-
-const createCustomPlugin = (options = {}) => {
-  let fileCount = 0;
-
-  return GulpPluginFactory({
-    pluginName: 'CustomPlugin',
-    onFile: async (file, encoding, stream) => {
-      if (file.isBuffer()) {
-        // Process file content
-        const content = file.contents.toString();
-        file.contents = Buffer.from(content.toUpperCase());
-        
-        fileCount++;
-        return file;
-      }
-      
-      // Skip non-buffer files
-      return;
-    },
-    onFinish: async (stream) => {
-      console.log(`Processed ${fileCount} files`);
-    }
-  });
-};
-
-// Usage
-gulp.task('custom', () => {
-  return gulp.src('src/**/*')
-    .pipe(createCustomPlugin())
-    .pipe(gulp.dest('dist'));
-});
-```
-
-## 🔍 Advanced Usage
-
-### Error Handling
-
-```typescript
-const pluginWithErrors = () => {
-  return GulpPluginFactory({
-    pluginName: 'ErrorHandler',
-    onFile: async (file) => {
-      try {
-        // Your processing logic
-        return file;
-      } catch (error) {
-        throw new Error(`Failed to process ${file.path}: ${error.message}`);
-      }
+  return createPlugin({
+    name: 'gulp-banner',
+    filter: (file) => file.extname === '.js',
+    transform: (file) => {
+      file.contents = Buffer.concat([Buffer.from(`${text}\n`), file.contents]);
     }
   });
 };
 ```
 
-### File Filtering
+| Export                                   | Does                                                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `createPlugin`                           | A Vinyl transform stream from a `transform` / `flush` definition, errors as `PluginError`s. |
+| `parseOptions`                           | Validates options with zod, valibot, arktype or any Standard Schema; lists every problem.   |
+| `applySourceMap`, `getInputSourceMap`    | Chain and store source maps the way `src` / `dest` `sourcemaps` expect.                     |
+| `assertBinaryContents`                   | Explains the fix when gulp 5 read a binary file as UTF-8.                                   |
+| `createFile`, `runPlugin`, `getContents` | From `@zilero/gulp-plugin-factory/testing`: test a plugin without gulp.                     |
 
-```typescript
-const filterPlugin = () => {
-  return GulpPluginFactory({
-    pluginName: 'FileFilter',
-    onFile: async (file) => {
-      // Return void to skip file
-      if (file.path.includes('.test.')) {
-        return;
-      }
-      return file;
-    }
-  });
-};
-```
+**[Guide](https://zilero232.github.io/gulp-plugins-hub/guide/writing-plugins)** · [API reference](https://zilero232.github.io/gulp-plugins-hub/reference/factory) · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+. ESM; in CommonJS use `const { createPlugin } = require(…)`.
 
-## 🤝 Contributing
-
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
-
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

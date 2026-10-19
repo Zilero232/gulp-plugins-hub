@@ -1,0 +1,22 @@
+{
+  "extends": "@siberiacancode/tsconfig/tsconfig.bundler.json",
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2024"],
+    "module": "Preserve",
+    "types": ["node"],
+    // Workspace packages resolve to their sources (the "@zilero/source" export condition),
+    // so typecheck and tests need no build first.
+    "customConditions": ["@zilero/source"],
+    "allowJs": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    // Config files import each other with the extension, which Node needs to load them natively.
+    "allowImportingTsExtensions": true
+  },
+  "exclude": ["**/node_modules", "**/dist"]
+}

@@ -1,0 +1,2 @@
+# The full test suite builds every package and the example site: once per push, not per commit.
+bun run test

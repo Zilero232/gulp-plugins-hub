@@ -1,0 +1,5 @@
+{
+  // The files at the root; every workspace has its own tsconfig.json, checked by `turbo run typecheck`.
+  "extends": "@gulp-plugins-hub/typescript-config/base.json",
+  "include": ["scripts", "*.config.ts", ".jazzer.config.ts"]
+}
