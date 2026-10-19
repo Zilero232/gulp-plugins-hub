@@ -1,0 +1,1989 @@
+---
+url: /gulp-plugins-hub/guide/getting-started.md
+---
+# Getting started
+
+gulp-plugins-hub is a set of gulp plugins, each in its own package, that share one way of working: typed options checked when the plugin is created, hooks that get the file, errors that name the plugin and the file.
+
+## Requirements
+
+* Node.js 22.13 or newer
+* gulp 5 (gulp 4 works too)
+
+## Install
+
+Install gulp and the plugins the build needs:
+
+```sh
+npm install --save-dev gulp @zilero/gulp-scss-compiler @zilero/gulp-css-squeezer @zilero/gulp-js-squeezer
+```
+
+## A first gulpfile
+
+```js
+// gulpfile.mjs
+import { dest, parallel, src } from 'gulp';
+import { pipeline } from 'node:stream/promises';
+import cssSqueezer from '@zilero/gulp-css-squeezer';
+import jsSqueezer from '@zilero/gulp-js-squeezer';
+import scssCompiler from '@zilero/gulp-scss-compiler';
+
+export const styles = () =>
+  pipeline(
+    src('src/styles/*.scss', { sourcemaps: true }),
+    scssCompiler(),
+    cssSqueezer(),
+    dest('dist/css', { sourcemaps: '.' })
+  );
+
+export const scripts = () =>
+  pipeline(src('src/js/*.js', { sourcemaps: true }), jsSqueezer(), dest('dist/js', { sourcemaps: '.' }));
+
+export default parallel(styles, scripts);
+```
+
+Tasks return `pipeline(…)` from `node:stream/promises` rather than a `.pipe()` chain, so an error in any step ends the task with that error ([why](/guide/gulp-5#return-pipeline-not-a-pipe-chain)).
+
+```sh
+npx gulp
+```
+
+Every plugin is a function that takes its options and returns a stream. Each has a default export and a named one:
+
+```js
+import scssCompiler from '@zilero/gulp-scss-compiler';
+import { scssCompiler } from '@zilero/gulp-scss-compiler'; // the same function
+```
+
+In a CommonJS gulpfile, use the named export:
+
+```js
+// gulpfile.js
+const { scssCompiler } = require('@zilero/gulp-scss-compiler');
+```
+
+## Options are checked up front
+
+Every option is validated when the plugin is created. A wrong value stops the task before any file is read, and lists every problem:
+
+```text
+[10:42:01] 'styles' errored after 3 ms
+[10:42:01] Error in plugin "@zilero/gulp-css-squeezer"
+Message:
+    Invalid options:
+    • Unrecognized key: "minfy"
+```
+
+## Errors name the file
+
+An error while processing a file is a `PluginError` emitted on the stream, with the plugin name and the file:
+
+```text
+[10:42:05] Error in plugin "@zilero/gulp-scss-compiler"
+Message:
+    Undefined variable.
+    ╷
+  3 │ .card { color: $brand; }
+    │                ^^^^^^
+    ╵
+Details:
+    fileName: /project/src/styles/main.scss
+```
+
+In a `watch` task an error stops that run; gulp keeps watching.
+
+## Next
+
+* [Gulp 5 essentials](/guide/gulp-5): binary files, glob order, `pipeline`, TypeScript gulpfiles, source maps.
+* [Recipes](/guide/recipes): a complete static site build.
+* [Plugins](/plugins/): every plugin and its options.
+
+---
+
+---
+url: /gulp-plugins-hub/guide/gulp-5.md
+---
+# Gulp 5 essentials
+
+Gulp 5 changed a few defaults that every build runs into. The plugins handle them, but some need a setting in your gulpfile.
+
+## Binary files need `encoding: false`
+
+Gulp 5 reads every file as UTF-8 text. Images, fonts and other binary files come out corrupted: every byte that is not valid UTF-8 becomes `U+FFFD`. Read them with `encoding: false`:
+
+```js
+src('src/images/**', { encoding: false });
+src('src/fonts/*.ttf', { encoding: false });
+```
+
+[image-squeezer](/plugins/image-squeezer) and [font-switcher](/plugins/font-switcher) recognize a file read as text and fail with this fix in the message, instead of a decoder error. Plugins that only copy or pack files ([archive-creator](/plugins/archive-creator), [folder-clone](/plugins/folder-clone), [asset-revision](/plugins/asset-revision)) cannot tell: read binary files with `encoding: false` there too, or the copies are corrupted.
+
+## Glob order is not kept
+
+Gulp 4 emitted the files of `src(['a/*.js', 'b/*.js'])` in the order of the globs. Gulp 5 does not. When order matters, set it in the plugin:
+
+```js
+src('src/js/**/*.js').pipe(fileConcat({ name: 'app.js', order: ['vendor/**', 'lib/**'] }));
+```
+
+## Source maps without gulp-sourcemaps
+
+`src` and `dest` handle source maps themselves:
+
+```js
+src('src/**/*.scss', { sourcemaps: true }) // reads existing maps, starts empty ones
+  .pipe(scssCompiler())
+  .pipe(cssSqueezer())
+  .pipe(dest('dist', { sourcemaps: '.' })); // writes main.css.map next to main.css
+```
+
+[scss-compiler](/plugins/scss-compiler), [css-squeezer](/plugins/css-squeezer), [js-squeezer](/plugins/js-squeezer) and [file-concat](/plugins/file-concat) produce a map when the file has one, chained to the map before them where the tool supports it. Without `sourcemaps: true` they make none.
+
+## Return `pipeline()`, not a `.pipe()` chain
+
+When a stream in the middle of a `.pipe()` chain fails, gulp never hears the task end: it hangs at "Starting…" and a watcher stops running it. `pipeline` from `node:stream/promises` ends the task with the error:
+
+```js
+import { pipeline } from 'node:stream/promises';
+
+export const styles = () => pipeline(src('src/scss/*.scss'), scssCompiler(), cssSqueezer(), dest('dist/css'));
+```
+
+In a dev task, start the watchers without returning them: a failing task is then reported and the next change runs it again, instead of the error ending the whole dev task.
+
+```js
+export const serve = (done) => {
+  watch('src/scss/**', styles);
+  done();
+};
+```
+
+## ES modules and TypeScript gulpfiles
+
+The packages are ES modules. Use them from:
+
+* `gulpfile.mjs`, or `gulpfile.js` with `"type": "module"` in package.json: `import`.
+* a CommonJS `gulpfile.js`: `const { cssSqueezer } = require('@zilero/gulp-css-squeezer')` (Node.js 22.12+ loads ES modules with `require`).
+* `gulpfile.ts`. gulp-cli loads it through a register module it looks for in a fixed order: ts-node, sucrase, @babel/register, esbuild-register, @swc/register. Node's own TypeScript support is not registered for `require`, so without one of them gulp-cli prints an error for each before falling back. Install esbuild-register:
+
+```sh
+npm install --save-dev esbuild-register esbuild
+```
+
+It compiles the gulpfile and the files it imports on the fly, ES modules included (`"type": "module"`), on every supported Node.js. sucrase does not work with `"type": "module"`, and gulp-cli picks it before esbuild-register when it is installed. The compiled code runs as CommonJS, so top-level `await` is not available in the gulpfile.
+
+The plugins ship their types, and `Vinyl` (the file type hooks receive) is exported by `@zilero/gulp-plugin-factory`.
+
+## Files without contents and streams
+
+`src(…, { read: false })` and directories give files without contents. The plugins pass them through untouched, except the ones that work on paths ([refilename](/plugins/refilename), [file-exclude](/plugins/file-exclude), [conditional](/plugins/conditional), [folder-clone](/plugins/folder-clone), [file-changed](/plugins/file-changed)).
+
+`src(…, { buffer: false })` gives streamed contents. Only [archive-creator](/plugins/archive-creator) accepts them; the others emit `Streaming is not supported`.
+
+---
+
+---
+url: /gulp-plugins-hub/guide/recipes.md
+---
+# Recipes
+
+## A complete site build
+
+The [example](https://github.com/Zilero232/gulp-plugins-hub/tree/master/apps/example) in the repository is a static site built with every plugin, set up the way a gulp 5 build is in 2026 (TypeScript gulpfile through esbuild-register); CI runs it on the published builds. Its shape:
+
+```text
+apps/example/
+├── gulpfile.ts          the public tasks: build, release, clean and the default dev task
+├── .browserslistrc      the browsers css-squeezer prefixes for
+└── gulp/
+    ├── config.ts        paths, the --production flag, the version
+    ├── tasks/           one task per file: pages, styles, scripts, assets, statics, revision, archive, serve
+    └── utils/           the dev server, a `when` helper for steps that run in one mode only
+```
+
+```sh
+npx gulp                       # build, serve with live reload, rebuild on change
+npx gulp build --production    # minified, no source maps, AVIF images
+npx gulp release --production  # plus hashed asset names in release/site/ and release/site-v1.0.0.zip
+npx gulp --tasks               # the tasks with their descriptions
+```
+
+### Configuration
+
+```ts
+// gulp/config.ts
+import { parseArgs } from 'node:util';
+
+const { values } = parseArgs({ options: { production: { type: 'boolean', default: false } }, strict: false });
+
+export const production = values.production === true || process.env.NODE_ENV === 'production';
+```
+
+### Pages
+
+```ts
+export const pages = () =>
+  pipeline(
+    src('src/pages/**/*.pug'),
+    pugCompiler({
+      pugOptions: { basedir: 'src', pretty: !production }, // `extends /templates/_layout.pug` resolves from src/
+      data: ({ file }) => ({ page: file.stem, year: new Date().getFullYear() })
+    }),
+    when({ condition: production, then: () => htmlSqueezer({ preset: 'comprehensive' }) }),
+    dest('dist')
+  );
+```
+
+### Styles, with source maps in development
+
+```ts
+export const styles = () =>
+  pipeline(
+    src('src/scss/**/*.scss', { sourcemaps: !production }),
+    scssCompiler(), // partials (_*.scss) are skipped
+    cssSqueezer({ minify: production }), // prefixes for .browserslistrc
+    dest('dist/css', { sourcemaps: '.' }),
+    server.stream({ match: '**/*.css' }) // browser-sync injects the CSS without a reload
+  );
+```
+
+### Scripts
+
+Bundle the application's modules with a bundler, called from the task; keep gulp plugins for what bundlers do not do:
+
+```ts
+const app = () =>
+  esbuild.build({ entryPoints: ['src/js/main.js'], outfile: 'dist/js/app.js', bundle: true, minify: production });
+
+// Third-party snippets that stay classic scripts: joined in order, filled in, minified.
+const vendor = () =>
+  pipeline(
+    src('src/js/vendor/*.js'),
+    fileConcat({ name: 'vendor.js', order: 'polyfills.js' }),
+    textReplace({ rules: { search: '__ANALYTICS_ID__', replace: process.env.ANALYTICS_ID ?? 'G-EXAMPLE' } }),
+    when({ condition: production, then: () => jsSqueezer() }),
+    dest('dist/js')
+  );
+
+export const scripts = parallel(app, vendor);
+```
+
+### Images and fonts in one task
+
+```ts
+export const assets = () =>
+  pipeline(
+    src('src/{images,fonts}/**', { encoding: false }),
+    fileChanged({ dest: 'dist', target: builtPath }), // encoding is slow: skip what did not change
+    conditional({
+      handlers: [
+        { condition: ({ file }) => isImage(file), handler: () => imageSqueezer({ formats: ['original', 'webp'] }) },
+        { condition: ({ file }) => isFont(file), handler: () => fontSwitcher({ formats: ['woff2', 'woff'] }) }
+      ]
+    }),
+    dest('dist')
+  );
+```
+
+### Release: hashed names and a zip
+
+```ts
+const revision = () =>
+  pipeline(
+    src('dist/**', { encoding: false }),
+    assetRevision({ exclude: ['*.html', '*.map', 'robots.txt'], manifest: true }),
+    dest('release/site')
+  );
+
+const archive = () =>
+  pipeline(
+    src('release/site/**', { encoding: false }),
+    archiveCreator({ name: 'site.zip' }),
+    refilename({ suffix: `-v${version}` }),
+    dest('release')
+  );
+
+export const release = series(build, revision, archive);
+```
+
+### Dev server
+
+```ts
+export const serve = (done) => {
+  server.init({ server: 'dist', open: false });
+
+  watch('src/**/*.pug', series(pages, reload));
+  watch('src/scss/**', styles);
+  watch('src/static/**', series(statics, reload)).on('unlink', (file) => rm(toDist(file), { force: true }));
+
+  done(); // the watchers are not returned: a failing task is reported, and the next change runs it again
+};
+```
+
+## Incremental builds
+
+* **In one watch session**, `src(globs, { since: lastRun(task) })` reads only the files changed since the task last ran. It suits tasks that copy files one to one.
+* **Across runs** (restarting the dev server, running `gulp images` again), [file-changed](/plugins/file-changed) compares with what is already in the output folder. It suits slow work such as image and font encoding.
+* Neither suits Sass, Pug or bundles, whose files depend on each other: rebuild their entry points.
+
+## Responsive images
+
+```js
+src('src/images/photos/*.jpg', { encoding: false })
+  .pipe(imageSqueezer({ formats: ['original', 'webp', 'avif'], widths: [480, 960, 1920] }))
+  .pipe(dest('dist/images/photos'));
+```
+
+```html
+<picture>
+  <source type="image/avif" srcset="/images/photos/beach-480w.avif 480w, /images/photos/beach-960w.avif 960w" />
+  <source type="image/webp" srcset="/images/photos/beach-480w.webp 480w, /images/photos/beach-960w.webp 960w" />
+  <img src="/images/photos/beach-960w.jpg" srcset="/images/photos/beach-480w.jpg 480w" alt="" />
+</picture>
+```
+
+## Only the glyphs a page needs
+
+```js
+src('src/fonts/Display.ttf', { encoding: false })
+  .pipe(fontSwitcher({ formats: 'woff2', subset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' }))
+  .pipe(dest('dist/fonts'));
+```
+
+## A step in one mode only
+
+Plugins are plain functions, so a JavaScript condition decides when the whole stream takes the same path:
+
+```ts
+import { PassThrough } from 'node:stream';
+
+const when = ({ condition, then }) => (condition ? then() : new PassThrough({ objectMode: true }));
+```
+
+Use [conditional](/plugins/conditional) when the decision depends on each file.
+
+---
+
+---
+url: /gulp-plugins-hub/guide/writing-plugins.md
+---
+# Writing a plugin
+
+Every plugin in the hub is built with `@zilero/gulp-plugin-factory`. It turns a function that changes one file into a stream that follows the [gulp plugin guidelines](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md): files without contents pass through, streamed contents are refused, errors become `PluginError`s with the plugin name and file and are emitted rather than thrown, and files leave in the order they came.
+
+```sh
+npm install @zilero/gulp-plugin-factory zod
+```
+
+## A banner plugin
+
+```ts
+import { createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import { z } from 'zod';
+
+const PLUGIN_NAME = 'gulp-banner';
+
+const optionsSchema = z
+  .object({ text: z.string().min(1), extensions: z.array(z.string()).default(['.js', '.css']) })
+  .strict();
+
+export type BannerOptions = z.input<typeof optionsSchema>;
+
+export const banner = (options: BannerOptions) => {
+  // Checked when the plugin is created: invalid options throw a PluginError listing every problem.
+  const { text, extensions } = parseOptions({ name: PLUGIN_NAME, schema: optionsSchema, options });
+
+  return createPlugin({
+    name: PLUGIN_NAME,
+    // Other files pass through untouched.
+    filter: (file) => extensions.includes(file.extname),
+    transform: (file) => {
+      file.contents = Buffer.concat([Buffer.from(`${text}\n`), file.contents]);
+    }
+  });
+};
+```
+
+## What `transform` returns
+
+| Return            | Effect                                                   |
+| ----------------- | -------------------------------------------------------- |
+| nothing           | The file, changed in place, goes on.                     |
+| `null`            | The file is dropped.                                     |
+| a file            | That file goes on instead.                               |
+| an array of files | Each of them goes on, in order: one input, many outputs. |
+
+`transform` may be async; the next file waits for it. To emit files that do not come from one input (a bundle, a manifest), collect in `transform`, return `null`, and `push` the result from `flush`:
+
+```ts
+import { createPlugin, Vinyl } from '@zilero/gulp-plugin-factory';
+import path from 'node:path';
+
+export const fileList = () => {
+  const names: string[] = [];
+
+  return createPlugin({
+    name: 'gulp-file-list',
+    transform: (file) => {
+      names.push(file.relative);
+      return null;
+    },
+    // A path under the working directory, so `dest('dist')` writes dist/files.txt.
+    flush: ({ push }) => push(new Vinyl({ path: path.resolve('files.txt'), contents: Buffer.from(names.join('\n')) }))
+  });
+};
+```
+
+## Files without contents and streams
+
+By default `transform` gets only files with Buffer contents (`accept: 'buffer'`): files without contents pass through and streamed contents emit `Streaming is not supported`. Set `accept: 'any'` to get every file, for plugins that work on paths or handle streams themselves.
+
+## Source maps
+
+When `src(…, { sourcemaps: true })` gave the file a map, pass it to the tool as its input map and store the tool's map:
+
+```ts
+import { applySourceMap, createPlugin, getInputSourceMap, toPosixPath } from '@zilero/gulp-plugin-factory';
+
+createPlugin({
+  name: 'gulp-my-minifier',
+  transform: async (file) => {
+    const result = await minify(file.contents.toString(), {
+      filename: toPosixPath(file.relative), // `/` on every OS, or Windows maps get backslashes
+      sourceMap: Boolean(file.sourceMap),
+      inputSourceMap: getInputSourceMap(file) // undefined when there is nothing to chain
+    });
+
+    file.contents = Buffer.from(result.code);
+    if (file.sourceMap && result.map) applySourceMap({ file, map: result.map });
+  }
+});
+```
+
+For a tool that cannot take an input map, let `applySourceMap` chain it: `applySourceMap({ file, map, chain: true })`. To chain several inputs into one map yourself (a bundle), `getChainableSourceMap(file)` gives each file's map with absolute sources, ready for `@jridgewell/remapping`.
+
+## Binary files
+
+Call `assertBinaryContents(file)` first in plugins for images, fonts or other binary formats: when gulp 5 read the file as UTF-8 (no `encoding: false`), it throws an error that tells the user how to fix it.
+
+## Options with any schema library
+
+`parseOptions` takes any synchronous [Standard Schema](https://standardschema.dev): zod 4, valibot, arktype and others. Check callbacks with `isFunction` rather than zod's `z.function()`, which wraps the function and validates its result, and breaks async hooks. `ContentHook` is the type of a hook on a file's text, and `isRelativePathInside` checks paths that must stay inside an output folder:
+
+```ts
+import type { ContentHook } from '@zilero/gulp-plugin-factory';
+
+import { isFunction, isRelativePathInside } from '@zilero/gulp-plugin-factory';
+import { z } from 'zod';
+
+const optionsSchema = z
+  .object({
+    name: z.string().refine(isRelativePathInside, 'Expected a path inside the output folder'),
+    onBeforeWrite: z.custom<ContentHook>(isFunction, 'Expected a function').optional()
+  })
+  .strict();
+```
+
+## Testing
+
+```ts
+import { createFile, getContents, runPlugin } from '@zilero/gulp-plugin-factory/testing';
+import { expect, it } from 'vitest';
+
+import { banner } from './banner';
+
+it('adds the banner to scripts only', async () => {
+  const [script, image] = await runPlugin(banner({ text: '/*! hi */' }), [
+    createFile({ path: 'app.js', contents: 'run();' }),
+    createFile({ path: 'logo.png', contents: 'png' })
+  ]);
+
+  expect(getContents(script).toString()).toBe('/*! hi */\nrun();');
+  expect(getContents(image).toString()).toBe('png');
+});
+```
+
+Compare paths with `getRelativePath(file)`, which uses `/` on every OS, so the tests pass on Windows too.
+
+The full API is in the [factory reference](/reference/factory) and the [testing reference](/reference/testing).
+
+---
+
+---
+url: /gulp-plugins-hub/guide/migration.md
+---
+# Migrating from 1.x
+
+2.0 rewrites every package for gulp 5 and Node.js 22.13+. The packages keep their names; the options changed where 1.x had bugs or nested everything under `pluginOptions`.
+
+## Everywhere
+
+* **Node.js 22.13+**, ES modules. In a CommonJS gulpfile use the named export: `const { scssCompiler } = require('@zilero/gulp-scss-compiler')`.
+* **gulp is no longer a peer dependency**, as the [gulp guidelines](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md) ask.
+* **Hooks are flat and get the file**: `pluginOptions: { onBeforeMinify(content) }` became `onBeforeMinify({ content, file })`.
+* **Errors** are `PluginError`s with the plugin name and file, emitted on the stream. Invalid options list every problem instead of printing a box and throwing an empty error.
+* **Files without contents** (directories, `read: false`) pass through instead of failing with `File is null`.
+* **Files outside a plugin's formats pass through**: the minifiers and compilers only touch their own extensions.
+* **Binary files** need `src(globs, { encoding: false })` with gulp 5; image and font plugins say so when they get a file read as text.
+
+## Package by package
+
+| Package              | 1.x                                                                                            | 2.0                                                                                                                                                |
+| -------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| gulp-plugin-factory  | `GulpPluginFactory({ pluginName, onFile, onFinish })`; `undefined` dropped the file            | `createPlugin({ name, transform, flush })`; nothing returned keeps the file, `null` drops it. Plus `parseOptions`, source map and testing helpers. |
+| gulp-refilename      | object only                                                                                    | also a file name string or a function of the path parts                                                                                            |
+| gulp-file-exclude    | `patterns` matched as substrings; `size: [min, max]`; `onExclude`                              | `patterns` are globs or RegExps; `size: { min, max }`; `exclude`                                                                                   |
+| gulp-conditional     | the condition was checked once, for the whole stream                                           | checked per file, conditions get the file, branches created on first use                                                                           |
+| gulp-folder-clone    | `onBeforeCopy`; files passed through unchanged                                                 | copies every file into `dirs`; `keepOriginal`, `onClone`                                                                                           |
+| gulp-archive-creator | `format`, `archiveOptions`, `pluginOptions.archiveName`                                        | `name` (format from its extension), `format`, `archiverOptions`, `emptyArchive`, `directories`; tgz                                                |
+| gulp-font-switcher   | fontmin; `pluginOptions.format`, `fontOptions.glyph`                                           | harfbuzz subsetting and fontverter, every OpenType table kept (no native build); `formats` (several at once), `subset`, `hinting`, `keepOriginal`  |
+| gulp-html-squeezer   | html-minifier-terser, nothing minified without options                                         | html-minifier-next, `preset: 'conservative'` by default                                                                                            |
+| gulp-js-squeezer     | `minifyOptions`, no source maps                                                                | `terserOptions`, source maps chained                                                                                                               |
+| gulp-pug-compiler    | rendered the file on disk, partials included                                                   | renders the contents; `data`, `extname`, `skipPartials`                                                                                            |
+| gulp-scss-compiler   | `scssOptions`; compiled the file on disk (`onBeforeCompile` was ignored), one process per file | `sassOptions`; compiles the contents with one compiler per stream; partials skipped; source maps; `.sass`                                          |
+
+Each plugin page ends with its own migration notes.
+
+## New in 2.0
+
+[css-squeezer](/plugins/css-squeezer), [image-squeezer](/plugins/image-squeezer), [file-concat](/plugins/file-concat), [text-replace](/plugins/text-replace), [asset-revision](/plugins/asset-revision) and [file-changed](/plugins/file-changed).
+
+---
+
+---
+url: /gulp-plugins-hub/plugins.md
+---
+# Plugins
+
+Every plugin is its own package under the `@zilero` scope: install only what the build uses.
+
+```sh
+npm install --save-dev gulp @zilero/gulp-scss-compiler @zilero/gulp-css-squeezer
+```
+
+## Compile
+
+| Plugin                                  | Does                                                                | Replaces  |
+| --------------------------------------- | ------------------------------------------------------------------- | --------- |
+| [pug-compiler](/plugins/pug-compiler)   | Pug templates to HTML, with data per file; partials are skipped.    | gulp-pug  |
+| [scss-compiler](/plugins/scss-compiler) | SCSS and indented Sass to CSS with sass-embedded, source maps kept. | gulp-sass |
+
+## Optimize
+
+| Plugin                                    | Does                                                                           | Replaces                          |
+| ----------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------- |
+| [html-squeezer](/plugins/html-squeezer)   | Minifies HTML with html-minifier-next presets.                                 | gulp-htmlmin                      |
+| [css-squeezer](/plugins/css-squeezer)     | Minifies, prefixes and lowers CSS for your browsers with Lightning CSS.        | gulp-clean-css, gulp-autoprefixer |
+| [js-squeezer](/plugins/js-squeezer)       | Minifies JavaScript with terser, source maps chained.                          | gulp-terser, gulp-uglify          |
+| [image-squeezer](/plugins/image-squeezer) | Optimizes images, converts to WebP and AVIF, resizes for `srcset`, with sharp. | gulp-imagemin, gulp-webp          |
+| [font-switcher](/plugins/font-switcher)   | Converts fonts to woff2, woff, ttf, eot and svg, with glyph subsetting.        | gulp-ttf2woff2, gulp-fontmin      |
+
+## Transform
+
+| Plugin                                      | Does                                                                           | Replaces                   |
+| ------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------- |
+| [file-concat](/plugins/file-concat)         | Joins files into one, in the order you set, with a header and footer.          | gulp-concat, gulp-header   |
+| [text-replace](/plugins/text-replace)       | Replaces text with strings, regular expressions or async functions.            | gulp-replace, gulp-header  |
+| [refilename](/plugins/refilename)           | Renames files: a name, a prefix or suffix, an extension, a folder, a function. | gulp-rename                |
+| [asset-revision](/plugins/asset-revision)   | Content hashes in asset names, references rewritten, a manifest.               | gulp-rev, gulp-rev-rewrite |
+| [archive-creator](/plugins/archive-creator) | Packs the stream into a zip, tar or tar.gz archive.                            | gulp-zip, gulp-tar         |
+
+## Route and filter
+
+| Plugin                                | Does                                                                   | Replaces                 |
+| ------------------------------------- | ---------------------------------------------------------------------- | ------------------------ |
+| [conditional](/plugins/conditional)   | Sends each file through the first branch whose condition holds for it. | gulp-if                  |
+| [file-exclude](/plugins/file-exclude) | Drops files by glob, regular expression, size or predicate.            | gulp-filter, gulp-ignore |
+| [file-changed](/plugins/file-changed) | Lets through only the files that changed since the last build.         | gulp-changed, gulp-newer |
+| [folder-clone](/plugins/folder-clone) | Copies every file into extra folders in one pass.                      | gulp-clone               |
+
+All of them are built with the [plugin factory](/guide/writing-plugins), which you can use for your own.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/pug-compiler.md
+---
+# pug-compiler
+
+Renders Pug templates to HTML from the file contents, so earlier plugins can change them. Locals come from an object or a function of each file, includes and `extends` resolve from the file's own path, and partials such as `_layout.pug` are dropped.
+
+```sh
+npm install --save-dev @zilero/gulp-pug-compiler
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import pugCompiler from '@zilero/gulp-pug-compiler';
+
+export const pages = () =>
+  src('src/**/*.pug')
+    .pipe(pugCompiler({ data: { year: 2026 }, pugOptions: { pretty: true } })) // index.pug → index.html
+    .pipe(dest('dist'));
+```
+
+`data` can be a function that returns the locals for each file, the output can have another extension, and `onBeforeCompile` changes the template before pug sees it:
+
+```js
+pugCompiler({ data: async ({ file }) => ({ page: file.stem }) }); // front matter, a JSON file next to it, …
+pugCompiler({ extname: '.php' }); // index.pug → index.php
+pugCompiler({ onBeforeCompile: ({ content }) => content.replaceAll('{{year}}', '2026') });
+```
+
+## Options
+
+| Option            | Type                                                | Default   | Description                                                                                                     |
+| ----------------- | --------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| `pugOptions`      | `Options`                                           | —         | Passed to pug as an object: `pretty`, `doctype`, `filters`, `basedir`, … `filename` is set by the plugin.       |
+| `data`            | `object \| ({ file }) => object \| Promise<object>` | —         | Locals for every template, or a function that returns them for each file.                                       |
+| `extname`         | `string`                                            | `'.html'` | The extension of the output, with its dot.                                                                      |
+| `skipPartials`    | `boolean`                                           | `true`    | Drop files whose name starts with `_` (layouts, mixins, includes) instead of rendering them.                    |
+| `onBeforeCompile` | `({ content, file }) => string \| Promise<string>`  | —         | Runs on the template source before pug and returns the source to compile. The file still has its own extension. |
+| `onAfterCompile`  | `({ content, file }) => string \| Promise<string>`  | —         | Runs on the rendered HTML and returns the final HTML. The file already has its new extension.                   |
+
+Unknown keys, an extension without its dot such as `'html'`, a `data` that is neither an object nor a function and a `pugOptions` that is not an object are an error when the plugin is created.
+
+## Notes
+
+* Only `.pug` and `.jade` files are rendered, in any case. Other files, and files without contents (`read: false`), pass through untouched.
+* Relative includes and `extends` resolve from the file's path. Absolute ones (`include /templates/_nav.pug`) resolve from `basedir`, which defaults to `file.base`: the folder before the first glob in `src()`.
+* With `skipPartials`, partials leave the stream, so they are not written to `dest`; templates still include them from disk.
+* No source maps are produced. A file that already has one (`src(…, { sourcemaps: true })`) keeps it, with `sourceMap.file` following the new extension.
+* An error from pug, `data` or a hook, such as a template pug cannot compile or render, emits a PluginError with the file path.
+* Templates are compiled with `compileDebug: true`, so an error while rendering quotes the lines of the compiled text, the contents as earlier plugins left them, instead of reading the file from disk. Set `pugOptions: { compileDebug: false }` to turn it off.
+* The compiler is [pug](https://pugjs.org) 3; its options go through `pugOptions`.
+
+## Migrating from 1.x
+
+* 1.x compiled the file from disk with `compileFile`, ignoring changes made by earlier plugins. Now the file contents are compiled.
+* `data` is new: locals as an object or a function of the file.
+* `extname` is new; the default stays `.html`.
+* Partials (`_*.pug`) are dropped by default; 1.x rendered every `.pug` file, partials included. `skipPartials: false` keeps them.
+* `onAfterCompile` moved from `pluginOptions` to the top level and gets `{ content, file }`.
+* `onBeforeCompile` is new: it changes the template source before pug.
+* `basedir` defaults to `file.base`, so absolute includes work without options.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/scss-compiler.md
+---
+# scss-compiler
+
+Compiles SCSS and indented Sass to CSS with the modern Sass compiler (sass-embedded), from the file contents. One compiler process serves each stream, partials are dropped, and the file gets a source map when it had one.
+
+```sh
+npm install --save-dev @zilero/gulp-scss-compiler
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import scssCompiler from '@zilero/gulp-scss-compiler';
+
+export const styles = () =>
+  src('src/styles/**/*.scss')
+    .pipe(scssCompiler({ sassOptions: { style: 'compressed' } })) // main.scss → main.css
+    .pipe(dest('dist/css'));
+```
+
+With source maps:
+
+```js
+export const styles = () =>
+  src('src/styles/**/*.scss', { sourcemaps: true })
+    .pipe(scssCompiler())
+    .pipe(dest('dist/css', { sourcemaps: '.' })); // main.css and main.css.map
+```
+
+## Options
+
+| Option            | Type                                               | Default | Description                                                                                                                                 |
+| ----------------- | -------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sassOptions`     | `StringOptions`                                    | `{}`    | Passed to Sass: `style`, `loadPaths`, `importers`, `functions`, `silenceDeprecations`, … except `url`, `syntax` and the source map options. |
+| `skipPartials`    | `boolean`                                          | `true`  | Drop partials (`_variables.scss`) instead of compiling them on their own.                                                                   |
+| `onBeforeCompile` | `({ content, file }) => string \| Promise<string>` | —       | Runs on the source before Sass and returns the source to compile.                                                                           |
+| `onAfterCompile`  | `({ content, file }) => string \| Promise<string>` | —       | Runs on the compiled CSS and returns the final CSS. The file is already renamed to `.css`. Source maps do not follow changes made here.     |
+
+Unknown keys, and a `sassOptions` that is not an object, are an error when the plugin is created.
+
+## Notes
+
+* `.scss` files are compiled as SCSS and `.sass` files as indented syntax, in any case; both become `.css`. Other files, plain `.css` included, and files without contents (`read: false`) pass through untouched.
+* `@use` and `@import` resolve relative to the file, then from `sassOptions.loadPaths`, then from `file.base`, which is always searched.
+* With `skipPartials`, partials leave the stream, so they are not written to `dest`; other files still load them from disk.
+* With `src(…, { sourcemaps: true })`, Sass writes a map with the sources included, relative to `file.base`. Without it, no map is made. `sourceMap`, `sourceMapIncludeSources`, `syntax` and `url` come from the file, not from `sassOptions`.
+* Each stream gets one Sass compiler. It starts with the first Sass file to compile and stops when the stream ends or is destroyed by an error, so it never outlives the task.
+* A compiler that fails to start, for example because the sass-embedded binary for your platform is missing, fails the file that needed it with a PluginError naming its path, and that error ends the stream as any other error does. The start is not retried for later files.
+* A Sass error emits a PluginError that points at the stylesheet where it happened, often a partial, and its line. The message is Sass's own, without the `Error:` prefix, and the details leave out Sass's raw span objects. Other errors, from a hook for example, name the file being compiled.
+* The compiler is [sass-embedded](https://sass-lang.com/dart-sass/), the Dart Sass compiler; its options go through `sassOptions`.
+
+## Migrating from 1.x
+
+* `scssOptions` is renamed to `sassOptions`; `url`, `syntax` and `sourceMap` are no longer options because they come from the file.
+* 1.x compiled the file from disk, so the result of `onBeforeCompile` was ignored. Now the file contents are compiled, including changes from earlier plugins and from the hook.
+* One sass-embedded compiler serves each stream instead of a Sass process per file, and it is stopped at the end or on an error.
+* `.sass` files with the indented syntax are supported.
+* Partials are dropped by default; 1.x compiled them as well. `skipPartials: false` keeps them.
+* Source maps are applied when the file has one; 1.x applied none.
+* The hooks moved from `pluginOptions` to the top level and get `{ content, file }`. `onAfterCompile` sees the file already renamed to `.css`.
+* Errors are prefixed with `@zilero/gulp-scss-compiler`; 1.x said `GulpScssSqueezer`.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/html-squeezer.md
+---
+# html-squeezer
+
+Minifies HTML with html-minifier-next, starting from one of its presets: comments and redundant attributes go, and the `comprehensive` preset also minifies inline CSS, JavaScript and SVG. Other files pass through.
+
+```sh
+npm install --save-dev @zilero/gulp-html-squeezer
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import htmlSqueezer from '@zilero/gulp-html-squeezer';
+
+export const html = () =>
+  src('dist/**/*.html')
+    .pipe(htmlSqueezer({ preset: 'comprehensive' }))
+    .pipe(dest('dist'));
+```
+
+Options from `htmlMinifierOptions` are applied over the preset, and the hooks change the markup around the minifier:
+
+```js
+htmlSqueezer({ preset: 'comprehensive', htmlMinifierOptions: { removeAttributeQuotes: false } }); // keep quotes
+htmlSqueezer({ preset: false, htmlMinifierOptions: { removeComments: true } }); // only what you list
+htmlSqueezer({ onAfterMinify: ({ content, file }) => `<!-- ${file.basename} -->\n${content}` });
+```
+
+## Options
+
+| Option                | Type                                               | Default          | Description                                                                                                                                |
+| --------------------- | -------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `preset`              | `'conservative' \| 'comprehensive' \| false`       | `'conservative'` | The html-minifier-next preset to start from. `conservative` is safe for any page, `comprehensive` gives the smallest output, `false` none. |
+| `htmlMinifierOptions` | `MinifierOptions`                                  | —                | html-minifier-next options as an object, applied over the preset.                                                                          |
+| `onBeforeMinify`      | `({ content, file }) => string \| Promise<string>` | —                | Runs on the markup before minification and returns the markup to minify.                                                                   |
+| `onAfterMinify`       | `({ content, file }) => string \| Promise<string>` | —                | Runs on the minified markup and returns the final markup.                                                                                  |
+
+Unknown keys, an unknown preset and an `htmlMinifierOptions` that is not an object are an error when the plugin is created.
+
+## Notes
+
+* Only `.html` and `.htm` files are minified, in any case (`INDEX.HTML` too). Other files, and files without contents (`read: false`), pass through untouched.
+* `.xhtml` files pass through as well: the presets drop closing slashes and attribute values, which XHTML served as XML does not allow.
+* Source maps are not updated: HTML has none to follow.
+* An error from the minifier or a hook, such as markup it cannot parse, emits a PluginError with the file path.
+* The minifier is [html-minifier-next](https://github.com/j9t/html-minifier-next); every one of its options goes through `htmlMinifierOptions`.
+
+## Migrating from 1.x
+
+* html-minifier-terser 7, which is no longer maintained, is replaced by html-minifier-next 9.
+* 1.x had no defaults, so without options it barely minified anything. Now the `conservative` preset applies by default; `preset: false` with your own `htmlMinifierOptions` gets the old behavior.
+* The hooks moved from `pluginOptions` to the top level and get `{ content, file }` instead of the content alone.
+* Only HTML files are processed; 1.x ran the minifier on every file in the stream.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/css-squeezer.md
+---
+# css-squeezer
+
+Minifies CSS, adds the vendor prefixes your browsers need and lowers modern syntax (nesting, `oklch()`, …) with Lightning CSS: clean-css and autoprefixer in one pass. When the file has a source map, the new map is chained to it.
+
+```sh
+npm install --save-dev @zilero/gulp-css-squeezer
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import cssSqueezer from '@zilero/gulp-css-squeezer';
+
+export const styles = () =>
+  src('dist/css/**/*.css')
+    .pipe(cssSqueezer({ targets: '> 0.5%, last 2 versions, not dead' }))
+    .pipe(dest('dist/css'));
+```
+
+With source maps, after a Sass compiler for example:
+
+```js
+import scssCompiler from '@zilero/gulp-scss-compiler';
+
+export const styles = () =>
+  src('src/styles/**/*.scss', { sourcemaps: true })
+    .pipe(scssCompiler())
+    .pipe(cssSqueezer())
+    .pipe(dest('dist/css', { sourcemaps: '.' })); // the map points to the .scss sources
+```
+
+## Options
+
+| Option                | Type                                               | Default                                      | Description                                                                                                     |
+| --------------------- | -------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `targets`             | `string \| string[]`                               | the browserslist config nearest to each file | The browsers to support, as a browserslist query: `'defaults'`, `['> 0.5%', 'not dead']`. See below.            |
+| `minify`              | `boolean`                                          | `true`                                       | Minify the output. `false` only adds prefixes and lowers syntax.                                                |
+| `lightningcssOptions` | `TransformOptions`                                 | —                                            | Other Lightning CSS options, as an object: `drafts`, `nonStandard`, `errorRecovery`, `cssModules`, `visitor`, … |
+| `onBeforeMinify`      | `({ content, file }) => string \| Promise<string>` | —                                            | Runs on the source before Lightning CSS and returns the stylesheet to process.                                  |
+| `onAfterMinify`       | `({ content, file }) => string \| Promise<string>` | —                                            | Runs on the output and returns the final stylesheet. Source maps do not follow changes made here.               |
+
+Unknown keys, an empty `targets` query and a `lightningcssOptions` that is not an object are an error when the plugin is created. So is a query browserslist does not understand, with `Invalid targets: …` and browserslist's message, before any file is read.
+
+### Targets
+
+The browsers come from the first of these that exists:
+
+1. The `targets` option.
+2. The browserslist config nearest to the file: a `.browserslistrc` or the `browserslist` key of a `package.json`, looked up from the file's folder upward. It is resolved once per folder: files in the same folder share the result.
+3. browserslist's defaults.
+
+Prefixes are added and syntax is lowered only as far as those browsers need: for `chrome 130` nesting stays as it is, for `safari 10` it is flattened and `user-select` gets its `-webkit-` prefix.
+
+## Notes
+
+* Only `.css` files are processed, in any case. Other files, and files without contents (`read: false`), pass through untouched.
+* With `src(…, { sourcemaps: true })`, Lightning CSS writes a map, and the plugin chains it to the map the file already had, such as the one from a Sass compiler: the result points to the `.scss` sources only, without the intermediate CSS file as an extra source. Source names use `/` on every OS.
+* A syntax error from Lightning CSS emits a PluginError with the file path, `lineNumber` set and the message suffixed with where it is: `Unexpected end of input (line 3, column 1)`. Other errors from Lightning CSS or a hook emit a PluginError with the file path. `lightningcssOptions: { errorRecovery: true }` skips invalid rules instead.
+* The tool is [Lightning CSS](https://lightningcss.dev); its options go through `lightningcssOptions`, except `code`, `filename`, `sourceMap`, `minify` and `targets`, which the plugin sets, and `inputSourceMap`, since the plugin chains the input map itself.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/js-squeezer.md
+---
+# js-squeezer
+
+Minifies JavaScript with terser. When the file has a source map, the new map is chained to it, so the minified code still points to the original sources. Other files pass through.
+
+```sh
+npm install --save-dev @zilero/gulp-js-squeezer
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import jsSqueezer from '@zilero/gulp-js-squeezer';
+
+export const scripts = () =>
+  src('src/js/**/*.js')
+    .pipe(jsSqueezer({ terserOptions: { module: true, compress: { drop_console: true } } }))
+    .pipe(dest('dist/js'));
+```
+
+With source maps:
+
+```js
+export const scripts = () =>
+  src('src/js/**/*.js', { sourcemaps: true })
+    .pipe(jsSqueezer())
+    .pipe(dest('dist/js', { sourcemaps: '.' })); // app.js and app.js.map
+```
+
+## Options
+
+| Option           | Type                                               | Default | Description                                                                                                                 |
+| ---------------- | -------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `terserOptions`  | `Omit<MinifyOptions, 'sourceMap'>`                 | `{}`    | Passed to terser's `minify`: `compress`, `mangle`, `format`, `module`, … Not `sourceMap`: the plugin sets it from the file. |
+| `onBeforeMinify` | `({ content, file }) => string \| Promise<string>` | —       | Runs on the source before terser and returns the code to minify.                                                            |
+| `onAfterMinify`  | `({ content, file }) => string \| Promise<string>` | —       | Runs on terser's output and returns the final code. Source maps do not follow changes made here.                            |
+
+Unknown keys, and a `terserOptions` that is not an object, are an error when the plugin is created.
+
+## Notes
+
+* Only `.js`, `.mjs` and `.cjs` files are minified, in any case. Other files, and files without contents (`read: false`), pass through untouched.
+* With `src(…, { sourcemaps: true })`, terser writes a map with the sources included and chains it to the map the file already had (from a bundler or an earlier plugin). `dest(…, { sourcemaps: '.' })` writes it next to the file. Without a map on the file, none is made.
+* Source names in the map are relative to `file.base` and use `/` on every OS, Windows included.
+* An error from terser or a hook, such as code terser cannot parse, emits a PluginError with the file path.
+* The minifier is [terser](https://terser.org); its options go through `terserOptions`, except `sourceMap`. Set `module: true` for ES modules.
+
+## Migrating from 1.x
+
+* `minifyOptions` is renamed to `terserOptions`.
+* The hooks moved from `pluginOptions` to the top level and get `{ content, file }` instead of the content alone.
+* Source maps are new: 1.x produced none.
+* Only JavaScript files are processed; 1.x ran terser on every file in the stream.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/image-squeezer.md
+---
+# image-squeezer
+
+Optimizes JPEG, PNG, WebP, AVIF, GIF and TIFF images with [sharp](https://sharp.pixelplumbing.com), converts them to WebP, AVIF, JPEG or PNG and resizes them to several widths for `srcset`. Photos are turned upright from the orientation stored in their metadata. SVG and other files pass through.
+
+```sh
+npm install --save-dev @zilero/gulp-image-squeezer
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import imageSqueezer from '@zilero/gulp-image-squeezer';
+
+export const images = () =>
+  src('src/images/**', { encoding: false })
+    .pipe(imageSqueezer({ formats: ['original', 'webp', 'avif'], widths: [640, 1280] }))
+    // hero.jpg → hero-640w.jpg, hero-640w.webp, hero-640w.avif, hero-1280w.jpg, …
+    .pipe(dest('dist/images'));
+```
+
+Images are binary: read them with `encoding: false`. Gulp 5 reads files as UTF-8 by default, which corrupts binary data.
+
+Without options, every image is optimized in its own format and keeps its name:
+
+```js
+imageSqueezer();
+imageSqueezer({ formats: 'webp', quality: 70 });
+imageSqueezer({ quality: { webp: 75, avif: 50 }, encoderOptions: { png: { palette: true } } });
+```
+
+## Options
+
+| Option           | Type                 | Default          | Description                                                                                                                                                                     |
+| ---------------- | -------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `formats`        | `Format \| Format[]` | `'original'`     | `'original'`, `'webp'`, `'avif'`, `'jpeg'` or `'png'`, or a list of them. `'original'` re-encodes in the source's own format. Each image becomes one file per format and width. |
+| `widths`         | `number[]`           | keep the size    | Widths in pixels: `hero.jpg` becomes `hero-640w.jpg`, `hero-1280w.jpg`, … Images are never enlarged.                                                                            |
+| `quality`        | `number \| object`   | encoder defaults | 1 to 100 for every lossy encoder, or per encoder: `{ jpeg, webp, avif, tiff }`. PNG and GIF ignore it.                                                                          |
+| `encoderOptions` | `object`             | none             | sharp options per encoder (`jpeg`, `png`, `webp`, `avif`, `gif`, `tiff`), merged over the defaults and `quality`.                                                               |
+| `keepSmaller`    | `boolean`            | `true`           | Keep the source when re-encoding it in its own format made it bigger.                                                                                                           |
+
+Unknown keys, a quality outside 1–100 and empty `formats` or `widths` lists are an error when the plugin is created.
+
+### Encoder defaults
+
+Tuned for the web: visually lossless, and AVIF at a moderate effort because it encodes slowly.
+
+| Encoder | Settings                            |
+| ------- | ----------------------------------- |
+| `jpeg`  | `quality: 80`, `mozjpeg: true`      |
+| `png`   | `compressionLevel: 9`, `effort: 10` |
+| `webp`  | `quality: 80`, `effort: 5`          |
+| `avif`  | `quality: 55`, `effort: 4`          |
+| `gif`   | `effort: 10`                        |
+| `tiff`  | `quality: 80`                       |
+
+`quality` overrides the default quality, and `encoderOptions` override both.
+
+## Notes
+
+* Files ending in `.jpg`, `.jpeg`, `.png`, `.webp`, `.avif`, `.gif`, `.tif` and `.tiff` (in any case) are processed. SVG, every other file and files without contents pass through untouched.
+
+* Outputs are ordered by width, then by the order of `formats`. A converted file takes the format's extension (`.webp`, `.avif`, `.jpg`, `.png`); `'original'` keeps the source extension.
+
+* A width larger than the image keeps the image's size, but the name still carries the width asked for: a 400 px image with `widths: [800]` becomes `photo-800w.png` at 400 px.
+
+* `keepSmaller` applies only to `'original'` without `widths`: the source is emitted unchanged when the re-encoded file is not smaller. Converted and resized files are always the encoder's output.
+
+* Photos are turned upright from the orientation stored in their metadata before resizing, so `widths` apply to the upright image.
+
+* Asking for `'original'` and the source's own format (`formats: ['original', 'png']` on a `.png`) writes the file once, as `'original'`, with the source extension.
+
+* Pages and frames are kept only between formats that can hold them:
+
+  | Source               | Output              | Keeps               |
+  | -------------------- | ------------------- | ------------------- |
+  | animated GIF or WebP | GIF or WebP         | every frame         |
+  | multi-page TIFF      | TIFF (`'original'`) | every page          |
+  | anything else        | any other format    | the first page only |
+
+* JPEG has no transparency: transparent pixels become white in JPEG output.
+
+* An image read as UTF-8 text fails with an error that names the file and says to use `src(globs, { encoding: false })`.
+
+* sharp ships prebuilt native binaries per platform as optional dependencies. An install that skips optional dependencies (`--no-optional`, `--omit=optional`) leaves them out and sharp fails to load.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/font-switcher.md
+---
+# font-switcher
+
+Converts fonts from `ttf`, `otf`, `woff`, `woff2`, `eot` and SVG fonts into `woff2`, `woff`, `ttf`, `eot` and `svg`, into one format or several at once, and can keep only the glyphs you use. Subsetting is done by [subset-font](https://github.com/papandreou/subset-font) (hb-subset) and keeps ligatures, kerning and the other OpenType features. All WebAssembly: there is no native build to install.
+
+```sh
+npm install --save-dev @zilero/gulp-font-switcher
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import fontSwitcher from '@zilero/gulp-font-switcher';
+
+export const fonts = () =>
+  src('src/fonts/*.{ttf,otf}', { encoding: false })
+    .pipe(fontSwitcher({ formats: ['woff2', 'woff'] })) // Inter.ttf → Inter.woff2, Inter.woff
+    .pipe(dest('dist/fonts'));
+```
+
+Fonts are binary: read them with `encoding: false`. Gulp 5 reads files as UTF-8 by default, which corrupts binary data.
+
+To ship only the characters a site uses, pass them as `subset`:
+
+```js
+fontSwitcher({ formats: 'woff2', subset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,!?' });
+fontSwitcher({ formats: 'woff2', subset: [0x20, 0x41, 0x42, 0x2014] }); // Unicode code points
+```
+
+## Options
+
+| Option         | Type                 | Default      | Description                                                                                                                                                                                                  |
+| -------------- | -------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `formats`      | `Format \| Format[]` | *(required)* | `'woff2'`, `'woff'`, `'ttf'`, `'eot'` or `'svg'`, or a list of them. Each font becomes one file per format.                                                                                                  |
+| `subset`       | `string \| number[]` | every glyph  | Keep only these glyphs: the characters of a string, or Unicode code points. The kept glyphs keep their OpenType features.                                                                                    |
+| `hinting`      | `boolean`            | `true`       | Keep the hinting instructions (sharper text on low-resolution screens) when subsetting and in the rebuilt formats (`ttf` from CFF, `eot`, `svg`). `woff2`, `woff` and TrueType `ttf` keep the font as it is. |
+| `keepOriginal` | `boolean`            | `false`      | Emit the source font as well as the converted ones.                                                                                                                                                          |
+
+`otf` is read but not written. Unknown keys, an empty `formats` list, an empty `subset` string and an empty list of code points are an error when the plugin is created. So is a code point that is not an integer from 0 to U+10FFFF (`0x10FFFF`), such as `0x110000` (`Expected a Unicode code point`). A format listed twice is written once.
+
+## Output formats
+
+| Output                 | Made by                                                                                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `woff2`, `woff`        | The same font in another container, every table kept ([container converter](https://github.com/papandreou/fontverter)).                               |
+| `ttf` from TrueType    | The font as it is, every table kept.                                                                                                                  |
+| `ttf` from CFF (`otf`) | Rebuilt by [fonteditor-core](https://github.com/kekee000/fonteditor-core), which turns the outlines into TrueType without the OpenType layout tables. |
+| `eot`, `svg`           | Rebuilt by fonteditor-core, without the OpenType layout tables (ligatures, kerning).                                                                  |
+
+`eot` and SVG-font inputs are read through fonteditor-core, which rebuilds them from their glyphs as TrueType, so their outputs have no OpenType layout tables either. `ttf`, `otf`, `woff` and `woff2` inputs are unpacked as they are.
+
+## Notes
+
+* Files ending in `.ttf`, `.otf`, `.woff`, `.woff2` and `.eot` (in any case) are converted, and `.svg` files that are SVG fonts (a `<font>` element inside). Every other file passes through untouched, SVG images included, and so do files without contents. An SVG with only a `<font-face>` element and no `<font>` is not a font and passes through.
+* The output keeps the name and folder and takes the format's extension: `fonts/Inter.ttf` becomes `fonts/Inter.woff2`. Outputs follow the order of `formats`; with `keepOriginal`, the source comes first and is not converted to its own format again, so `keepOriginal` with `formats: ['ttf', 'woff2']` on a `.ttf` emits the source and a woff2.
+* With `keepOriginal` and `subset`, a requested format equal to the source's is subset and takes the source's path: `keepOriginal` with `formats: ['ttf', 'woff2']` and a `subset` on a `.ttf` emits a subset ttf and a subset woff2, not the full source as well. When the source's format is not requested, the source is emitted as it is, not subset.
+* `hinting: false` drops the hinting instructions when subsetting and in the rebuilt formats (`ttf` from CFF, `eot`, `svg`); without `subset`, `woff2`, `woff` and TrueType `ttf` outputs keep the font, hinting included.
+* A binary font read as UTF-8 text fails with an error that names the file and says to use `src(globs, { encoding: false })`.
+* An encoder that produces an empty file is an error, never an empty output.
+* A broken font emits a PluginError with the file name.
+
+## Migrating from 1.x
+
+* fontmin and fonteditor-core's lossy writing were replaced: subsetting by subset-font and container conversion keep every table of the font, ligatures and kerning included. Conversion is all WebAssembly, with no native dependencies.
+* `{ pluginOptions: { format }, fontOptions: { glyph } }` becomes flat options: `format` is now `formats`, which takes one format or several, and `glyph.text` is now `subset`, which also takes code points.
+* `hinting` is a top-level option, `true` by default. There is no `kerning` option: kerning is always kept in `woff2`, `woff` and TrueType `ttf` outputs.
+* `keepOriginal` (default `false`) is new.
+* `woff`, `woff2` and `eot` fonts are read too, not only `ttf`, `otf` and `svg`.
+* Other files pass through instead of throwing an error.
+
+```js
+// 1.x
+fontSwitcher({ pluginOptions: { format: 'woff2' }, fontOptions: { glyph: { text: 'abc' } } });
+// 2.0
+fontSwitcher({ formats: 'woff2', subset: 'abc' });
+```
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/file-concat.md
+---
+# file-concat
+
+Joins every file of the stream into one, with a separator between files, an optional header and footer, and an order you set with globs. When any input has a source map, the result gets one that chains every input's own map, so it points at the original sources.
+
+```sh
+npm install --save-dev @zilero/gulp-file-concat
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import fileConcat from '@zilero/gulp-file-concat';
+
+export const scripts = () =>
+  src('src/js/**/*.js', { sourcemaps: true })
+    .pipe(
+      fileConcat({
+        name: 'bundle.js',
+        order: ['vendor/**', '**'], // vendor files first, then the rest
+        separator: ';\n',
+        header: '/*! My site */\n'
+      })
+    )
+    .pipe(dest('dist/js', { sourcemaps: '.' }));
+```
+
+The header and footer can be functions of the concatenated files, sync or async:
+
+```js
+fileConcat({ name: 'app.css', header: ({ files }) => `/* ${files.length} files */\n` });
+```
+
+## Options
+
+| Option      | Type                 | Default      | Description                                                                                                                                                     |
+| ----------- | -------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`      | `string`             | *(required)* | The result's path relative to the output folder: `app.js`, `vendor/bundle.css`. Must stay inside the output folder (not absolute, no leading `..`).             |
+| `order`     | `string \| string[]` | stream order | One glob or several, matched against the path relative to each file's `file.base`: files matching the first glob come first, then the second, …, then the rest. |
+| `separator` | `string`             | `'\n'`       | Put between two files.                                                                                                                                          |
+| `header`    | `string \| function` | none         | Added once at the start. A function gets `{ files }` (in their final order) and returns the text or a promise of it.                                            |
+| `footer`    | `string \| function` | none         | Added once at the end. Same forms as `header`.                                                                                                                  |
+
+Unknown keys, an empty `order` list and an empty glob are an error when the plugin is created.
+
+## Notes
+
+* Gulp 5 no longer keeps the order of the globs given to `src`: `src(['vendor/*.js', 'app/*.js'])` can emit `app` files first. Use `order` when the order matters.
+* The sort is stable: files matching the same glob, and files matching none, keep their stream order. Globs match dot files too.
+* Every file with contents is held until the stream ends and replaced by the single result; files without contents (directories, `read: false`) pass through. An empty stream emits nothing.
+* The result is placed under the `base` and `cwd` of the first file in the stream, so `dest` writes it at `name` inside the output folder. Files from different bases are joined too.
+* A source map is created when any input has one (`src(…, { sourcemaps: true })`). It chains each input's own map, so it points at the original sources (a compiled `js/a.js` maps back to `ts/a.ts`), with their contents included. Inputs without a map of their own are sources themselves. Source names are relative to the base of the first file: `../app/index.js` for a file from another base. This holds when `name` contains a folder too: with `name: 'vendor/bundle.js'` the sources stay relative to the base and the input maps are still chained, so `dest(…, { sourcemaps: '.' })` writes a map that resolves.
+* An empty header or footer adds nothing.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/text-replace.md
+---
+# text-replace
+
+Replaces text in every file with strings or regular expressions, with sync or async replacer functions that see the match and the file, then adds an optional header and footer. Source maps follow every change. Binary files are left alone. It replaces both gulp-replace and gulp-header/gulp-footer.
+
+```sh
+npm install --save-dev @zilero/gulp-text-replace
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import textReplace from '@zilero/gulp-text-replace';
+
+const version = '2.0.0';
+
+export const release = () =>
+  src('dist/**/*.{html,js}')
+    .pipe(
+      textReplace({
+        rules: [
+          { search: '__VERSION__', replace: version },
+          { search: /https?:\/\/localhost:\d+/g, replace: 'https://example.com' }
+        ],
+        header: ({ file }) => `/*! ${file.relative} | MIT */\n`
+      })
+    )
+    .pipe(dest('release'));
+```
+
+A replacer function gets the match, its groups, its offset and the file, and can be async:
+
+```js
+import { readFile } from 'node:fs/promises';
+
+textReplace({
+  rules: {
+    search: /<!--\s*include:(?<name>[\w.-]+)\s*-->/g,
+    replace: async ({ namedGroups }) => readFile(`src/partials/${namedGroups.name}`, 'utf8')
+  }
+});
+```
+
+## Options
+
+| Option       | Type                           | Default | Description                                                                                                            |
+| ------------ | ------------------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `rules`      | `ReplaceRule \| ReplaceRule[]` | none    | One rule or several, applied in order: each sees the result of the previous one.                                       |
+| `header`     | `string \| function`           | none    | Added at the start of every file, after the rules. A function gets `{ file }` and returns the text or a promise of it. |
+| `footer`     | `string \| function`           | none    | Added at the end of every file, after the rules. Same forms as `header`.                                               |
+| `skipBinary` | `boolean`                      | `true`  | Leave files that contain a NUL byte (images, fonts, archives) untouched.                                               |
+
+At least one of `rules`, `header` or `footer` is required ("Set at least one of rules, header or footer"). Unknown keys, an empty `rules` list and an empty search string are an error when the plugin is created.
+
+### A rule
+
+| Key       | Type                 | Description                                                                                                                          |
+| --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `search`  | `string \| RegExp`   | A string matches literally, everywhere it occurs. A RegExp follows JavaScript: add `g` for every match.                              |
+| `replace` | `string \| function` | The replacement. With a RegExp, a string's `$` patterns are filled in (see below). A function returns the replacement for one match. |
+
+The replacer function gets one object:
+
+| Field         | Description                                                      |
+| ------------- | ---------------------------------------------------------------- |
+| `match`       | The matched text.                                                |
+| `groups`      | Capture groups of a RegExp, in order; empty for a string search. |
+| `namedGroups` | Named capture groups.                                            |
+| `offset`      | Where the match starts in the contents.                          |
+| `file`        | The Vinyl file.                                                  |
+
+## Notes
+
+* A string search with a string replacement is literal on both sides: `$&`, `$1` and other `$` patterns are inserted as written, not interpreted.
+* With a RegExp, a string replacement fills in `$&`, `$1`…`$99`, `$<name>`, `` $` ``, `$'` and `$$` the way `String.prototype.replace` does. `$<name>` for a group the RegExp does not have is empty, even for a name such as `toString` (there is no prototype lookup); in a RegExp without named groups it stays as written.
+* A RegExp without `g` replaces the first match only, as `String.prototype.replace` does; with a replacer function too. A global or sticky RegExp starts from the beginning in every file: its `lastIndex` never carries over.
+* Empty matches are replaced too: `/^/gm` with `'> '` quotes every line.
+* A file counts as binary when its first 8000 bytes contain a NUL byte, the check git makes. With `skipBinary: false`, binary files are decoded as UTF-8 like the others.
+* Files without contents pass through; streamed contents (`buffer: false`) emit an error.
+* Replacers run one match at a time, in order, so an async replacer can rely on the order of the calls.
+* With `src(…, { sourcemaps: true })`, `file.sourceMap` follows every change (replacements, header, footer) and chains into the file's existing map, so it still points at the original text. When the file is the first step after `src`, the original text (`sourcesContent`) of the map `src` started is kept.
+* Source maps are built only for files that have one: files without `file.sourceMap` skip that work.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/refilename.md
+---
+# refilename
+
+Renames every file in the stream: a new name, a prefix or suffix, another extension or folder, or whatever a function of the path returns. Source maps follow the new name.
+
+```sh
+npm install --save-dev @zilero/gulp-refilename
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import refilename from '@zilero/gulp-refilename';
+
+export const scripts = () =>
+  src('src/js/*.js')
+    .pipe(refilename({ suffix: '.min' })) // app.js → app.min.js
+    .pipe(dest('dist/js'));
+```
+
+The option is one of three things:
+
+```js
+refilename('bundle.js'); // a new file name, the folder stays
+refilename({ prefix: 'v2-', extname: '.mjs' }); // changes to the parts of the path
+refilename(({ parts, file }) => ({ dirname: 'styles', stem: parts.stem.toLowerCase() })); // a function
+```
+
+## Options
+
+The option is checked when the plugin is created; an invalid one throws a `PluginError` that lists every problem.
+
+### A string
+
+The new file name with its extension. The file stays in its folder: `js/app.js` with `'bundle.js'` becomes `js/bundle.js`. The string must be a file name without a folder: `'sub/app.js'` or `'sub\\app.js'` is an error (`Expected a file name without a folder; use { dirname } to move files`), and so is an empty string, `'.'` or `'..'` (`Expected a file name`).
+
+### An object
+
+| Option    | Type     | Default | Description                                                                                          |
+| --------- | -------- | ------- | ---------------------------------------------------------------------------------------------------- |
+| `dirname` | `string` | none    | New folder, relative to `file.base`. `'.'` moves the file to the base. It must stay inside the base. |
+| `stem`    | `string` | none    | New name without the extension. Must not be empty, `.` or `..`.                                      |
+| `extname` | `string` | none    | New extension. The leading dot is optional; `''` removes the extension.                              |
+| `prefix`  | `string` | none    | Added before the stem.                                                                               |
+| `suffix`  | `string` | none    | Added after the stem, before the extension.                                                          |
+
+What the object leaves out stays as it was. Unknown keys are an error, so a typo such as `stemm` fails when the plugin is created instead of doing nothing.
+
+These values are rejected:
+
+* `dirname` that is absolute or leaves the base, such as `'../out'` (`Expected a folder inside the base`);
+* an empty `stem`, or a `stem` of `'.'` or `'..'` (`Expected a file name without the extension`);
+* a `stem`, `prefix` or `suffix` with `/` or `\` (`Expected part of a file name, without / or \`), since a folder separator would move the file;
+* an `extname` that is not an extension, such as `'.'`, `'..js'` or one with a slash (`Expected an extension, like .js or js, or an empty string`).
+
+### A function
+
+`({ parts, file }) => Partial<PathParts>` gets the current parts and the Vinyl file and returns the parts to change. It may be async and return a promise. What it leaves out, or returns as `undefined`, stays as it was. A returned `extname` without the leading dot gets one.
+
+```js
+import { stat } from 'node:fs/promises';
+
+refilename(async ({ parts, file }) => {
+  const { mtime } = await stat(file.path);
+
+  return { stem: `${parts.stem}-${mtime.getTime()}` }; // app.js → app-1730000000000.js
+});
+
+refilename(({ parts }) => ({ dirname: parts.dirname === '.' ? 'root' : undefined })); // only files in the base move
+```
+
+| Part      | Example for `css/theme.min.css` |
+| --------- | ------------------------------- |
+| `dirname` | `css`                           |
+| `stem`    | `theme.min`                     |
+| `extname` | `.css`                          |
+
+The function's result is checked like the same keys of the object option: a `dirname` outside the base, an empty `stem`, a `stem` of `.` or `..` or with `/` or `\`, or an invalid `extname` emits an error (`The rename function returned invalid parts: …`). Other keys it returns are ignored.
+
+If the new path would still end up outside `file.base`, the file emits an error instead of being renamed (`… would be renamed outside its base: …`).
+
+## Types
+
+The package exports `RefilenameOptions` (the option), `RenameObject` (the object form), `PathParts` (`dirname`, `stem`, `extname`), `RenameFunction` and `RenameInput` (`{ parts, file }`, what the function gets).
+
+## Notes
+
+* Every file is renamed, including files without contents (`read: false`), streamed contents and directories.
+* The stem is everything before the **last** extension: a suffix on `theme.min.css` gives `theme.min.suffix.css`.
+* With `src(…, { sourcemaps: true })`, `file.sourceMap.file` is updated, so `dest(…, { sourcemaps: '.' })` writes the map under the new name.
+
+## Migrating from 1.x
+
+* A string option now works; it was rejected before.
+* A function option is new.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/asset-revision.md
+---
+# asset-revision
+
+Cache-busting for a whole site: renames assets after a hash of their contents (`main.css` → `main-3f2a9c1b7d.css`), rewrites the references to them in HTML, CSS, JavaScript and other text files, and can write a manifest. Pages and source maps keep their names.
+
+```sh
+npm install --save-dev @zilero/gulp-asset-revision
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import assetRevision from '@zilero/gulp-asset-revision';
+
+export const revision = () =>
+  src('build/**', { encoding: false })
+    .pipe(assetRevision({ manifest: true }))
+    .pipe(dest('release'));
+```
+
+Read with `encoding: false` so images and fonts stay intact: gulp 5 reads files as UTF-8 by default, which corrupts binary data. Text files are still rewritten.
+
+To keep more files under their own names, list them with the defaults, because a given `exclude` replaces the default list:
+
+```js
+assetRevision({ exclude: ['*.html', '*.htm', '*.map', 'robots.txt', 'favicon.ico'] });
+```
+
+## Options
+
+| Option       | Type                           | Default                        | Description                                                                                                                                            |
+| ------------ | ------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `hashLength` | `number`                       | `10`                           | Characters of the SHA-256 hash added to names, from 4 to 64.                                                                                           |
+| `exclude`    | `string[]`                     | `['*.html', '*.htm', '*.map']` | Globs of files that keep their names; references inside them are still rewritten. Case does not matter. Replaces the default list.                     |
+| `rewrite`    | `string[] \| false`            | see below                      | Extensions (with the dot) of text files whose references are rewritten, or `false` to only rename.                                                     |
+| `manifest`   | `boolean \| { path?: string }` | `false`                        | Emit a JSON manifest of original to revised paths. `true` writes `rev-manifest.json`; `path` is relative to the output folder and must stay inside it. |
+
+The default `rewrite` list is `.html`, `.htm`, `.css`, `.svg`, `.js`, `.mjs`, `.json`, `.webmanifest`, `.xml` and `.txt`. Unknown keys are an error when the plugin is created.
+
+A glob without a slash matches the file name in any folder (`*.map` matches `js/app.js.map`); a glob with a slash matches the whole path relative to `file.base` (`img/**`). Dot files match too, and case is ignored: `*.html` matches `INDEX.HTML`.
+
+## Hashing
+
+The hash is the first `hashLength` hex characters of the SHA-256 of the file's contents, added before the extension: `css/main.css` becomes `css/main-3f2a9c1b7d.css`.
+
+A file's hash covers its rewritten references, so a change to an image also changes the names of the stylesheets and scripts that use it. Each text file in the `rewrite` list is scanned once for references to the other assets, and the assets are hashed in that reference graph's topological order: every file after the assets it references, whatever the stream order. So CSS pointing at SVG, CSS importing CSS (`@import`) and JS importing JS are all covered; files that do not depend on each other keep their stream order.
+
+Files on a reference cycle (`a.js` imports `b.js`, which imports `a.js`), the files that depend on them, and files that reference themselves (`new URL('./worker.js', import.meta.url)` in `worker.js`) cannot get a hash that covers their own new name, so they keep their names and every reference to them stays valid; only their cache-busting is lost. They are not in the manifest.
+
+Excluded files (pages, maps) and files on a cycle are rewritten last, with every revised name known.
+
+## Rewritten references
+
+References resolve the way a browser does, and a rewritten reference is written the same way as before:
+
+| Form          | Example in `css/main.css` | Resolved from                                             |
+| ------------- | ------------------------- | --------------------------------------------------------- |
+| root-relative | `/img/logo.png`           | the base                                                  |
+| with `../`    | `../img/logo.png`         | the referencing file                                      |
+| with `./`     | `./img/logo.png`          | the referencing file                                      |
+| bare          | `img/logo.png`            | the referencing file when that file exists, else the base |
+
+A reference starts at the start of the text or after a quote, a backtick, `(`, `=`, `,` or whitespace, optionally followed by `/` or `./`. It ends at the end of the text or before a quote, a backtick, whitespace, `)`, `,`, `;`, `?`, `#`, `\`, `<`, `>` or `}`. So:
+
+* quoted and unquoted forms both work: `url(img/logo.png)`, `src="img/logo.png"`, and unquoted attributes in minified HTML such as `href=/css/main.css>`;
+* query strings and hashes are kept: `img/logo.png?v=1` becomes `img/logo-3f2a9c1b7d.png?v=1`;
+* lookalikes are left alone: `other/img/logo.png`, `img/logo.png.bak`, `https://cdn.example.com/img/logo.png`;
+* a bare reference that reads the same relative to the file and relative to the base (`img/a.png` in `css/main.css`, with both `css/img/a.png` and `img/a.png` in the stream) points at the asset next to the file, as in a browser; falling back to the base covers pages at the root and scripts that build URLs;
+* references to excluded files (`about.html`) are left as they are, since those files keep their names.
+* a reference resolves to the file a browser would load even when that file is excluded: with an excluded `blog/logo.png` next to `blog/index.html`, `src="logo.png"` in that page stays as it is rather than pointing at a revised root `logo.png`.
+
+## Manifest
+
+With `manifest`, one more file is emitted after the others: a JSON object of original to revised paths, both relative to the base with `/` separators. Only renamed files are listed.
+
+```json
+{
+  "img/logo.png": "img/logo-9a1f3c0b2e.png",
+  "css/main.css": "css/main-3f2a9c1b7d.css"
+}
+```
+
+## Notes
+
+* Every file with contents is held until the stream ends, then all of them are emitted together in their original order. Pass the whole site through one call, typically from a build folder into a release folder: references to an asset that goes through another stream are not rewritten.
+* Files without contents (directories, `read: false`) pass through at once. An empty stream emits nothing, not even the manifest.
+* Extensions are compared in lowercase, in the files and in `rewrite`: `.CSS` files are rewritten like `.css` ones.
+* References are rewritten in place: the contents of a renamed text file are those after rewriting.
+* A renamed file's `sourceMap.file` follows its new name, so `dest(…, { sourcemaps: '.' })` writes the map for the revised file.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/archive-creator.md
+---
+# archive-creator
+
+Packs every file of the stream into one zip, tar or tar.gz archive with archiver and emits only the archive. Entries keep their paths relative to `file.base`, and their modification time and mode when the files came from disk.
+
+```sh
+npm install --save-dev @zilero/gulp-archive-creator
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import archiveCreator from '@zilero/gulp-archive-creator';
+
+export const release = () =>
+  src('dist/**', { encoding: false })
+    .pipe(archiveCreator({ name: 'site.zip' }))
+    .pipe(dest('releases'));
+```
+
+The format comes from the name, or from `format`:
+
+```js
+archiveCreator({ name: 'site.tar.gz' }); // tgz, from the extension
+archiveCreator({ name: 'releases/site', format: 'tgz' }); // releases/site.tar.gz
+archiveCreator({ name: 'site.zip', archiverOptions: { zlib: { level: 9 } } }); // passed to archiver
+```
+
+## Options
+
+| Option            | Type                      | Default     | Description                                                                                                                           |
+| ----------------- | ------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`            | `string`                  | `'archive'` | The archive's path relative to the output folder: `site.zip`, `releases/site.tar.gz`. Without an extension the format's own is added. |
+| `format`          | `'zip' \| 'tar' \| 'tgz'` | from `name` | Inferred from the extension of `name` (`.zip`, `.tar`, `.tgz`, `.tar.gz`), else zip.                                                  |
+| `archiverOptions` | `ZipOptions & TarOptions` | —           | Passed to archiver: `zlib.level` or `store` for zip, `gzipOptions` for tgz. Must be an object (`Expected an object`).                 |
+| `emptyArchive`    | `boolean`                 | `false`     | Emit an empty archive when the stream had no files. By default nothing is emitted.                                                    |
+| `directories`     | `boolean`                 | `false`     | Add an entry for each directory in the stream (`src('**')` without `nodir`).                                                          |
+
+All options are optional, and unknown keys are an error. `name` must stay inside the output folder: an absolute path or one that leaves it, such as `'../site.zip'`, is an error (`Expected a path inside the output folder`). Options are checked when the plugin is created.
+
+The package also exports the types `ArchiveCreatorOptions`, `ArchiveFormat` and `ArchiverOptions`.
+
+## Notes
+
+* Read files with `src(…, { encoding: false })`: gulp 5 reads files as UTF-8 by default, which breaks images, fonts and other binary files.
+* The archive is placed relative to the `base` of the first file, so `dest('releases')` writes `releases/site.zip`.
+* An explicit `format` wins over the extension, and the name is then kept as it is: `{ name: 'a.zip', format: 'tar' }` writes a tar named `a.zip`. Extensions are matched case-insensitively.
+* Files read with `buffer: false` are archived from their stream.
+* Files without contents that are not directories (`read: false`, symbolic links) are skipped. Directories are skipped too unless `directories` is set. With `directories`, the base folder itself (`src('dist')` matches `dist` with an empty relative path) gets no entry, since it has no path inside the archive.
+* An error while reading streamed contents, or an error from archiver, fails the task with a `PluginError` named after this plugin; it is reported on the next file or at the end of the stream, and the process does not crash. archiver's warnings (a missing file, for example) fail the archive the same way rather than being ignored. After a failure, archiver is aborted, so the remaining entries are not read.
+* An empty stream emits nothing unless `emptyArchive` is set; the empty archive is then named relative to the current folder.
+
+## Migrating from 1.x
+
+* Options are flat: `{ name, format, archiverOptions, emptyArchive, directories }` instead of `format`, `archiveOptions` and `pluginOptions: { archiveName, createDirectory, createEmptyArchive }`.
+* `format` is no longer required: it is inferred from the extension of `name`.
+* tar.gz (`tgz`) is supported.
+* archiver 8 is used, streamed contents are supported and entries keep their modification time and mode.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/conditional.md
+---
+# conditional
+
+Sends each file through the first branch whose condition holds for it, like if / else if / else for streams. A branch is any plugin or chain of plugins; files that no condition matches go to a default branch or pass through untouched.
+
+```sh
+npm install --save-dev @zilero/gulp-conditional
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import conditional from '@zilero/gulp-conditional';
+import htmlSqueezer from '@zilero/gulp-html-squeezer';
+import jsSqueezer from '@zilero/gulp-js-squeezer';
+
+export const build = () =>
+  src('src/**')
+    .pipe(
+      conditional({
+        handlers: [
+          { condition: ({ file }) => file.extname === '.js', handler: () => jsSqueezer() },
+          { condition: ({ file }) => file.extname === '.html', handler: () => htmlSqueezer() }
+        ]
+      })
+    )
+    .pipe(dest('dist'));
+```
+
+A condition is a boolean or a function that gets `{ file }`, and a function may be async:
+
+```js
+import conditional from '@zilero/gulp-conditional';
+import jsSqueezer from '@zilero/gulp-js-squeezer';
+import refilename from '@zilero/gulp-refilename';
+import { stat } from 'node:fs/promises';
+
+conditional({
+  handlers: [
+    // a boolean: in development every file goes here
+    { condition: process.env.NODE_ENV !== 'production', handler: () => refilename({ suffix: '.dev' }) },
+    // an async function of the file
+    { condition: async ({ file }) => (await stat(file.path)).size > 50_000, handler: () => jsSqueezer() }
+  ],
+  // everything else
+  defaultHandler: () => refilename({ suffix: '.min' })
+});
+```
+
+A handler may return an array of streams. They form a chain: the files go through them in order, and an error from any stream of the chain is emitted.
+
+```js
+import conditional from '@zilero/gulp-conditional';
+import cssSqueezer from '@zilero/gulp-css-squeezer';
+import scssCompiler from '@zilero/gulp-scss-compiler';
+
+conditional({
+  handlers: [{ condition: ({ file }) => file.extname === '.scss', handler: () => [scssCompiler(), cssSqueezer()] }]
+});
+```
+
+Return an array, not `a().pipe(b())`. `.pipe()` returns its argument, so the handler would hand back `b` alone: the files would be written into `b` and skip `a`, and an error from `a` would not reach the task.
+
+## Options
+
+| Option           | Type                       | Default | Description                                                                                                       |
+| ---------------- | -------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- |
+| `handlers`       | `{ condition, handler }[]` | none    | Branches, checked in order for every file; the first one whose condition holds gets it. At least one is required. |
+| `defaultHandler` | `() => Duplex \| Duplex[]` | none    | Creates the stream, or the chain, for the files no condition matched. Without it they pass through untouched.     |
+
+Each branch in `handlers`:
+
+| Key         | Type                                                   | Description                                                                                               |
+| ----------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `condition` | `boolean \| ({ file }) => boolean \| Promise<boolean>` | `true`, or a function that returns `true`, sends the file here.                                           |
+| `handler`   | `() => Duplex \| Duplex[]`                             | Creates the stream the matching files go through, or a non-empty array of streams to go through in order. |
+
+Unknown keys are an error, and so are an empty `handlers` array (`Add at least one handler`) and a condition that is neither a boolean nor a function. Options are checked when the plugin is created. A handler that returns an empty array emits an error when its first file arrives (`A handler returned an empty array; return at least one stream`).
+
+The package also exports the types `ConditionalOptions`, `ConditionalBranch`, `Condition`, `BranchHandler` and `BranchStream`.
+
+## Notes
+
+* Conditions are checked for every file, in the order of `handlers`; later conditions are not called once one holds.
+* Each branch is created once, for the first file that goes to it. A branch that gets no files is never created.
+* The stream ends after every branch has finished, so branches that emit files when they end (a concat or a bundle) work.
+* Branches run side by side: files from different branches can come out in a different order than they went in.
+* A slow branch slows the stream down: files wait until the branch can take more.
+* A branch's output is not throttled by the downstream: what it emits is pushed on at once. A branch that emits a very large number of files, or very large ones, can hold them all in memory while a slow downstream catches up.
+* A thrown condition fails the task with a `PluginError` named after this plugin.
+* An error from a branch is reported on the next file written to the conditional stream, or at the end of the stream. A branch that fails while a condition is being awaited fails the stream too, instead of leaving it hanging. A `PluginError` keeps the name of the plugin that threw it, and any other error is wrapped in a `PluginError` named after this plugin when it happens, so it is not attributed to the file processed next.
+* When the conditional ends, fails or is destroyed, every branch stream is destroyed with it, so no branch (a Sass compiler, for example) keeps the process alive.
+* Every file goes through the conditions, including files without contents and directories.
+
+## Migrating from 1.x
+
+* Conditions are now checked for every file. In 1.x a condition was evaluated once when the plugin was created, and the whole stream went to one handler.
+* A condition may be a function of the file (`({ file }) => …`), sync or async, as well as a boolean.
+* A handler may return an array of streams to chain.
+* Branches are created only when a file goes to them, and files that match nothing pass through when there is no `defaultHandler`.
+* Files from different branches may interleave.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/file-exclude.md
+---
+# file-exclude
+
+Drops files from the stream: those that match a glob or regular expression, fall outside a size range or that your own check rejects. Every other file passes through untouched.
+
+```sh
+npm install --save-dev @zilero/gulp-file-exclude
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import fileExclude from '@zilero/gulp-file-exclude';
+
+export const copy = () =>
+  src('src/**', { encoding: false })
+    .pipe(fileExclude({ patterns: ['*.map', 'drafts/**'], size: { max: 1024 * 1024 } }))
+    .pipe(dest('dist'));
+```
+
+The rules can be combined; a file is dropped as soon as one of them matches:
+
+```js
+fileExclude({ patterns: '*.map' }); // every source map, in any folder
+fileExclude({ patterns: [/^drafts\//, /\.psd$/] }); // regular expressions on the relative path
+fileExclude({ size: { min: 1 } }); // empty files
+fileExclude({ exclude: ({ file }) => file.stem.startsWith('_') }); // your own check
+```
+
+## Options
+
+| Option     | Type                                        | Default | Description                                                                                                                          |
+| ---------- | ------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `patterns` | `string \| RegExp \| (string \| RegExp)[]`  | none    | Globs (picomatch) or regular expressions matched against the path relative to `file.base`. An array needs at least one pattern.      |
+| `size`     | `{ min?: number, max?: number }`            | none    | Drops files smaller than `min` or larger than `max` bytes. Both are non-negative integers, and `min` must not be greater than `max`. |
+| `exclude`  | `({ file }) => boolean \| Promise<boolean>` | none    | Your own check, run after `patterns` and `size`: it gets one object with the Vinyl `file`; return `true` to drop the file.           |
+
+Set at least one of them: options that exclude nothing are an error (`Set at least one of patterns, size or exclude`), and so is an empty `patterns` array (`Add at least one pattern`) or an empty glob. Unknown keys are an error too. Options are checked when the plugin is created.
+
+Some globs are rejected rather than matched in a way you might not expect:
+
+| Glob                       | Error                                                         | Why                                                                                                                                                                                                          |
+| -------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `'!*.css'`                 | `Negated globs are not supported: list what to drop`          | In gulp-filter a `!` glob means "keep", here every pattern means "drop". List the files to drop instead, or use `exclude` to drop everything except some files: `({ file }) => !file.path.endsWith('.css')`. |
+| `'drafts\\**'`             | `Expected / in globs, not \`                                  | Paths are matched with `/` separators on every platform, and `\` in a glob is an escape, so a Windows-style glob would never match.                                                                          |
+| `'/home/me/src/drafts/**'` | `Expected a glob relative to file.base, not an absolute path` | Patterns are matched against `file.relative`, so an absolute glob would never match. Write it relative to the glob base of `src()`: `'drafts/**'`.                                                           |
+
+Regular expressions are not checked this way: they are tested as they are.
+
+The package also exports the types `FileExcludeOptions`, `ExcludePredicate` and `SizeRange`.
+
+## Notes
+
+* Paths use `/` separators on every platform, so the same patterns work on Windows.
+* A glob without a slash matches the file name in any folder: `*.map` drops `app.js.map` and `js/vendor.js.map`. A glob with a slash matches the whole relative path: `drafts/**`, `img/*.png`.
+* Globs match dotfiles: `img/*.png` also drops `img/.hidden.png`.
+* Regular expressions are tested against the relative path, not only the name: use `/\.png$/` or `/^drafts\//`. A global (`g`) or sticky (`y`) RegExp works too: its `lastIndex` is reset before every file, so each test starts at the beginning of the path.
+* `size` uses the length of the contents, or the size on disk (`file.stat.size`) for files without Buffer contents (`read: false`, streamed contents). Directories are never dropped by `size`, and neither are files of unknown size (no contents and no `stat`).
+* The rules run in order (patterns, size, then `exclude`), so `exclude` only sees the files the first two kept.
+
+## Migrating from 1.x
+
+* A string in `patterns` is now a glob on the relative path, not a substring of the file name: replace `'.map'` with `'*.map'`.
+* `size` is now `{ min, max }` instead of a `[min, max]` tuple; either bound can be left out.
+* `onExclude` is renamed `exclude`; it gets `{ file }` instead of the file, and it may return a boolean as well as a promise.
+* At least one rule is required.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/file-changed.md
+---
+# file-changed
+
+Lets through only the files that changed since the last build: the built file in the destination is missing, older or different. Put it right after `src` so a watch build skips the rest of the pipeline for untouched files.
+
+```sh
+npm install --save-dev @zilero/gulp-file-changed
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import fileChanged from '@zilero/gulp-file-changed';
+import imageSqueezer from '@zilero/gulp-image-squeezer';
+
+export const images = () =>
+  src('src/images/**', { encoding: false })
+    .pipe(fileChanged({ dest: 'dist/images' }))
+    .pipe(imageSqueezer())
+    .pipe(dest('dist/images'));
+```
+
+When the build renames files, tell the plugin where the built file is:
+
+```js
+fileChanged({ dest: 'dist/css', extname: '.css' }); // main.scss → dist/css/main.css
+fileChanged({ dest: 'dist', target: ({ file }) => `images/${file.stem}-1280w.jpg` }); // any other name
+fileChanged({ dest: 'dist', compare: 'contents' }); // for builds that copy files as they are
+```
+
+## Options
+
+| Option    | Type                                                     | Default   | Description                                                                                                                                        |
+| --------- | -------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dest`    | `string \| ({ file }) => string`                         | —         | The folder `dest` writes to, relative to `file.cwd` or absolute: the same value, or a function of the file. Required.                              |
+| `extname` | `string`                                                 | —         | The extension the built file has, when the build changes it: `.css` for `.scss` sources. With its dot: `'css'` is an error.                        |
+| `target`  | `({ file }) => string`                                   | —         | The built file's path, relative to `dest` or absolute, for builds that rename files in other ways. Wins over `extname`: `extname` is then ignored. |
+| `compare` | `'mtime' \| 'contents' \| ({ file, target }) => boolean` | `'mtime'` | How a file counts as changed. See below.                                                                                                           |
+
+`dest` and `target` are called once per file and must return a string, not a promise. `target` gets one object with the Vinyl `file`; a relative path it returns is resolved against `dest`, and an absolute one is used as it is:
+
+```js
+import path from 'node:path';
+
+fileChanged({ dest: 'dist', target: ({ file }) => `pages/${file.stem}/index.html` }); // dist/pages/about/index.html
+fileChanged({ dest: 'dist', target: ({ file }) => path.resolve('cache', `${file.stem}.json`) }); // outside dest
+```
+
+`compare` can be:
+
+| Value        | A file is changed when                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| `'mtime'`    | It is newer than the built file, in whole milliseconds.                                    |
+| `'contents'` | Its bytes differ from the built file.                                                      |
+| a function   | It returns `true` (or a promise of `true`); it gets the file and `target: { path, stat }`. |
+
+Unknown keys are an error. Options are checked when the plugin is created.
+
+The package also exports the types `FileChangedOptions`, `CompareFunction`, `CompareInput`, `CompareMode`, `DestResolver` and `TargetResolver`.
+
+## Notes
+
+* Without `extname` or `target`, the built file is `dest` plus the path relative to `file.base`: `src/css/main.css` with `dest: 'dist'` is compared with `dist/css/main.css`.
+* Files that were never built always pass, and so do directories.
+* `'mtime'` compares whole milliseconds: `dest` writes modification times with millisecond precision, so the sub-millisecond fraction a source keeps would otherwise make every file look newer than its built copy.
+* With `'mtime'`, files without a `stat` always pass. With `'contents'`, files without buffered contents (`buffer: false`, `read: false`) always pass.
+* Files that did not change are dropped; the others pass through untouched.
+* Only a missing built file counts as never built. Any other error while checking it, such as a permission error, fails the task with a `PluginError`; so does an error thrown by a `dest`, `target` or `compare` function.
+* Not for plugins that combine files (concat, archives): they need every file, not only the changed ones.
+
+---
+
+---
+url: /gulp-plugins-hub/plugins/folder-clone.md
+---
+# folder-clone
+
+Copies every file of the stream into one or more extra folders, relative to `file.base`, so a single `dest` writes them all. The originals are kept unless you turn them off, and a hook can change, replace or skip each copy.
+
+```sh
+npm install --save-dev @zilero/gulp-folder-clone
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import folderClone from '@zilero/gulp-folder-clone';
+
+// dist/images/logo.png, dist/backup/images/logo.png and dist/v2/images/logo.png
+export const images = () =>
+  src('src/images/**', { base: 'src', encoding: false })
+    .pipe(folderClone({ dirs: ['backup', 'v2'] }))
+    .pipe(dest('dist'));
+```
+
+`onClone` runs for every copy:
+
+```js
+folderClone({
+  dirs: ['legacy', 'drafts'],
+  onClone: ({ file, dir, original }) => {
+    if (dir === 'drafts') return null; // skip this copy
+    file.stem = `${file.stem}-${dir}`; // change it in place
+  }
+});
+```
+
+## Options
+
+| Option         | Type                                                 | Default | Description                                                                         |
+| -------------- | ---------------------------------------------------- | ------- | ----------------------------------------------------------------------------------- |
+| `dirs`         | `string \| string[]`                                 | —       | One or more folders inside `file.base` that receive a copy of every file. Required. |
+| `keepOriginal` | `boolean`                                            | `true`  | Emit the original file as well as the copies.                                       |
+| `onClone`      | `({ file, dir, original }) => Vinyl \| null \| void` | —       | Runs for every copy, may be async. See below.                                       |
+
+`onClone` gets:
+
+| Key        | Description                                             |
+| ---------- | ------------------------------------------------------- |
+| `file`     | The copy, already moved into `dir`; change it in place. |
+| `dir`      | The folder this copy goes to, as given in `dirs`.       |
+| `original` | The file the copy was made from.                        |
+
+Return nothing to keep the copy, `null` to skip it, or another Vinyl file to emit instead.
+
+Each folder in `dirs` must be a relative path inside `file.base`: an absolute path, `'.'` (the base itself), a path that leaves the base such as `'../out'`, and an empty string are errors, and so is an empty `dirs` list (`Add at least one folder`). Unknown keys are an error too. Options are checked when the plugin is created.
+
+The package also exports the types `FolderCloneOptions`, `CloneHook` and `CloneInput`.
+
+## Notes
+
+* A copy keeps the original's `base` and gets the path `base/dir/relative`: `img/logo.png` with `dirs: 'backup'` becomes `backup/img/logo.png`.
+* Copies are deep clones: each has its own contents and its own source map object, so changing a copy never touches the original or another copy.
+* With `src(…, { sourcemaps: true })`, each copy's `sourceMap.file` points at the copy's relative path; the original's map is left as it was.
+* For each file the original comes first, then one copy per folder in the order of `dirs`. With `keepOriginal: false` and every copy skipped, nothing is emitted for that file.
+* Every file is cloned, including files without contents (`read: false`) and directories.
+* Read images and other binary files with `src(…, { encoding: false })`; gulp 5 reads files as UTF-8 by default.
+
+## Migrating from 1.x
+
+* 1.x only had an `onBeforeCopy(file)` hook and passed files through unchanged. 2.0 really copies each file into the folders in `dirs`.
+* `keepOriginal` (default `true`) is new.
+* `onBeforeCopy` is replaced by `onClone({ file, dir, original })`, which can change, replace or skip (`null`) each copy.
+
+See [migrating from 1.x](/guide/migration) for every package.
+
+---
+
+---
+url: /gulp-plugins-hub/reference/factory.md
+---
+# Plugin factory
+
+`@zilero/gulp-plugin-factory` — the toolkit every plugin of the hub is built with. A guided tour is in [Writing a plugin](/guide/writing-plugins).
+
+```ts
+import {
+  applySourceMap,
+  assertBinaryContents,
+  createPlugin,
+  getChainableSourceMap,
+  getInputSourceMap,
+  isFunction,
+  isRelativePathInside,
+  parseOptions,
+  PluginError,
+  toPluginError,
+  toPosixPath,
+  Vinyl
+} from '@zilero/gulp-plugin-factory';
+```
+
+## `createPlugin(definition)`
+
+Returns an object-mode `Transform` stream: Vinyl files in, Vinyl files out, one at a time and in order.
+
+| Field       | Type                                                             | Description                                                                                                |
+| ----------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `name`      | `string`                                                         | Prefixes every error; use the package name.                                                                |
+| `accept`    | `'buffer' \| 'any'`                                              | `'buffer'` (default): `transform` gets files with Buffer contents only. `'any'`: every file.               |
+| `filter`    | `(file: Vinyl) => boolean`                                       | Files it returns false for pass through untouched, before any other check.                                 |
+| `transform` | `(file, context) => TransformResult \| Promise<TransformResult>` | Called for each file. Nothing: the file goes on. `null`: dropped. A file or an array: those go on instead. |
+| `flush`     | `(context) => void \| Promise<void>`                             | Runs once after the last file, before the stream ends.                                                     |
+
+`context` is `{ name, push }`: `push(file)` sends a file downstream from `transform` or `flush`.
+
+A `filter` that throws is reported like any other error. With `accept: 'buffer'`, a file without contents passes through and a file with streamed contents emits `Streaming is not supported`. Anything `transform` or `flush` throws or rejects with is emitted as a `PluginError` with the plugin name and the file path (`fileName`); a `PluginError` is emitted as it is.
+
+Types: `PluginDefinition`, `BufferPluginDefinition`, `AnyPluginDefinition`, `PluginContext`, `TransformResult`, `BufferFile` (a Vinyl file whose `contents` is a `Buffer`), `PluginStream`.
+
+## `parseOptions({ name, schema, options })`
+
+Validates `options` against a synchronous [Standard Schema](https://standardschema.dev) (zod 4, valibot, arktype, …) and returns the parsed value, defaults applied. Invalid options throw a `PluginError`:
+
+```text
+Invalid options:
+    • quality: Too big: expected number to be <=100
+    • Unrecognized key: "qualty"
+```
+
+An asynchronous schema throws `The options schema must be synchronous`.
+
+## `applySourceMap({ file, map, chain? })`
+
+Stores a tool's source map (an object or JSON) as `file.sourceMap`, the way `dest(…, { sourcemaps })` expects it: `file` becomes the file's relative path, absolute or `file://` sources become relative to `file.base`, and every source uses `/`. With `chain: true` the file's current map is chained into the new one first, for tools that cannot take an input map; the new map's only source must be the file itself.
+
+## `getChainableSourceMap(file)`
+
+The file's map with absolute sources (`sourceRoot` applied), ready to chain into another map with `@jridgewell/remapping`; gulp keeps sources relative to `file.base`, while remapping resolves them against the map they are chained into. `undefined` when there is nothing to chain.
+
+## `getInputSourceMap(file)`
+
+The file's current map as JSON, to pass to a tool as its input map. `undefined` when the file has none, or has the empty map `src(…, { sourcemaps: true })` gives files without one: chaining that would leave the output map empty.
+
+## `assertBinaryContents({ relative, contents })`
+
+Throws when binary contents look like they were decoded as UTF-8 (the U+FFFD replacement character in the first 64 bytes), with the fix in the message: `` Read binary files with `src(globs, { encoding: false })` ``.
+
+## `isFunction(value)`
+
+A type guard for option schemas: `z.custom<Hook>(isFunction, 'Expected a function')` checks a callback without wrapping it.
+
+## `isRelativePathInside(value)`
+
+For option schemas: a relative path that stays inside the folder it is relative to and is not that folder. `css/main.css` passes; `/tmp/x`, `../x` and `.` do not.
+
+## `toPosixPath(value)`
+
+A path with `/` separators on every OS, for globs, archive entries, manifests and source maps.
+
+## `toPluginError({ name, error, file? })`
+
+Wraps anything in a `PluginError` prefixed with `name`, with `fileName` from the file; a `PluginError` is returned as it is. `createPlugin` uses it for every error.
+
+## Types
+
+* `ContentHook` — `(input: { content: string; file: Vinyl }) => string | Promise<string>`, the hook on a file's text the plugins share.
+* `SourceMap`, `BufferFile`, `PluginDefinition`, `PluginContext`, `TransformResult`, `PluginStream`.
+
+## Re-exports
+
+* `PluginError` — the class from [plugin-error](https://github.com/gulpjs/plugin-error).
+* `Vinyl` — the file class from [vinyl](https://github.com/gulpjs/vinyl), and its type: `import type { Vinyl } from '@zilero/gulp-plugin-factory'`.
+
+---
+
+---
+url: /gulp-plugins-hub/reference/testing.md
+---
+# Testing helpers
+
+`@zilero/gulp-plugin-factory/testing` runs a plugin without gulp, for Vitest, Jest or `node:test`.
+
+```ts
+import { createFile, getContents, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
+```
+
+## `createFile(input?)`
+
+Creates a Vinyl file the way `gulp.src` would.
+
+| Field       | Type                                                | Default      | Description                                                        |
+| ----------- | --------------------------------------------------- | ------------ | ------------------------------------------------------------------ |
+| `path`      | `string`                                            | `'file.txt'` | Path relative to `base`.                                           |
+| `contents`  | `string \| Buffer \| NodeJS.ReadableStream \| null` | `''`         | A string is stored as UTF-8; `null` makes a file without contents. |
+| `cwd`       | `string`                                            | `'/project'` |                                                                    |
+| `base`      | `string`                                            | `<cwd>/src`  |                                                                    |
+| `sourceMap` | `boolean`                                           | `false`      | Starts an empty map, like `src(…, { sourcemaps: true })`.          |
+
+## `runPlugin(stream, files)`
+
+Writes the files into the stream, ends it and resolves with every file it emitted, in order. Rejects with the first error the stream emits.
+
+```ts
+const output = await runPlugin(refilename({ suffix: '.min' }), [createFile({ path: 'app.js' })]);
+```
+
+## `getContents(file)`
+
+The Buffer contents of an emitted file. Throws when the file is missing or has no Buffer contents, so tests need no casts or non-null assertions on `contents`.
+
+## `getRelativePath(file)`
+
+The file's path relative to its base with `/` separators, so a test compares the same string on Linux, macOS and Windows:
+
+```ts
+expect(output.map(getRelativePath)).toEqual(['js/app.min.js']);
+```

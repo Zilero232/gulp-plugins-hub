@@ -1,266 +1,37 @@
-<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Gulp Plugins Hub - v1.0.0</title><meta name="description" content="Documentation for Gulp Plugins Hub"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><style>
-@media (prefers-color-scheme: dark) {
-  :root {
-    --md-sys-color-primary: #f6be46;
-    --md-sys-color-on-primary: #412d00;
-    --md-sys-color-primary-container: #5d4200;
-    --md-sys-color-on-primary-container: #ffdea3;
-    --md-sys-color-secondary: #d9c4a0;
-    --md-sys-color-on-secondary: #3b2f15;
-    --md-sys-color-secondary-container: #53452a;
-    --md-sys-color-on-secondary-container: #f6e0bb;
-    --md-sys-color-tertiary: #b2cfa8;
-    --md-sys-color-on-tertiary: #1e361a;
-    --md-sys-color-tertiary-container: #344d2f;
-    --md-sys-color-on-tertiary-container: #cdebc2;
-    --md-sys-color-error: #ffb4ab;
-    --md-sys-color-on-error: #690005;
-    --md-sys-color-error-container: #93000a;
-    --md-sys-color-on-error-container: #ffb4ab;
-    --md-sys-color-background: #1e1b16;
-    --md-sys-color-on-background: #e9e1d9;
-    --md-sys-color-surface: #1e1b16;
-    --md-sys-color-on-surface: #e9e1d9;
-    --md-sys-color-surface-variant: #4e4639;
-    --md-sys-color-on-surface-variant: #d1c5b4;
-    --md-sys-color-outline: #9a8f80;
-    --md-sys-color-outline-variant: #4e4639;
-    --md-sys-color-shadow: #000000;
-    --md-sys-color-scrim: #000000;
-    --md-sys-color-inverse-surface: #e9e1d9;
-    --md-sys-color-inverse-on-surface: #34302a;
-    --md-sys-color-inverse-primary: #7a5900;
-    --md-sys-color-surface-dim: #16130e;
-    --md-sys-color-surface-bright: #3d3933;
-    --md-sys-color-surface-container-lowest: #110e09;
-    --md-sys-color-surface-container-low: #1e1b16;
-    --md-sys-color-surface-container: #221f1a;
-    --md-sys-color-surface-container-high: #2d2924;
-    --md-sys-color-surface-container-highest: #38342e
-  }
-}
-:root[data-theme="dark"] {
-  --md-sys-color-primary: #f6be46;
-  --md-sys-color-on-primary: #412d00;
-  --md-sys-color-primary-container: #5d4200;
-  --md-sys-color-on-primary-container: #ffdea3;
-  --md-sys-color-secondary: #d9c4a0;
-  --md-sys-color-on-secondary: #3b2f15;
-  --md-sys-color-secondary-container: #53452a;
-  --md-sys-color-on-secondary-container: #f6e0bb;
-  --md-sys-color-tertiary: #b2cfa8;
-  --md-sys-color-on-tertiary: #1e361a;
-  --md-sys-color-tertiary-container: #344d2f;
-  --md-sys-color-on-tertiary-container: #cdebc2;
-  --md-sys-color-error: #ffb4ab;
-  --md-sys-color-on-error: #690005;
-  --md-sys-color-error-container: #93000a;
-  --md-sys-color-on-error-container: #ffb4ab;
-  --md-sys-color-background: #1e1b16;
-  --md-sys-color-on-background: #e9e1d9;
-  --md-sys-color-surface: #1e1b16;
-  --md-sys-color-on-surface: #e9e1d9;
-  --md-sys-color-surface-variant: #4e4639;
-  --md-sys-color-on-surface-variant: #d1c5b4;
-  --md-sys-color-outline: #9a8f80;
-  --md-sys-color-outline-variant: #4e4639;
-  --md-sys-color-shadow: #000000;
-  --md-sys-color-scrim: #000000;
-  --md-sys-color-inverse-surface: #e9e1d9;
-  --md-sys-color-inverse-on-surface: #34302a;
-  --md-sys-color-inverse-primary: #7a5900;
-  --md-sys-color-surface-dim: #16130e;
-  --md-sys-color-surface-bright: #3d3933;
-  --md-sys-color-surface-container-lowest: #110e09;
-  --md-sys-color-surface-container-low: #1e1b16;
-  --md-sys-color-surface-container: #221f1a;
-  --md-sys-color-surface-container-high: #2d2924;
-  --md-sys-color-surface-container-highest: #38342e
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --md-sys-color-primary: #7a5900;
-    --md-sys-color-on-primary: #ffffff;
-    --md-sys-color-primary-container: #ffdea3;
-    --md-sys-color-on-primary-container: #261900;
-    --md-sys-color-secondary: #6c5c3f;
-    --md-sys-color-on-secondary: #ffffff;
-    --md-sys-color-secondary-container: #f6e0bb;
-    --md-sys-color-on-secondary-container: #251a04;
-    --md-sys-color-tertiary: #4b6545;
-    --md-sys-color-on-tertiary: #ffffff;
-    --md-sys-color-tertiary-container: #cdebc2;
-    --md-sys-color-on-tertiary-container: #092007;
-    --md-sys-color-error: #ba1a1a;
-    --md-sys-color-on-error: #ffffff;
-    --md-sys-color-error-container: #ffdad6;
-    --md-sys-color-on-error-container: #410002;
-    --md-sys-color-background: #fffbff;
-    --md-sys-color-on-background: #1e1b16;
-    --md-sys-color-surface: #fffbff;
-    --md-sys-color-on-surface: #1e1b16;
-    --md-sys-color-surface-variant: #ede1cf;
-    --md-sys-color-on-surface-variant: #4e4639;
-    --md-sys-color-outline: #7f7667;
-    --md-sys-color-outline-variant: #d1c5b4;
-    --md-sys-color-shadow: #000000;
-    --md-sys-color-scrim: #000000;
-    --md-sys-color-inverse-surface: #34302a;
-    --md-sys-color-inverse-on-surface: #f8efe7;
-    --md-sys-color-inverse-primary: #f6be46;
-    --md-sys-color-surface-dim: #e1d9d0;
-    --md-sys-color-surface-bright: #fff8f2;
-    --md-sys-color-surface-container-lowest: #ffffff;
-    --md-sys-color-surface-container-low: #fbf2e9;
-    --md-sys-color-surface-container: #f5ede4;
-    --md-sys-color-surface-container-high: #efe7de;
-    --md-sys-color-surface-container-highest: #e9e1d9
-  }
-}
-:root[data-theme="light"] {
-  --md-sys-color-primary: #7a5900;
-  --md-sys-color-on-primary: #ffffff;
-  --md-sys-color-primary-container: #ffdea3;
-  --md-sys-color-on-primary-container: #261900;
-  --md-sys-color-secondary: #6c5c3f;
-  --md-sys-color-on-secondary: #ffffff;
-  --md-sys-color-secondary-container: #f6e0bb;
-  --md-sys-color-on-secondary-container: #251a04;
-  --md-sys-color-tertiary: #4b6545;
-  --md-sys-color-on-tertiary: #ffffff;
-  --md-sys-color-tertiary-container: #cdebc2;
-  --md-sys-color-on-tertiary-container: #092007;
-  --md-sys-color-error: #ba1a1a;
-  --md-sys-color-on-error: #ffffff;
-  --md-sys-color-error-container: #ffdad6;
-  --md-sys-color-on-error-container: #410002;
-  --md-sys-color-background: #fffbff;
-  --md-sys-color-on-background: #1e1b16;
-  --md-sys-color-surface: #fffbff;
-  --md-sys-color-on-surface: #1e1b16;
-  --md-sys-color-surface-variant: #ede1cf;
-  --md-sys-color-on-surface-variant: #4e4639;
-  --md-sys-color-outline: #7f7667;
-  --md-sys-color-outline-variant: #d1c5b4;
-  --md-sys-color-shadow: #000000;
-  --md-sys-color-scrim: #000000;
-  --md-sys-color-inverse-surface: #34302a;
-  --md-sys-color-inverse-on-surface: #f8efe7;
-  --md-sys-color-inverse-primary: #f6be46;
-  --md-sys-color-surface-dim: #e1d9d0;
-  --md-sys-color-surface-bright: #fff8f2;
-  --md-sys-color-surface-container-lowest: #ffffff;
-  --md-sys-color-surface-container-low: #fbf2e9;
-  --md-sys-color-surface-container: #f5ede4;
-  --md-sys-color-surface-container-high: #efe7de;
-  --md-sys-color-surface-container-highest: #e9e1d9
-}
-</style><link rel="stylesheet" href="assets/material-style.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">Gulp Plugins Hub - v1.0.0</a><div id="tsd-toolbar-links"><a href="https://github.com/Zilero232/gulp-plugins-hub">GitHub</a><a href="https://www.npmjs.com/org/zilero">NPM</a><a href="CHANGELOG.md">Changelog</a><a href="CONTRIBUTING.md">Contributing</a></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>Gulp Plugins Hub - v1.0.0</h1></div><div class="tsd-panel tsd-typography"><div align="center">
-  <img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" width="200" alt="Gulp Logo">
-</div>
-<div align="center">
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Plugins+Hub;Stream+Processing+Made+Easy;Type-Safe+Gulp+Plugins" alt="Typing SVG" />
-</div>
-<div align="center">
-<p><a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-<a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-Ready-blue.svg" alt="TypeScript"></a>
-<a href="https://gulpjs.com"><img src="https://img.shields.io/badge/Gulp-Ready-cf4647.svg" alt="Gulp"></a></p>
-</div>
-<p align="center">
-  <a href="#-about">About</a> •
-  <a href="#-plugins">Plugins</a> •
-  <a href="#-installation">Installation</a> •
-  <a href="#-features">Features</a> •
-  <a href="#-example">Example</a> •
-  <a href="#-documentation">Documentation</a> •
-  <a href="#-contributing">Contributing</a> •
-  <a href="#-support">Support</a>
-</p>
-<h2 id="🎯-about" class="tsd-anchor-link">🎯 About<a href="#🎯-about" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Welcome to <strong>Gulp Plugins Hub</strong> – a collection of powerful, type-safe Gulp plugins designed to supercharge your development workflow. Built with modern development practices in mind, our plugins offer seamless integration, exceptional performance, and extensive customization options.</p>
-<h2 id="📦-plugins" class="tsd-anchor-link">📦 Plugins<a href="#📦-plugins" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="🏭-core-tools" class="tsd-anchor-link">🏭 Core Tools<a href="#🏭-core-tools" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li><a href="modules/_zilero_gulp-plugin-factory.html"><strong>gulp-plugin-factory</strong></a> - Create type-safe Gulp plugins</li>
-<li><a href="modules/_zilero_gulp-conditional.html"><strong>gulp-conditional</strong></a> - Conditional stream processing</li>
-</ul>
-<h3 id="📁-file-management" class="tsd-anchor-link">📁 File Management<a href="#📁-file-management" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li><a href="modules/_zilero_gulp-archive-creator.html"><strong>gulp-archive-creator</strong></a> - Create archives from streams</li>
-<li><a href="modules/_zilero_gulp-folder-clone.html"><strong>gulp-folder-clone</strong></a> - Clone with transformations</li>
-<li><a href="modules/_zilero_gulp-refilename.html"><strong>gulp-refilename</strong></a> - Pattern-based renaming</li>
-<li><a href="modules/_zilero_gulp-file-exclude.html"><strong>gulp-file-exclude</strong></a> - Smart file filtering</li>
-</ul>
-<h3 id="⚡-optimization" class="tsd-anchor-link">⚡ Optimization<a href="#⚡-optimization" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
-<li><a href="modules/_zilero_gulp-js-squeezer.html"><strong>gulp-js-squeezer</strong></a> - JavaScript optimization</li>
-<li><a href="modules/_zilero_gulp-html-squeezer.html"><strong>gulp-html-squeezer</strong></a> - HTML minification</li>
-<li><a href="modules/_zilero_gulp-pug-compiler.html"><strong>gulp-pug-compiler</strong></a> - Pug compilation</li>
-</ul>
-<h2 id="🚀-installation" class="tsd-anchor-link">🚀 Installation<a href="#🚀-installation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><pre><code class="bash"><span class="hl-0"># Using npm</span><br/><span class="hl-1">npm</span><span class="hl-2"> </span><span class="hl-3">install</span><span class="hl-2"> </span><span class="hl-3">@zilero/[plugin-name]</span><span class="hl-2"> </span><span class="hl-4">--save-dev</span><br/><br/><span class="hl-0"># Using yarn</span><br/><span class="hl-1">yarn</span><span class="hl-2"> </span><span class="hl-3">add</span><span class="hl-2"> </span><span class="hl-3">@zilero/[plugin-name]</span><span class="hl-2"> </span><span class="hl-4">--dev</span><br/><br/><span class="hl-0"># Using pnpm</span><br/><span class="hl-1">pnpm</span><span class="hl-2"> </span><span class="hl-3">add</span><span class="hl-2"> </span><span class="hl-3">@zilero/[plugin-name]</span><span class="hl-2"> </span><span class="hl-4">--save-dev</span>
-</code><button type="button">Copy</button></pre>
-
-<h2 id="✨-features" class="tsd-anchor-link">✨ Features<a href="#✨-features" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><div align="center">
-<table>
-<thead>
-<tr>
-<th>Feature</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>🔒 <strong>Type Safety</strong></td>
-<td>Full TypeScript support with accurate types</td>
-</tr>
-<tr>
-<td>🚀 <strong>Performance</strong></td>
-<td>Optimized stream processing for speed</td>
-</tr>
-<tr>
-<td>📦 <strong>Modularity</strong></td>
-<td>Use only what you need</td>
-</tr>
-<tr>
-<td>🛠️ <strong>Configurable</strong></td>
-<td>Extensive options for customization</td>
-</tr>
-<tr>
-<td>📝 <strong>Logging</strong></td>
-<td>Detailed progress and error reporting</td>
-</tr>
-<tr>
-<td>🔄 <strong>Hooks</strong></td>
-<td>Pre/Post processing capabilities</td>
-</tr>
-</tbody>
-</table>
-</div>
-<h2 id="📝-example" class="tsd-anchor-link">📝 Example<a href="#📝-example" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><pre><code class="typescript"><span class="hl-5">import</span><span class="hl-2"> { </span><span class="hl-6">src</span><span class="hl-2">, </span><span class="hl-6">dest</span><span class="hl-2"> } </span><span class="hl-5">from</span><span class="hl-2"> </span><span class="hl-3">&#39;gulp&#39;</span><span class="hl-2">;</span><br/><br/><span class="hl-5">import</span><span class="hl-2"> </span><span class="hl-6">GulpConditional</span><span class="hl-2"> </span><span class="hl-5">from</span><span class="hl-2"> </span><span class="hl-3">&#39;@zilero/gulp-conditional&#39;</span><span class="hl-2">;</span><br/><span class="hl-5">import</span><span class="hl-2"> </span><span class="hl-6">GulpJsSqueezer</span><span class="hl-2"> </span><span class="hl-5">from</span><span class="hl-2"> </span><span class="hl-3">&#39;@zilero/gulp-js-squeezer&#39;</span><span class="hl-2">;</span><br/><span class="hl-5">import</span><span class="hl-2"> </span><span class="hl-6">GulpArchiveCreator</span><span class="hl-2"> </span><span class="hl-5">from</span><span class="hl-2"> </span><span class="hl-3">&#39;@zilero/gulp-archive-creator&#39;</span><span class="hl-2">;</span><br/><br/><span class="hl-5">export</span><span class="hl-2"> </span><span class="hl-4">const</span><span class="hl-2"> </span><span class="hl-1">build</span><span class="hl-2"> = () </span><span class="hl-4">=&gt;</span><span class="hl-2"> {</span><br/><span class="hl-2">  </span><span class="hl-5">return</span><span class="hl-2"> </span><span class="hl-1">src</span><span class="hl-2">(</span><span class="hl-3">&#39;src/**/*.js&#39;</span><span class="hl-2">)</span><br/><span class="hl-2">    .</span><span class="hl-1">pipe</span><span class="hl-2">(</span><span class="hl-1">GulpConditional</span><span class="hl-2">({</span><br/><span class="hl-2">      </span><span class="hl-6">handlers:</span><span class="hl-2"> [{</span><br/><span class="hl-2">        </span><span class="hl-1">condition</span><span class="hl-6">:</span><span class="hl-2"> () </span><span class="hl-4">=&gt;</span><span class="hl-2"> </span><span class="hl-6">process</span><span class="hl-2">.</span><span class="hl-6">env</span><span class="hl-2">.</span><span class="hl-7">NODE_ENV</span><span class="hl-2"> === </span><span class="hl-3">&#39;production&#39;</span><span class="hl-2">,</span><br/><span class="hl-2">        </span><span class="hl-1">handler</span><span class="hl-6">:</span><span class="hl-2"> () </span><span class="hl-4">=&gt;</span><span class="hl-2"> </span><span class="hl-1">GulpJsSqueezer</span><span class="hl-2">({</span><br/><span class="hl-2">          </span><span class="hl-6">minifyOptions:</span><span class="hl-2"> { </span><span class="hl-6">compress:</span><span class="hl-2"> </span><span class="hl-4">true</span><span class="hl-2"> }</span><br/><span class="hl-2">        })</span><br/><span class="hl-2">      }]</span><br/><span class="hl-2">    }))</span><br/><span class="hl-2">    .</span><span class="hl-1">pipe</span><span class="hl-2">(</span><span class="hl-1">GulpArchiveCreator</span><span class="hl-2">({</span><br/><span class="hl-2">      </span><span class="hl-6">format:</span><span class="hl-2"> </span><span class="hl-3">&#39;zip&#39;</span><span class="hl-2">,</span><br/><span class="hl-2">      </span><span class="hl-6">pluginOptions:</span><span class="hl-2"> {</span><br/><span class="hl-2">        </span><span class="hl-6">archiveName:</span><span class="hl-2"> </span><span class="hl-3">&#39;build&#39;</span><br/><span class="hl-2">      }</span><br/><span class="hl-2">    }))</span><br/><span class="hl-2">    .</span><span class="hl-1">pipe</span><span class="hl-2">(</span><span class="hl-1">dest</span><span class="hl-2">(</span><span class="hl-3">&#39;dist&#39;</span><span class="hl-2">));</span><br/><span class="hl-2">};</span>
-</code><button type="button">Copy</button></pre>
-
-<h2 id="📚-documentation" class="tsd-anchor-link">📚 Documentation<a href="#📚-documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Detailed documentation for each plugin is available in their respective directories. Click the plugin names above to learn more.</p>
-<h2 id="🤝-contributing" class="tsd-anchor-link">🤝 Contributing<a href="#🤝-contributing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>We love your input! Check out our <a href="media/CONTRIBUTING.md">Contributing Guide</a> to get started.</p>
-<h2 id="💬-support" class="tsd-anchor-link">💬 Support<a href="#💬-support" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
-<li>📫 <a href="https://github.com/zilero/gulp-plugins-hub/issues">Report a bug</a></li>
-<li>💡 <a href="https://github.com/zilero/gulp-plugins-hub/issues">Request a feature</a></li>
-<li>🤝 <a href="https://github.com/zilero/gulp-plugins-hub/discussions">Join our community</a></li>
-</ul>
-<h2 id="📄-license" class="tsd-anchor-link">📄 License<a href="#📄-license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>MIT © <a href="media/LICENSE">Zilero</a></p>
-<hr>
-<div align="center">
-<h3 id="show-your-support" class="tsd-anchor-link">Show your support<a href="#show-your-support" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>⭐️ Star us on GitHub — it motivates us a lot!</p>
-<p>Made with ❤️ by <a href="https://github.com/zilero">Zilero</a></p>
-</div></div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#🎯-about"><span>🎯 <wbr/>About</span></a><a href="#📦-plugins"><span>📦 <wbr/>Plugins</span></a><ul><li><a href="#🏭-core-tools"><span>🏭 <wbr/>Core <wbr/>Tools</span></a></li><li><a href="#📁-file-management"><span>📁 <wbr/>File <wbr/>Management</span></a></li><li><a href="#⚡-optimization"><span>⚡ <wbr/>Optimization</span></a></li></ul><a href="#🚀-installation"><span>🚀 <wbr/>Installation</span></a><a href="#✨-features"><span>✨ <wbr/>Features</span></a><a href="#📝-example"><span>📝 <wbr/>Example</span></a><a href="#📚-documentation"><span>📚 <wbr/>Documentation</span></a><a href="#🤝-contributing"><span>🤝 <wbr/>Contributing</span></a><a href="#💬-support"><span>💬 <wbr/>Support</span></a><a href="#📄-license"><span>📄 <wbr/>License</span></a><ul><li><a href="#show-your-support"><span>Show your support</span></a></li></ul></div></details></div><div class="site-menu"><nav id="tsd-sidebar-links" class="tsd-navigation"><a href="https://github.com/Zilero232/gulp-plugins-hub" class="tsd-nav-link">GitHub</a><a href="https://www.npmjs.com/org/zilero" class="tsd-nav-link">NPM</a><a href="CHANGELOG.md" class="tsd-nav-link">Changelog</a><a href="CONTRIBUTING.md" class="tsd-nav-link">Contributing</a></nav><nav class="tsd-navigation"><a href="modules.html">Gulp Plugins Hub - v1.0.0</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div><script>
-          try {
-            const generateLinkElement = document.querySelector(".tsd-generator a");
-            const link = document.createElement("a");
-            Object.assign(link, {
-              href: "https://github.com/dmnsgn/typedoc-material-theme",
-              target: "_blank",
-              rel: "noreferrer",
-              innerText: "typedoc-material-theme."
-            });
-            generateLinkElement.insertAdjacentElement("afterend", link);
-            generateLinkElement.insertAdjacentText("afterend", " with ");
-          } catch (error) {
-
-          }
-        </script></body></html>
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>gulp-plugins-hub</title>
+    <meta name="description" content="Typed gulp 5 plugins for HTML, Pug, Sass, CSS, JavaScript, images, fonts, archives and cache-busting, and the factory to build your own.">
+    <meta name="generator" content="VitePress v1.6.4">
+    <link rel="preload stylesheet" href="/gulp-plugins-hub/assets/style.xVsybeOA.css" as="style">
+    <link rel="preload stylesheet" href="/gulp-plugins-hub/vp-icons.css" as="style">
+    
+    <script type="module" src="/gulp-plugins-hub/assets/app.DAFQE90w.js"></script>
+    <link rel="preload" href="/gulp-plugins-hub/assets/inter-roman-latin.Di8DUHzh.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="modulepreload" href="/gulp-plugins-hub/assets/chunks/theme.s8ez5PHk.js">
+    <link rel="modulepreload" href="/gulp-plugins-hub/assets/chunks/framework.k0yuBbP4.js">
+    <link rel="modulepreload" href="/gulp-plugins-hub/assets/index.md.BeEBlaeG.lean.js">
+    <link rel="icon" type="image/svg+xml" href="/gulp-plugins-hub/logo.svg">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="keywords" content="gulp, gulp 5, gulp plugin, gulpplugin, pug, sass, lightningcss, terser, sharp, webp, avif, woff2">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="gulp-plugins-hub">
+    <meta property="og:title" content="gulp-plugins-hub">
+    <meta property="og:description" content="Typed gulp 5 plugins for HTML, Pug, Sass, CSS, JavaScript, images, fonts, archives and cache-busting, and the factory to build your own.">
+    <meta property="og:url" content="https://zilero232.github.io/gulp-plugins-hub/">
+    <meta name="twitter:card" content="summary">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"gulp-plugins-hub","description":"Typed gulp 5 plugins for HTML, Pug, Sass, CSS, JavaScript, images, fonts, archives and cache-busting, and the factory to build your own.","programmingLanguage":"TypeScript","runtimePlatform":"Node.js","license":"https://opensource.org/licenses/MIT","url":"https://zilero232.github.io/gulp-plugins-hub/","codeRepository":"https://github.com/Zilero232/gulp-plugins-hub"}</script>
+    <script id="check-dark-mode">(()=>{const e=localStorage.getItem("vitepress-theme-appearance")||"auto",a=window.matchMedia("(prefers-color-scheme: dark)").matches;(!e||e==="auto"?a:e==="dark")&&document.documentElement.classList.add("dark")})();</script>
+    <script id="check-mac-os">document.documentElement.classList.toggle("mac",/Mac|iPhone|iPod|iPad/i.test(navigator.platform));</script>
+    <link rel="canonical" href="https://zilero232.github.io/gulp-plugins-hub/">
+    <link href="/gulp-plugins-hub/llms.txt" rel="describedby">
+  </head>
+  <body>
+    <div id="app"><div class="Layout" data-v-7dd9fade><!--[--><!--]--><!--[--><span tabindex="-1" data-v-0a057a0f></span><a href="#VPContent" class="VPSkipLink visually-hidden" data-v-0a057a0f>Skip to content</a><!--]--><!----><header class="VPNav" data-v-7dd9fade data-v-ee396f3b><div class="VPNavBar" data-v-ee396f3b data-v-abaccf2e><div class="wrapper" data-v-abaccf2e><div class="container" data-v-abaccf2e><div class="title" data-v-abaccf2e><div class="VPNavBarTitle" data-v-abaccf2e data-v-c3f9f797><a class="title" href="/gulp-plugins-hub/" data-v-c3f9f797><!--[--><!--]--><!--[--><img class="VPImage logo" src="/gulp-plugins-hub/logo.svg" alt data-v-15e8458d><!--]--><span data-v-c3f9f797>gulp-plugins-hub</span><!--[--><!--]--></a></div></div><div class="content" data-v-abaccf2e><div class="content-body" data-v-abaccf2e><!--[--><!--]--><div class="VPNavBarSearch search" data-v-abaccf2e><!--[--><!----><div id="local-search"><button type="button" class="DocSearch DocSearch-Button" aria-label="Search"><span class="DocSearch-Button-Container"><span class="vp-icon DocSearch-Search-Icon"></span><span class="DocSearch-Button-Placeholder">Search</span></span><span class="DocSearch-Button-Keys"><kbd class="DocSearch-Button-Key"></kbd><kbd class="DocSearch-Button-Key">K</kbd></span></button></div><!--]--></div><nav aria-labelledby="main-nav-aria-label" class="VPNavBarMenu menu" data-v-abaccf2e data-v-b7bfcf67><span id="main-nav-aria-label" class="visually-hidden" data-v-b7bfcf67> Main Navigation </span><!--[--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/gulp-plugins-hub/guide/getting-started" tabindex="0" data-v-b7bfcf67 data-v-116a0247><!--[--><span data-v-116a0247>Guide</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/gulp-plugins-hub/plugins/" tabindex="0" data-v-b7bfcf67 data-v-116a0247><!--[--><span data-v-116a0247>Plugins</span><!--]--></a><!--]--><!--[--><a class="VPLink link VPNavBarMenuLink" href="/gulp-plugins-hub/reference/factory" tabindex="0" data-v-b7bfcf67 data-v-116a0247><!--[--><span data-v-116a0247>Reference</span><!--]--></a><!--]--><!--[--><a class="VPLink link vp-external-link-icon VPNavBarMenuLink" href="https://github.com/Zilero232/gulp-plugins-hub/tree/master/packages" target="_blank" rel="noreferrer" tabindex="0" data-v-b7bfcf67 data-v-116a0247><!--[--><span data-v-116a0247>Changelogs</span><!--]--></a><!--]--><!--]--></nav><!----><div class="VPNavBarAppearance appearance" data-v-abaccf2e data-v-99f9f19c><button class="VPSwitch VPSwitchAppearance" type="button" role="switch" title aria-checked="false" data-v-99f9f19c data-v-1bde1c5a data-v-dd1e1bb3><span class="check" data-v-dd1e1bb3><span class="icon" data-v-dd1e1bb3><!--[--><span class="vpi-sun sun" data-v-1bde1c5a></span><span class="vpi-moon moon" data-v-1bde1c5a></span><!--]--></span></span></button></div><div class="VPSocialLinks VPNavBarSocialLinks social-links" data-v-abaccf2e data-v-ebeb3f02 data-v-100085e3><!--[--><a class="VPSocialLink no-icon" href="https://github.com/Zilero232/gulp-plugins-hub" aria-label="github" target="_blank" rel="noopener" data-v-100085e3 data-v-6190414c><span class="vpi-social-github"></span></a><a class="VPSocialLink no-icon" href="https://www.npmjs.com/org/zilero" aria-label="npm" target="_blank" rel="noopener" data-v-100085e3 data-v-6190414c><span class="vpi-social-npm"></span></a><!--]--></div><div class="VPFlyout VPNavBarExtra extra" data-v-abaccf2e data-v-ce48f0c2 data-v-71a6ca67><button type="button" class="button" aria-haspopup="true" aria-expanded="false" aria-label="extra navigation" data-v-71a6ca67><span class="vpi-more-horizontal icon" data-v-71a6ca67></span></button><div class="menu" data-v-71a6ca67><div class="VPMenu" data-v-71a6ca67 data-v-ec15696c><!----><!--[--><!--[--><!----><div class="group" data-v-ce48f0c2><div class="item appearance" data-v-ce48f0c2><p class="label" data-v-ce48f0c2>Appearance</p><div class="appearance-action" data-v-ce48f0c2><button class="VPSwitch VPSwitchAppearance" type="button" role="switch" title aria-checked="false" data-v-ce48f0c2 data-v-1bde1c5a data-v-dd1e1bb3><span class="check" data-v-dd1e1bb3><span class="icon" data-v-dd1e1bb3><!--[--><span class="vpi-sun sun" data-v-1bde1c5a></span><span class="vpi-moon moon" data-v-1bde1c5a></span><!--]--></span></span></button></div></div></div><div class="group" data-v-ce48f0c2><div class="item social-links" data-v-ce48f0c2><div class="VPSocialLinks social-links-list" data-v-ce48f0c2 data-v-100085e3><!--[--><a class="VPSocialLink no-icon" href="https://github.com/Zilero232/gulp-plugins-hub" aria-label="github" target="_blank" rel="noopener" data-v-100085e3 data-v-6190414c><span class="vpi-social-github"></span></a><a class="VPSocialLink no-icon" href="https://www.npmjs.com/org/zilero" aria-label="npm" target="_blank" rel="noopener" data-v-100085e3 data-v-6190414c><span class="vpi-social-npm"></span></a><!--]--></div></div></div><!--]--><!--]--></div></div></div><!--[--><!--]--><button type="button" class="VPNavBarHamburger hamburger" aria-label="mobile navigation" aria-expanded="false" aria-controls="VPNavScreen" data-v-abaccf2e data-v-e2cdffc7><span class="container" data-v-e2cdffc7><span class="top" data-v-e2cdffc7></span><span class="middle" data-v-e2cdffc7></span><span class="bottom" data-v-e2cdffc7></span></span></button></div></div></div></div><div class="divider" data-v-abaccf2e><div class="divider-line" data-v-abaccf2e></div></div></div><!----></header><!----><!----><div class="VPContent is-home" id="VPContent" data-v-7dd9fade data-v-3def2cf6><div class="VPHome" data-v-3def2cf6 data-v-0df53fe0><!--[--><!--]--><div class="VPHero has-image VPHomeHero" data-v-0df53fe0 data-v-a957805c><div class="container" data-v-a957805c><div class="main" data-v-a957805c><!--[--><!--]--><!--[--><h1 class="heading" data-v-a957805c><span class="name clip" data-v-a957805c>gulp-plugins-hub</span><span class="text" data-v-a957805c>Typed plugins for gulp 5</span></h1><p class="tagline" data-v-a957805c>Pug, Sass, Lightning CSS, terser, sharp, fonts, archives and cache-busting — one consistent API, validated options, real errors.</p><!--]--><!--[--><!--]--><div class="actions" data-v-a957805c><!--[--><div class="action" data-v-a957805c><a class="VPButton medium brand" href="/gulp-plugins-hub/guide/getting-started" data-v-a957805c data-v-94095093>Get started</a></div><div class="action" data-v-a957805c><a class="VPButton medium alt" href="/gulp-plugins-hub/plugins/" data-v-a957805c data-v-94095093>All plugins</a></div><div class="action" data-v-a957805c><a class="VPButton medium alt" href="https://github.com/Zilero232/gulp-plugins-hub" target="_blank" rel="noreferrer" data-v-a957805c data-v-94095093>GitHub</a></div><!--]--></div><!--[--><!--]--></div><div class="image" data-v-a957805c><div class="image-container" data-v-a957805c><div class="image-bg" data-v-a957805c></div><!--[--><!--[--><img class="VPImage image-src" src="/gulp-plugins-hub/logo.svg" alt="gulp-plugins-hub" data-v-15e8458d><!--]--><!--]--></div></div></div></div><!--[--><!--]--><!--[--><!--]--><div class="VPFeatures VPHomeFeatures" data-v-0df53fe0 data-v-1b837884><div class="container" data-v-1b837884><div class="items" data-v-1b837884><!--[--><div class="grid-6 item" data-v-1b837884><div class="VPLink no-icon VPFeature" data-v-1b837884 data-v-64aec510><!--[--><article class="box" data-v-64aec510><!----><h2 class="title" data-v-64aec510>Built for gulp 5</h2><p class="details" data-v-64aec510>ESM packages for Node.js 22.13+, binary files guarded against gulp 5's UTF-8 default, source maps that work with src and dest's own sourcemaps option.</p><!----></article><!--]--></div></div><div class="grid-6 item" data-v-1b837884><div class="VPLink no-icon VPFeature" data-v-1b837884 data-v-64aec510><!--[--><article class="box" data-v-64aec510><!----><h2 class="title" data-v-64aec510>Options checked up front</h2><p class="details" data-v-64aec510>Every option is validated when the plugin is created. A typo or a wrong type fails with a list of what is wrong, instead of a build that silently does nothing.</p><!----></article><!--]--></div></div><div class="grid-6 item" data-v-1b837884><div class="VPLink no-icon VPFeature" data-v-1b837884 data-v-64aec510><!--[--><article class="box" data-v-64aec510><!----><h2 class="title" data-v-64aec510>Modern engines</h2><p class="details" data-v-64aec510>Lightning CSS instead of clean-css and autoprefixer, html-minifier-next, sass-embedded with one compiler per build, sharp for WebP and AVIF, WebAssembly fonts.</p><!----></article><!--]--></div></div><div class="grid-6 item" data-v-1b837884><div class="VPLink no-icon VPFeature" data-v-1b837884 data-v-64aec510><!--[--><article class="box" data-v-64aec510><!----><h2 class="title" data-v-64aec510>Follows the gulp guidelines</h2><p class="details" data-v-64aec510>Files without contents pass through, errors are PluginErrors prefixed with the plugin name and emitted, never thrown, and gulp is never a dependency.</p><!----></article><!--]--></div></div><div class="grid-6 item" data-v-1b837884><div class="VPLink no-icon VPFeature" data-v-1b837884 data-v-64aec510><!--[--><article class="box" data-v-64aec510><!----><h2 class="title" data-v-64aec510>Fully typed</h2><p class="details" data-v-64aec510>Written in TypeScript with declarations for every option and hook. Hooks get the Vinyl file, so they can decide per file.</p><!----></article><!--]--></div></div><div class="grid-6 item" data-v-1b837884><div class="VPLink no-icon VPFeature" data-v-1b837884 data-v-64aec510><!--[--><article class="box" data-v-64aec510><!----><h2 class="title" data-v-64aec510>Make your own</h2><p class="details" data-v-64aec510>The plugin factory the hub is built with turns a transform function into a well-behaved plugin, with testing helpers for Vitest or node:test.</p><!----></article><!--]--></div></div><!--]--></div></div></div><!--[--><!--]--><div class="vp-doc container" style="" data-v-0df53fe0 data-v-f56ba3d1><!--[--><div style="position:relative;" data-v-0df53fe0><div><div style="display:none;" hidden data-nosnippet>Are you an LLM? View /gulp-plugins-hub/llms.txt for optimized Markdown documentation, or /gulp-plugins-hub/llms-full.txt for full documentation bundle</div></div></div><!--]--></div></div></div><footer class="VPFooter" data-v-7dd9fade data-v-617fbbe9><div class="container" data-v-617fbbe9><p class="message" data-v-617fbbe9>Released under the MIT License.</p><p class="copyright" data-v-617fbbe9>Copyright © 2024-present Artemev Alexandr</p></div></footer><!--[--><!--]--></div></div>
+    <script>window.__VP_HASH_MAP__=JSON.parse("{\"guide_getting-started.md\":\"UWe269mR\",\"guide_gulp-5.md\":\"MyMGCIBL\",\"guide_migration.md\":\"JGmQaRZT\",\"guide_recipes.md\":\"DWuNHxKs\",\"guide_writing-plugins.md\":\"yZTy_sgK\",\"index.md\":\"BeEBlaeG\",\"plugins_archive-creator.md\":\"CDsXv6U6\",\"plugins_asset-revision.md\":\"BASJuqug\",\"plugins_conditional.md\":\"JfoSKtuA\",\"plugins_css-squeezer.md\":\"D4QMIqec\",\"plugins_file-changed.md\":\"worKq1MD\",\"plugins_file-concat.md\":\"DkhfaWdt\",\"plugins_file-exclude.md\":\"DlmwHIx3\",\"plugins_folder-clone.md\":\"BP9zpqNp\",\"plugins_font-switcher.md\":\"B0bApDLu\",\"plugins_html-squeezer.md\":\"DgHdhj4J\",\"plugins_image-squeezer.md\":\"Bwis5jwH\",\"plugins_index.md\":\"BfaIfzon\",\"plugins_js-squeezer.md\":\"BZJACZex\",\"plugins_pug-compiler.md\":\"kG7h_PHT\",\"plugins_refilename.md\":\"9AjAutpT\",\"plugins_scss-compiler.md\":\"CH_a6tv1\",\"plugins_text-replace.md\":\"hKiXzNCp\",\"reference_factory.md\":\"CtWfXXnQ\",\"reference_testing.md\":\"Dvn_tpzE\"}");window.__VP_SITE_DATA__=JSON.parse("{\"lang\":\"en-US\",\"dir\":\"ltr\",\"title\":\"gulp-plugins-hub\",\"description\":\"Typed gulp 5 plugins for HTML, Pug, Sass, CSS, JavaScript, images, fonts, archives and cache-busting, and the factory to build your own.\",\"base\":\"/gulp-plugins-hub/\",\"head\":[],\"router\":{\"prefetchLinks\":true},\"appearance\":true,\"themeConfig\":{\"logo\":\"/logo.svg\",\"nav\":[{\"text\":\"Guide\",\"link\":\"/guide/getting-started\",\"activeMatch\":\"/guide/\"},{\"text\":\"Plugins\",\"link\":\"/plugins/\",\"activeMatch\":\"/plugins/\"},{\"text\":\"Reference\",\"link\":\"/reference/factory\",\"activeMatch\":\"/reference/\"},{\"text\":\"Changelogs\",\"link\":\"https://github.com/Zilero232/gulp-plugins-hub/tree/master/packages\"}],\"sidebar\":{\"/guide/\":[{\"text\":\"Guide\",\"items\":[{\"text\":\"Getting started\",\"link\":\"/guide/getting-started\"},{\"text\":\"Gulp 5 essentials\",\"link\":\"/guide/gulp-5\"},{\"text\":\"Recipes\",\"link\":\"/guide/recipes\"},{\"text\":\"Writing a plugin\",\"link\":\"/guide/writing-plugins\"},{\"text\":\"Migrating from 1.x\",\"link\":\"/guide/migration\"}]}],\"/plugins/\":[{\"text\":\"Overview\",\"link\":\"/plugins/\"},{\"text\":\"Compile\",\"items\":[{\"text\":\"pug-compiler\",\"link\":\"/plugins/pug-compiler\"},{\"text\":\"scss-compiler\",\"link\":\"/plugins/scss-compiler\"}]},{\"text\":\"Optimize\",\"items\":[{\"text\":\"html-squeezer\",\"link\":\"/plugins/html-squeezer\"},{\"text\":\"css-squeezer\",\"link\":\"/plugins/css-squeezer\"},{\"text\":\"js-squeezer\",\"link\":\"/plugins/js-squeezer\"},{\"text\":\"image-squeezer\",\"link\":\"/plugins/image-squeezer\"},{\"text\":\"font-switcher\",\"link\":\"/plugins/font-switcher\"}]},{\"text\":\"Transform\",\"items\":[{\"text\":\"file-concat\",\"link\":\"/plugins/file-concat\"},{\"text\":\"text-replace\",\"link\":\"/plugins/text-replace\"},{\"text\":\"refilename\",\"link\":\"/plugins/refilename\"},{\"text\":\"asset-revision\",\"link\":\"/plugins/asset-revision\"},{\"text\":\"archive-creator\",\"link\":\"/plugins/archive-creator\"}]},{\"text\":\"Route and filter\",\"items\":[{\"text\":\"conditional\",\"link\":\"/plugins/conditional\"},{\"text\":\"file-exclude\",\"link\":\"/plugins/file-exclude\"},{\"text\":\"file-changed\",\"link\":\"/plugins/file-changed\"},{\"text\":\"folder-clone\",\"link\":\"/plugins/folder-clone\"}]}],\"/reference/\":[{\"text\":\"Reference\",\"items\":[{\"text\":\"Plugin factory\",\"link\":\"/reference/factory\"},{\"text\":\"Testing helpers\",\"link\":\"/reference/testing\"}]}]},\"socialLinks\":[{\"icon\":\"github\",\"link\":\"https://github.com/Zilero232/gulp-plugins-hub\"},{\"icon\":\"npm\",\"link\":\"https://www.npmjs.com/org/zilero\"}],\"editLink\":{\"pattern\":\"https://github.com/Zilero232/gulp-plugins-hub/edit/master/apps/docs/:path\",\"text\":\"Edit this page on GitHub\"},\"search\":{\"provider\":\"local\"},\"outline\":[2,3],\"footer\":{\"message\":\"Released under the MIT License.\",\"copyright\":\"Copyright © 2024-present Artemev Alexandr\"}},\"locales\":{},\"scrollOffset\":134,\"cleanUrls\":true}");</script>
+    
+  </body>
+</html>

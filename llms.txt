@@ -1,0 +1,52 @@
+# gulp-plugins-hub
+
+> Typed plugins for gulp 5
+
+Pug, Sass, Lightning CSS, terser, sharp, fonts, archives and cache-busting — one consistent API, validated options, real errors.
+
+## Table of Contents
+
+### Guide
+
+- [Getting started](/gulp-plugins-hub/guide/getting-started.md)
+- [Gulp 5 essentials](/gulp-plugins-hub/guide/gulp-5.md)
+- [Recipes](/gulp-plugins-hub/guide/recipes.md)
+- [Writing a plugin](/gulp-plugins-hub/guide/writing-plugins.md)
+- [Migrating from 1.x](/gulp-plugins-hub/guide/migration.md)
+
+### Compile
+
+- [pug-compiler](/gulp-plugins-hub/plugins/pug-compiler.md)
+- [scss-compiler](/gulp-plugins-hub/plugins/scss-compiler.md)
+
+### Optimize
+
+- [html-squeezer](/gulp-plugins-hub/plugins/html-squeezer.md)
+- [css-squeezer](/gulp-plugins-hub/plugins/css-squeezer.md)
+- [js-squeezer](/gulp-plugins-hub/plugins/js-squeezer.md)
+- [image-squeezer](/gulp-plugins-hub/plugins/image-squeezer.md)
+- [font-switcher](/gulp-plugins-hub/plugins/font-switcher.md)
+
+### Transform
+
+- [file-concat](/gulp-plugins-hub/plugins/file-concat.md)
+- [text-replace](/gulp-plugins-hub/plugins/text-replace.md)
+- [refilename](/gulp-plugins-hub/plugins/refilename.md)
+- [asset-revision](/gulp-plugins-hub/plugins/asset-revision.md)
+- [archive-creator](/gulp-plugins-hub/plugins/archive-creator.md)
+
+### Route and filter
+
+- [conditional](/gulp-plugins-hub/plugins/conditional.md)
+- [file-exclude](/gulp-plugins-hub/plugins/file-exclude.md)
+- [file-changed](/gulp-plugins-hub/plugins/file-changed.md)
+- [folder-clone](/gulp-plugins-hub/plugins/folder-clone.md)
+
+### Reference
+
+- [Plugin factory](/gulp-plugins-hub/reference/factory.md)
+- [Testing helpers](/gulp-plugins-hub/reference/testing.md)
+
+### Other
+
+- [Plugins](/gulp-plugins-hub/plugins.md)
