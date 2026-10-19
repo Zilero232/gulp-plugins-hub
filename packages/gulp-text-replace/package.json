@@ -1,0 +1,74 @@
+{
+  "name": "@zilero/gulp-text-replace",
+  "version": "0.0.0",
+  "description": "Replace text in the files of a gulp stream with strings or regular expressions, sync or async replacers that see the file, and add a banner or footer. Binary files are left alone.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "replace",
+    "regex",
+    "regexp",
+    "string",
+    "text",
+    "banner",
+    "header",
+    "footer"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/text-replace",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-text-replace"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@jridgewell/remapping": "^2.3.5",
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "magic-string": "^1.4.3",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "@jridgewell/trace-mapping": "^0.3.31",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

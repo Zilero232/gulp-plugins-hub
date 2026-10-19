@@ -1,98 +1,41 @@
-<div align="center">
+# @zilero/gulp-conditional
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Conditional;Smart+%26+Flexible;Conditional+Processing" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-conditional?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-conditional)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-conditional?color=7c3aed)](./LICENSE)
 
-🔀 Powerful Gulp plugin for conditional stream processing.
+Send each file of a gulp stream through the first branch whose condition holds for it, like if / else if / else for streams.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 🔄 Conditional stream processing
-- 🎯 Multiple condition handlers
-- 📝 TypeScript support
-- 🚀 Stream-based processing
-- 💡 Default fallback handler
-- 🛠️ Flexible condition system
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-conditional --save-dev
-# or
-yarn add @zilero/gulp-conditional --dev
-# or
-pnpm add @zilero/gulp-conditional --save-dev
+```sh
+npm install --save-dev @zilero/gulp-conditional
 ```
 
-## ⚙️ Options
+```js
+import { dest, src } from 'gulp';
+import conditional from '@zilero/gulp-conditional';
+import htmlSqueezer from '@zilero/gulp-html-squeezer';
+import jsSqueezer from '@zilero/gulp-js-squeezer';
 
-### handlers
-- Type: `Array<{ condition: boolean | () => boolean, handler: () => Transform }>`
-- Required: `true`
-- List of condition-handler pairs
-
-### defaultHandler
-- Type: `() => Transform`
-- Required: `false`
-- Default handler if no conditions match
-
-## 📝 Example
-
-```typescript
-gulp.task('advanced-conditional', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpConditional({
-      handlers: [
-        {
-          condition: () => process.env.NODE_ENV === 'production',
-          handler: () => GulpJsSqueezer({
-            minifyOptions: {
-              compress: true
-            }
-          })
-        },
-        {
-          condition: () => process.env.NODE_ENV === 'development',
-          handler: () => GulpFileExclude({
-            patterns: ['.min.']
-          })
-        }
-      ],
-      defaultHandler: () => GulpFileExclude({
-        patterns: ['.test.']
+export const build = () =>
+  src('src/**')
+    .pipe(
+      conditional({
+        handlers: [
+          { condition: ({ file }) => file.extname === '.js', handler: () => jsSqueezer() },
+          { condition: ({ file }) => file.extname === '.html', handler: () => htmlSqueezer() }
+        ]
       })
-    }))
-    .pipe(gulp.dest('dist'));
-});
+    )
+    .pipe(dest('dist'));
 ```
 
-## 🤝 Contributing
+| Option                 | Description                                                                                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `handlers[].condition` | A boolean, or a function of `{ file }` that returns one (sync or async).                                         |
+| `handlers[].handler`   | Creates the stream the matching files go through, once, for the first such file; an array of streams is a chain. |
+| `defaultHandler`       | Creates the stream for files no condition matched. Without it they pass through.                                 |
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+To chain plugins in a branch, return an array such as `() => [scssCompiler(), cssSqueezer()]`, not `a().pipe(b())`: `.pipe()` returns `b`, so the files would skip `a`.
 
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
+**[Documentation](https://zilero232.github.io/gulp-plugins-hub/plugins/conditional)** · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+ and gulp 4 or 5. ESM; in CommonJS use `const { conditional } = require(…)`.
 
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

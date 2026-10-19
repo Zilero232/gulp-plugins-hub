@@ -1,79 +1,96 @@
 {
-	"name": "gulp-plugins-hub",
-	"type": "module",
-	"version": "1.0.0",
-	"private": true,
-	"packageManager": "pnpm@10.13.1",
-	"description": "A powerful toolkit for managing Gulp plugins in monorepos. Optimized for fast CI/CD environments, this package simplifies the use of multiple Gulp plugins within a single repository, enabling efficient parallel task execution.",
-	"author": {
-		"name": "Artemev Alexandr",
-		"url": "https://github.com/Zilero232"
-	},
-	"license": "MIT",
-	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-	"repository": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"bugs": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"keywords": [
-		"gulp",
-		"gulp-plugins",
-		"gulp-tasks",
-		"gulp-monorepo",
-		"gulp-workspaces",
-		"task-runner",
-		"gulp-automation",
-		"gulp-pipeline",
-		"streaming-build",
-		"build-automation",
-		"continuous-integration",
-		"CI/CD",
-		"nodejs",
-		"frontend-build",
-		"workflow-automation",
-		"gulp-scripts",
-		"gulp-tasks-management",
-		"vinyl",
-		"plugin-management",
-		"monorepo-tools"
-	],
-	"scripts": {
-		"prepare": "husky",
-		"commit": "git-cz",
-		"build": "turbo run build",
-		"dev": "turbo run dev",
-		"lint:check": "turbo run lint",
-		"lint": "turbo run lint",
-		"clean": "turbo run clean",
-		"type-check": "turbo run type-check",
-		"test": "turbo run test",
-		"docs": "typedoc",
-		"docs:watch": "typedoc --watch",
-		"changeset": "changeset",
-		"version": "changeset version",
-		"publish": "changeset publish",
-		"release": "pnpm run build && pnpm run version && pnpm run publish"
-	},
-	"devDependencies": {
-		"@changesets/cli": "^2.29.5",
-		"@types/node": "^24.1.0",
-		"@types/through2": "^2.0.41",
-		"@types/vinyl": "^2.0.12",
-		"@zilero/eslint": "^1.2.10",
-    "typedoc-material-theme": "^1.4.0",
-		"commit-jazzer": "^1.1.5",
-		"husky": "^9.1.7",
-		"rimraf": "^6.0.1",
-		"tsup": "^8.5.0",
-		"turbo": "^2.5.5",
-		"typedoc": "^0.28.7",
-		"typescript": "^5.8.3"
-	},
-	"config": {
-		"commitizen": {
-			"path": "node_modules/commit-jazzer"
-		}
-	}
+  "name": "gulp-plugins-hub",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Typed Gulp 5 plugins for HTML, Pug, SCSS, JavaScript, fonts, archives and file routing, plus the factory they are built with.",
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*",
+      "tooling/*"
+    ],
+    "catalog": {
+      "@types/node": "^22.19.0",
+      "@types/vinyl": "^2.0.12",
+      "gulp": "^5.0.1",
+      "plugin-error": "^2.0.1",
+      "remeda": "^2.52.0",
+      "ts-pattern": "^5.9.2",
+      "tsdown": "^0.23.1",
+      "typescript": "~6.0.3",
+      "vinyl": "^3.0.1",
+      "zod": "^4.6.7"
+    }
+  },
+  "scripts": {
+    "build": "turbo run build --filter=./packages/*",
+    "changeset": "changeset",
+    "clean": "rm -rf packages/*/dist example/dist .turbo packages/*/.turbo coverage .pack",
+    "commit": "jazzer",
+    "dev": "turbo run dev --filter=./packages/*",
+    "docs:build": "turbo run build --filter=gulp-plugins-hub-docs",
+    "docs:dev": "bun run --filter gulp-plugins-hub-docs dev",
+    "example": "turbo run build --filter=gulp-plugins-hub-example",
+    "fix": "eslint . --fix && prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "prepare": "husky",
+    "release": "bun run build && bun scripts/publish/index.ts",
+    "spell": "cspell lint --config ./cspell.json --gitignore --no-progress --no-must-find-files .",
+    "test": "turbo run test && vitest run --project scripts",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "turbo run typecheck && tsc --noEmit",
+    "verify": "bun run typecheck && bun run lint && bun run format:check && bun run spell && knip",
+    "version": "changeset version && bun install --lockfile-only"
+  },
+  "lint-staged": {
+    "*.{json,md,yml,yaml}": "prettier --write",
+    "*.{js,mjs,cjs,ts,mts,cts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@commitlint/types": "^21.2.3",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@siberiacancode/eslint": "^2.18.1",
+    "@siberiacancode/prettier": "^1.9.0",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "^5.0.5",
+    "commit-jazzer": "^2.0.1",
+    "cspell": "^10.4.0",
+    "eslint": "^10.13.0",
+    "husky": "^9.1.7",
+    "knip": "^6.42.1",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-packagejson": "^3.0.2",
+    "turbo": "^2.11.9",
+    "typescript": "catalog:",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  },
+  "packageManager": "bun@1.4.3",
+  "engines": {
+    "node": ">=22.18.0"
+  }
 }

@@ -1,8 +1,9 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-  "changelog": "@changesets/cli/changelog",
-  "commit": true,
+  "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "Zilero232/gulp-plugins-hub" }],
+  "commit": false,
   "access": "public",
   "baseBranch": "master",
-  "updateInternalDependencies": "patch"
+  "updateInternalDependencies": "patch",
+  "ignore": ["gulp-plugins-hub-example"]
 }

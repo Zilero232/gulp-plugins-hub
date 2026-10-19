@@ -1,3 +1,4 @@
 {
-	"extends": "../../tsconfig.base.json"
+  "extends": "@gulp-plugins-hub/typescript-config/base.json",
+  "include": ["src", "*.config.ts"]
 }

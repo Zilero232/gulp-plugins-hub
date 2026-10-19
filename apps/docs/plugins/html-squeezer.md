@@ -1,0 +1,55 @@
+# html-squeezer
+
+Minifies HTML with html-minifier-next, starting from one of its presets: comments and redundant attributes go, and the `comprehensive` preset also minifies inline CSS, JavaScript and SVG. Other files pass through.
+
+```sh
+npm install --save-dev @zilero/gulp-html-squeezer
+```
+
+## Usage
+
+```js
+import { dest, src } from 'gulp';
+import htmlSqueezer from '@zilero/gulp-html-squeezer';
+
+export const html = () =>
+  src('dist/**/*.html')
+    .pipe(htmlSqueezer({ preset: 'comprehensive' }))
+    .pipe(dest('dist'));
+```
+
+Options from `htmlMinifierOptions` are applied over the preset, and the hooks change the markup around the minifier:
+
+```js
+htmlSqueezer({ preset: 'comprehensive', htmlMinifierOptions: { removeAttributeQuotes: false } }); // keep quotes
+htmlSqueezer({ preset: false, htmlMinifierOptions: { removeComments: true } }); // only what you list
+htmlSqueezer({ onAfterMinify: ({ content, file }) => `<!-- ${file.basename} -->\n${content}` });
+```
+
+## Options
+
+| Option                | Type                                               | Default          | Description                                                                                                                                |
+| --------------------- | -------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `preset`              | `'conservative' \| 'comprehensive' \| false`       | `'conservative'` | The html-minifier-next preset to start from. `conservative` is safe for any page, `comprehensive` gives the smallest output, `false` none. |
+| `htmlMinifierOptions` | `MinifierOptions`                                  | —                | html-minifier-next options as an object, applied over the preset.                                                                          |
+| `onBeforeMinify`      | `({ content, file }) => string \| Promise<string>` | —                | Runs on the markup before minification and returns the markup to minify.                                                                   |
+| `onAfterMinify`       | `({ content, file }) => string \| Promise<string>` | —                | Runs on the minified markup and returns the final markup.                                                                                  |
+
+Unknown keys, an unknown preset and an `htmlMinifierOptions` that is not an object are an error when the plugin is created.
+
+## Notes
+
+- Only `.html` and `.htm` files are minified, in any case (`INDEX.HTML` too). Other files, and files without contents (`read: false`), pass through untouched.
+- `.xhtml` files pass through as well: the presets drop closing slashes and attribute values, which XHTML served as XML does not allow.
+- Source maps are not updated: HTML has none to follow.
+- An error from the minifier or a hook, such as markup it cannot parse, emits a PluginError with the file path.
+- The minifier is [html-minifier-next](https://github.com/j9t/html-minifier-next); every one of its options goes through `htmlMinifierOptions`.
+
+## Migrating from 1.x
+
+- html-minifier-terser 7, which is no longer maintained, is replaced by html-minifier-next 9.
+- 1.x had no defaults, so without options it barely minified anything. Now the `conservative` preset applies by default; `preset: false` with your own `htmlMinifierOptions` gets the old behavior.
+- The hooks moved from `pluginOptions` to the top level and get `{ content, file }` instead of the content alone.
+- Only HTML files are processed; 1.x ran the minifier on every file in the stream.
+
+See [migrating from 1.x](/guide/migration) for every package.

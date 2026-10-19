@@ -1,0 +1,13 @@
+extends /templates/_layout.pug
+
+block content
+    section.hero
+        .container
+            h1.hero-title Welcome to Example
+            p.hero-subtitle A small site built with gulp-plugins-hub
+            picture
+                //- AVIF is encoded in production builds only: it is slow to encode.
+                if production
+                    source(srcset="/images/hero-640w.avif 640w, /images/hero-1280w.avif 1280w" type="image/avif")
+                source(srcset="/images/hero-640w.webp 640w, /images/hero-1280w.webp 1280w" type="image/webp")
+                img.hero-image(src="/images/hero-1280w.jpg" srcset="/images/hero-640w.jpg 640w, /images/hero-1280w.jpg 1280w" alt="A colorful gradient" width="1280" height="640")

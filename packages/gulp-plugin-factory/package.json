@@ -1,66 +1,80 @@
 {
-	"name": "@zilero/gulp-plugin-factory",
-	"version": "1.0.4",
-	"type": "module",
-	"description": "A utility library for creating type-safe Gulp plugins with streamlined error handling, file transformation, and TypeScript support",
-	"author": {
-		"name": "Artemev Alexandr",
-		"url": "https://github.com/Zilero232"
-	},
-	"license": "MIT",
-	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"bugs": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-	},
-	"keywords": [
-		"gulp",
-		"plugin",
-		"factory",
-		"typescript",
-		"stream",
-		"vinyl",
-		"transform",
-		"development",
-		"utility",
-		"builder",
-		"type-safe",
-		"error-handling"
-	],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.cts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch",
-		"clean": "rimraf dist",
-		"type-check": "tsc --noEmit",
-		"lint": "eslint src/**/*.ts"
-	},
-	"engines": {
-		"node": ">= 16.0"
-	},
-	"dependencies": {
-		"through2": "^4.0.2",
-		"zod": "^3.25.76",
-		"chalk": "5.4.1",
-		"consola": "^3.4.2",
-		"pretty-error": "^4.0.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"peerDependencies": {
-		"gulp": "^4.0.0"
-	}
+  "name": "@zilero/gulp-plugin-factory",
+  "version": "1.0.4",
+  "description": "Build typed gulp plugins in a few lines: a stream factory that follows the gulp plugin guidelines, option validation with any Standard Schema, source map and testing helpers.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "factory",
+    "plugin-factory",
+    "stream",
+    "transform",
+    "vinyl",
+    "typescript",
+    "standard-schema",
+    "testing"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/guide/writing-plugins",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-plugin-factory"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./testing": {
+      "@zilero/source": "./src/testing/index.ts",
+      "types": "./dist/testing.d.mts",
+      "default": "./dist/testing.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@jridgewell/remapping": "^2.3.5",
+    "@standard-schema/spec": "^1.1.0",
+    "@types/vinyl": "catalog:",
+    "plugin-error": "catalog:",
+    "vinyl": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "zod": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

@@ -1,0 +1,74 @@
+{
+  "name": "@zilero/gulp-image-squeezer",
+  "version": "0.0.0",
+  "description": "Optimize images and convert them to WebP, AVIF, JPEG or PNG, at several widths for responsive images, with sharp in a gulp stream.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "image",
+    "images",
+    "optimize",
+    "webp",
+    "avif",
+    "jpeg",
+    "png",
+    "sharp",
+    "responsive",
+    "imagemin"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/image-squeezer",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-image-squeezer"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "sharp": "^0.35.5",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

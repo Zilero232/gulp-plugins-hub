@@ -1,0 +1,72 @@
+{
+  "name": "@zilero/gulp-css-squeezer",
+  "version": "0.0.0",
+  "description": "Minify CSS, add vendor prefixes and lower modern syntax for your browserslist targets in one pass with Lightning CSS, keeping source maps.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "css",
+    "minify",
+    "autoprefixer",
+    "lightningcss",
+    "browserslist",
+    "prefix",
+    "sourcemaps"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/css-squeezer",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-css-squeezer"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "browserslist": "^4.29.4",
+    "lightningcss": "^1.33.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

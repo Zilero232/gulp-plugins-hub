@@ -1,0 +1,9 @@
+{
+  "extends": "@gulp-plugins-hub/typescript-config/base.json",
+  "compilerOptions": {
+    // vitepress-plugin-llms finds vite's types by walking up to the root, where vite 8 (for Vitest) lives;
+    // VitePress 1 runs on vite 5, the one installed here.
+    "paths": { "vite": ["./node_modules/vite"] }
+  },
+  "include": [".vitepress/**/*.ts"]
+}

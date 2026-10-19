@@ -1,0 +1,7 @@
+dist
+coverage
+CHANGELOG.md
+bun.lock
+.pack
+apps/docs/.vitepress/cache
+apps/docs/.vitepress/dist

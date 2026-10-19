@@ -1,0 +1,59 @@
+name: Release
+
+# Every push to master: CI first, then changesets/action. With changesets in .changeset/ it opens (or updates)
+# the "Version Packages" pull request; merging that pull request bumps the versions and writes the changelogs,
+# and the next run publishes every package whose version is not on npm yet (scripts/publish/), tags it and
+# creates the GitHub releases.
+#
+# npm trusts this file by name (trusted publishing, one trusted publisher per package): renaming it means
+# updating them on npm.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  HUSKY: 0
+  TURBO_TELEMETRY_DISABLED: 1
+
+# One release at a time, and never cancelled half-way: a newer push waits for the running one.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  release:
+    name: Version or publish
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # the version commit, tags and GitHub releases
+      pull-requests: write # the "Version Packages" pull request
+      id-token: write # npm trusted publishing and provenance
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # No caches: a poisoned cache must not reach the job that publishes.
+      - uses: ./.github/actions/setup
+        with:
+          cache: 'false'
+
+      - uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+        with:
+          version-script: bun run version
+          publish-script: bun run release
+          commit-message: 'chore(release): 🔖 version packages'
+          pr-title: 'chore(release): 🔖 version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

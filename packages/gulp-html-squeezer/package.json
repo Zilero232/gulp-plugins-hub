@@ -1,54 +1,70 @@
 {
-	"name": "@zilero/gulp-html-squeezer",
-	"version": "1.0.4",
-	"type": "module",
-	"description": "A Gulp plugin for advanced HTML minification and optimization with Terser, supporting custom compression rules",
-	"author": {
-		"name": "Artemev Alexandr",
-		"url": "https://github.com/Zilero232"
-	},
-	"license": "MIT",
-	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"bugs": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-	},
-	"keywords": [],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.cts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch",
-		"clean": "rimraf dist",
-		"type-check": "tsc --noEmit",
-		"lint": "eslint src/**/*.ts"
-	},
-	"engines": {
-		"node": ">= 16.0"
-	},
-	"dependencies": {
-		"html-minifier-terser": "^7.2.0",
-		"@zilero/gulp-plugin-factory": "workspace:*",
-		"zod": "^3.25.76",
-		"chalk": "5.4.1",
-		"consola": "^3.4.2",
-		"pretty-error": "^4.0.0"
-	},
-	"devDependencies": {
-		"@types/html-minifier-terser": "^7.0.2"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"peerDependencies": {
-		"gulp": "^4.0.0"
-	}
+  "name": "@zilero/gulp-html-squeezer",
+  "version": "1.0.4",
+  "description": "Minify HTML in a gulp stream with html-minifier-next: presets, inline CSS and JavaScript, hooks before and after.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "html",
+    "minify",
+    "minifier",
+    "html-minifier",
+    "html-minifier-next",
+    "compress"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/html-squeezer",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-html-squeezer"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "html-minifier-next": "^9.0.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

@@ -1,68 +1,71 @@
 {
-	"name": "@zilero/gulp-pug-compiler",
-	"version": "1.0.4",
-	"type": "module",
-	"description": "A Gulp plugin for compiling Pug templates to HTML with support for layouts, includes, and custom options",
-	"author": {
-		"name": "Artemev Alexandr",
-		"url": "https://github.com/Zilero232"
-	},
-	"license": "MIT",
-	"homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Zilero232/gulp-plugins-hub"
-	},
-	"bugs": {
-		"url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-	},
-	"keywords": [
-		"gulp",
-		"plugin",
-		"pug",
-		"template",
-		"compiler",
-		"html",
-		"jade",
-		"preprocessor",
-		"templating",
-		"static-site"
-	],
-	"exports": {
-		".": {
-			"types": "./dist/index.d.cts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch",
-		"clean": "rimraf dist",
-		"type-check": "tsc --noEmit",
-		"lint": "eslint src/**/*.ts"
-	},
-	"engines": {
-		"node": ">= 16.0"
-	},
-	"dependencies": {
-		"@zilero/gulp-plugin-factory": "workspace:*",
-		"pug": "^3.0.3",
-		"zod": "^3.25.76",
-		"chalk": "5.4.1",
-		"consola": "^3.4.2",
-		"pretty-error": "^4.0.0"
-	},
-	"devDependencies": {
-		"@types/pug": "^2.0.10"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"peerDependencies": {
-		"gulp": "^4.0.0"
-	}
+  "name": "@zilero/gulp-pug-compiler",
+  "version": "1.0.4",
+  "description": "Compile Pug templates to HTML in a gulp stream, with per-file data, includes from the file contents and your own extension.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "pug",
+    "jade",
+    "template",
+    "templates",
+    "html",
+    "compile"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/pug-compiler",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-pug-compiler"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artemev Alexandr",
+    "url": "https://github.com/Zilero232"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/_tests"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@types/pug": "^2.0.10",
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "pug": "^3.0.4",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

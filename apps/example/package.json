@@ -1,0 +1,45 @@
+{
+  "name": "gulp-plugins-hub-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A static site built with every gulp-plugins-hub plugin, the way a gulp 5 build is set up in 2026. CI runs it on the built packages.",
+  "type": "module",
+  "scripts": {
+    "build": "gulp build --production",
+    "dev": "gulp",
+    "release": "gulp release --production",
+    "test": "gulp release --production && vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@types/browser-sync": "^2.29.1",
+    "@types/gulp": "^4.0.18",
+    "@zilero/gulp-archive-creator": "workspace:*",
+    "@zilero/gulp-asset-revision": "workspace:*",
+    "@zilero/gulp-conditional": "workspace:*",
+    "@zilero/gulp-css-squeezer": "workspace:*",
+    "@zilero/gulp-file-changed": "workspace:*",
+    "@zilero/gulp-file-concat": "workspace:*",
+    "@zilero/gulp-file-exclude": "workspace:*",
+    "@zilero/gulp-folder-clone": "workspace:*",
+    "@zilero/gulp-font-switcher": "workspace:*",
+    "@zilero/gulp-html-squeezer": "workspace:*",
+    "@zilero/gulp-image-squeezer": "workspace:*",
+    "@zilero/gulp-js-squeezer": "workspace:*",
+    "@zilero/gulp-plugin-factory": "workspace:*",
+    "@zilero/gulp-pug-compiler": "workspace:*",
+    "@zilero/gulp-refilename": "workspace:*",
+    "@zilero/gulp-scss-compiler": "workspace:*",
+    "@zilero/gulp-text-replace": "workspace:*",
+    "browser-sync": "^3.0.4",
+    "esbuild": "^0.28.2",
+    "esbuild-register": "^3.6.0",
+    "gulp": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

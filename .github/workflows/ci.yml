@@ -1,0 +1,81 @@
+name: CI
+
+# Verifies and tests a pull request. The release workflow runs this same file first on every push to master,
+# so nothing is released without passing it.
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions: {}
+
+# The repo's own git hooks (husky) have no business in CI.
+env:
+  HUSKY: 0
+  TURBO_TELEMETRY_DISABLED: 1
+
+concurrency:
+  # On a pull request the newest push wins; called from release.yml (no PR number) every run has its own group.
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+
+      - name: Typecheck, lint, format, spelling, unused code
+        run: bun run verify
+      # publint runs as part of every package build and fails it on packaging mistakes.
+      - name: Build
+        run: bun run build
+      - name: Coverage
+        run: bun run test:coverage
+
+  test:
+    name: Test (${{ matrix.os }}, Node ${{ matrix.node }}, ${{ matrix.scope }})
+    needs: verify
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # sharp, Lightning CSS and sass-embedded ship a native binary per platform, and the plugins handle paths:
+        # every OS on the active LTS, and the lowest supported Node (engines) and the current release on Linux.
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: ['24']
+        scope: [all]
+        include:
+          # The packages support Node 22.13, but the build (tsdown, which loads its config with Node's type
+          # stripping) needs 22.18: the lowest Node runs the packages' tests, which read their sources and build nothing.
+          - os: ubuntu-latest
+            node: '22.13'
+            scope: packages
+          - os: ubuntu-latest
+            node: '26'
+            scope: all
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+        with:
+          node-version: ${{ matrix.node }}
+
+      # Every package's unit tests, then the example site built by gulp from the packages' dist/.
+      - name: Unit and integration tests
+        if: matrix.scope == 'all'
+        run: bun run test
+      - name: Package tests
+        if: matrix.scope == 'packages'
+        run: bunx turbo run test --filter='./packages/*'

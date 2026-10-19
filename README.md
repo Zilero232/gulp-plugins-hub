@@ -1,139 +1,83 @@
-<div align="center">
-
-  <img src="https://raw.githubusercontent.com/gulpjs/artwork/master/gulp-2x.png" width="200" alt="Gulp Logo">
-  
-</div>
-
-<div align="center">
-
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Plugins+Hub;Stream+Processing+Made+Easy;Type-Safe+Gulp+Plugins" alt="Typing SVG" />
-
-</div>
-
-<div align="center">
-
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org)
-[![Gulp](https://img.shields.io/badge/Gulp-Ready-cf4647.svg)](https://gulpjs.com)
-
-</div>
+<h1 align="center">gulp-plugins-hub</h1>
 
 <p align="center">
-  <a href="#-about">About</a> •
-  <a href="#-plugins">Plugins</a> •
-  <a href="#-installation">Installation</a> •
-  <a href="#-features">Features</a> •
-  <a href="#-example">Example</a> •
-  <a href="#-documentation">Documentation</a> •
-  <a href="#-contributing">Contributing</a> •
-  <a href="#-support">Support</a>
+  <b>Typed plugins for gulp 5.</b><br>
+  Pug, Sass, Lightning CSS, terser, sharp, fonts, archives and cache-busting — one API, options checked up front, errors that name the file.
 </p>
 
-## 🎯 About
+<p align="center">
+  <a href="https://github.com/Zilero232/gulp-plugins-hub/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/Zilero232/gulp-plugins-hub/release.yml?branch=master&label=CI&logo=github" alt="CI"></a>
+  <a href="https://www.npmjs.com/org/zilero"><img src="https://img.shields.io/badge/npm-%40zilero-7c3aed?logo=npm" alt="npm"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Zilero232/gulp-plugins-hub?color=7c3aed" alt="license"></a>
+</p>
 
-Welcome to **Gulp Plugins Hub** – a collection of powerful, type-safe Gulp plugins designed to supercharge your development workflow. Built with modern development practices in mind, our plugins offer seamless integration, exceptional performance, and extensive customization options.
+<p align="center">
+  <a href="https://zilero232.github.io/gulp-plugins-hub/"><img src="https://img.shields.io/badge/Documentation-zilero232.github.io%2Fgulp--plugins--hub-7c3aed?style=for-the-badge&logo=vitepress&logoColor=white" alt="Documentation"></a>
+</p>
 
-## 📦 Plugins
+## Quick start
 
-### 🏭 Core Tools
-- [**gulp-plugin-factory**](packages/gulp-plugin-factory/README.md) - Create type-safe Gulp plugins
-- [**gulp-conditional**](packages/gulp-conditional/README.md) - Conditional stream processing
-
-### 📁 File Management
-- [**gulp-archive-creator**](packages/gulp-archive-creator/README.md) - Create archives from streams
-- [**gulp-folder-clone**](packages/gulp-folder-clone/README.md) - Clone with transformations
-- [**gulp-refilename**](packages/gulp-refilename/README.md) - Pattern-based renaming
-- [**gulp-file-exclude**](packages/gulp-file-exclude/README.md) - Smart file filtering
-
-### ⚡ Optimization
-- [**gulp-js-squeezer**](packages/gulp-js-squeezer/README.md) - JavaScript optimization
-- [**gulp-html-squeezer**](packages/gulp-html-squeezer/README.md) - HTML minification
-- [**gulp-pug-compiler**](packages/gulp-pug-compiler/README.md) - Pug compilation
-
-## 🚀 Installation
-
-```bash
-# Using npm
-npm install @zilero/[plugin-name] --save-dev
-
-# Using yarn
-yarn add @zilero/[plugin-name] --dev
-
-# Using pnpm
-pnpm add @zilero/[plugin-name] --save-dev
+```sh
+npm install --save-dev gulp @zilero/gulp-scss-compiler @zilero/gulp-css-squeezer
 ```
 
-## ✨ Features
+```js
+// gulpfile.mjs
+import { dest, src } from 'gulp';
+import { pipeline } from 'node:stream/promises';
+import cssSqueezer from '@zilero/gulp-css-squeezer';
+import scssCompiler from '@zilero/gulp-scss-compiler';
 
-<div align="center">
-
-| Feature | Description |
-|---------|-------------|
-| 🔒 **Type Safety** | Full TypeScript support with accurate types |
-| 🚀 **Performance** | Optimized stream processing for speed |
-| 📦 **Modularity** | Use only what you need |
-| 🛠️ **Configurable** | Extensive options for customization |
-| 📝 **Logging** | Detailed progress and error reporting |
-| 🔄 **Hooks** | Pre/Post processing capabilities |
-
-</div>
-
-## 📝 Example
-
-```typescript
-import { src, dest } from 'gulp';
-
-import GulpConditional from '@zilero/gulp-conditional';
-import GulpJsSqueezer from '@zilero/gulp-js-squeezer';
-import GulpArchiveCreator from '@zilero/gulp-archive-creator';
-
-export const build = () => {
-  return src('src/**/*.js')
-    .pipe(GulpConditional({
-      handlers: [{
-        condition: () => process.env.NODE_ENV === 'production',
-        handler: () => GulpJsSqueezer({
-          minifyOptions: { compress: true }
-        })
-      }]
-    }))
-    .pipe(GulpArchiveCreator({
-      format: 'zip',
-      pluginOptions: {
-        archiveName: 'build'
-      }
-    }))
-    .pipe(dest('dist'));
-};
+export const styles = () =>
+  pipeline(
+    src('src/styles/*.scss', { sourcemaps: true }),
+    scssCompiler(),
+    cssSqueezer({ targets: 'defaults' }),
+    dest('dist/css', { sourcemaps: '.' })
+  );
 ```
 
-## 📚 Documentation
+Requires Node.js 22.13 or newer.
 
-Detailed documentation for each plugin is available in their respective directories. Click the plugin names above to learn more.
+## Packages
 
-## 🤝 Contributing
+| Package                                                         | Does                                                                   |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [`@zilero/gulp-pug-compiler`](packages/gulp-pug-compiler)       | Pug templates to HTML, with data per file.                             |
+| [`@zilero/gulp-scss-compiler`](packages/gulp-scss-compiler)     | SCSS and Sass to CSS with sass-embedded, one compiler per build.       |
+| [`@zilero/gulp-html-squeezer`](packages/gulp-html-squeezer)     | Minifies HTML with html-minifier-next presets.                         |
+| [`@zilero/gulp-css-squeezer`](packages/gulp-css-squeezer)       | Minifies, prefixes and lowers CSS with Lightning CSS.                  |
+| [`@zilero/gulp-js-squeezer`](packages/gulp-js-squeezer)         | Minifies JavaScript with terser.                                       |
+| [`@zilero/gulp-image-squeezer`](packages/gulp-image-squeezer)   | Optimizes images, converts to WebP and AVIF, resizes for `srcset`.     |
+| [`@zilero/gulp-font-switcher`](packages/gulp-font-switcher)     | Converts fonts to woff2, woff, ttf, eot and svg, with subsetting.      |
+| [`@zilero/gulp-file-concat`](packages/gulp-file-concat)         | Joins files into one, in the order you set, with a header and footer.  |
+| [`@zilero/gulp-text-replace`](packages/gulp-text-replace)       | Replaces text with strings, regular expressions or async functions.    |
+| [`@zilero/gulp-refilename`](packages/gulp-refilename)           | Renames files.                                                         |
+| [`@zilero/gulp-asset-revision`](packages/gulp-asset-revision)   | Content hashes in asset names, references rewritten, a manifest.       |
+| [`@zilero/gulp-archive-creator`](packages/gulp-archive-creator) | Packs files into a zip, tar or tar.gz archive.                         |
+| [`@zilero/gulp-conditional`](packages/gulp-conditional)         | Sends each file through the first branch whose condition holds for it. |
+| [`@zilero/gulp-file-exclude`](packages/gulp-file-exclude)       | Drops files by glob, regular expression, size or predicate.            |
+| [`@zilero/gulp-file-changed`](packages/gulp-file-changed)       | Lets through only the files that changed since the last build.         |
+| [`@zilero/gulp-folder-clone`](packages/gulp-folder-clone)       | Copies every file into extra folders.                                  |
+| [`@zilero/gulp-plugin-factory`](packages/gulp-plugin-factory)   | The factory they are built with: write your own plugin in a few lines. |
 
-We love your input! Check out our [Contributing Guide](CONTRIBUTING.md) to get started.
+## Why
 
-## 💬 Support
+- **Built for gulp 5**: ES modules, source maps through `src`/`dest`, binary files guarded against gulp 5's UTF-8 default.
+- **Options checked when the plugin is created**: a typo or a wrong type fails with a list of problems, not with a build that silently does nothing.
+- **Follows the gulp guidelines**: files without contents pass through, errors are `PluginError`s with the file, gulp is never a dependency.
+- **Modern engines** instead of unmaintained ones: Lightning CSS, html-minifier-next, sass-embedded, sharp, fonteditor-core.
 
-- 📫 [Report a bug](https://github.com/zilero/gulp-plugins-hub/issues)
-- 💡 [Request a feature](https://github.com/zilero/gulp-plugins-hub/issues)
-- 🤝 [Join our community](https://github.com/zilero/gulp-plugins-hub/discussions)
+## Example
 
-## 📄 License
+[`apps/example/`](apps/example) is a static site built with every plugin, set up the way a gulp 5 build is in 2026: a TypeScript gulpfile, `pipeline`, a browser-sync dev server, esbuild for the app, a hashed and zipped release. CI runs it on the built packages as part of `bun run test`.
 
-MIT © [Zilero](LICENSE)
+How the repository is built, and why each engine was picked: [ARCHITECTURE.md](ARCHITECTURE.md).
 
----
+## Contributing
 
-<div align="center">
+See [CONTRIBUTING.md](CONTRIBUTING.md). Each package has its own changelog in its folder.
 
-### Show your support
+## License
 
-⭐️ Star us on GitHub — it motivates us a lot!
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+[MIT](LICENSE) © Artemev Alexandr

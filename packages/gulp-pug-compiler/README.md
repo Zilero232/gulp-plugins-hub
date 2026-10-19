@@ -1,96 +1,33 @@
-<div align="center">
+# @zilero/gulp-pug-compiler
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Pug+Compiler;Fast+%26+Flexible;Smart+Pug+Compilation" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-pug-compiler?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-pug-compiler)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-pug-compiler?color=7c3aed)](./LICENSE)
 
-🏗️ Powerful Gulp plugin for Pug template compilation with hooks support.
+Compile Pug templates to HTML in a gulp stream, with per-file data, includes from the file contents and your own extension.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 📄 Pug to HTML compilation
-- 🔄 Pre and post compilation hooks
-- 📝 TypeScript support
-- 🚀 Stream-based processing
-- 💡 Progress logging
-- 🛠️ Full Pug options support
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-pug-compiler --save-dev
-# or
-yarn add @zilero/gulp-pug-compiler --dev
-# or
-pnpm add @zilero/gulp-pug-compiler --save-dev
+```sh
+npm install --save-dev @zilero/gulp-pug-compiler
 ```
 
-## ⚙️ Options
+```js
+import { dest, src } from 'gulp';
+import pugCompiler from '@zilero/gulp-pug-compiler';
 
-### pugOptions
-- Type: `Options` (from pug)
-- Required: `false`
-- Pug compilation options
-
-### pluginOptions
-- Type: `object`
-- Required: `false`
-
-#### pluginOptions.onAfterCompile
-- Type: `(content: string) => Promise<string> | string`
-- Required: `false`
-- Transform content after compilation
-
-## 📝 Example
-
-```typescript
-gulp.task('advanced-compile', () => {
-  return gulp.src('src/**/*.pug')
-    .pipe(GulpPugCompiler({
-      pugOptions: {
-        pretty: true,
-        doctype: 'html',
-        locals: {
-          title: 'My Website'
-        }
-      },
-      pluginOptions: {
-        onAfterCompile: (content) => {
-          // Custom post-processing
-          return content;
-        }
-      }
-    }))
-    .pipe(gulp.dest('dist'));
-});
+export const pages = () =>
+  src('src/**/*.pug')
+    .pipe(pugCompiler({ data: ({ file }) => ({ page: file.stem }), pugOptions: { pretty: true } }))
+    .pipe(dest('dist'));
 ```
 
-## 🤝 Contributing
+| Option            | Default   | Description                                                              |
+| ----------------- | --------- | ------------------------------------------------------------------------ |
+| `pugOptions`      | —         | pug options object: `pretty`, `doctype`, `filters`, `basedir`, …         |
+| `data`            | —         | Locals as an object, or a function of the file that returns them.        |
+| `extname`         | `'.html'` | The extension of the output.                                             |
+| `skipPartials`    | `true`    | Drop `_*.pug` files instead of rendering them.                           |
+| `onBeforeCompile` | —         | `({ content, file }) => string` hook on the template source, before pug. |
+| `onAfterCompile`  | —         | `({ content, file }) => string` hook on the rendered HTML.               |
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+**[Documentation](https://zilero232.github.io/gulp-plugins-hub/plugins/pug-compiler)** · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+ and gulp 4 or 5. ESM; in CommonJS use `const { pugCompiler } = require(…)`.
 
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
-
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

@@ -1,97 +1,34 @@
-<div align="center">
+# @zilero/gulp-refilename
 
-<img src="https://readme-typing-svg.demolab.com?font=Montserrat&weight=700&size=35&duration=3000&pause=1000&color=CF4647&background=45FF0000&center=true&vCenter=true&width=600&height=70&lines=Gulp+Refilename;Flexible+%26+Powerful;Smart+File+Renaming" alt="Typing SVG" />
+[![npm](https://img.shields.io/npm/v/@zilero/gulp-refilename?color=7c3aed&logo=npm)](https://www.npmjs.com/package/@zilero/gulp-refilename)
+[![license](https://img.shields.io/npm/l/@zilero/gulp-refilename?color=7c3aed)](./LICENSE)
 
-📝 Powerful Gulp plugin for flexible file renaming with advanced pattern support.
+Rename files in a gulp stream: a new name, a prefix or suffix, another extension or folder, or a function of the path parts. Source maps follow the new name.
 
-[Installation](#-installation) •
-[Options](#-options) •
-[Example](#-example)
-
-</div>
-
-## ✨ Features
-
-- 📄 Simple and complex file renaming
-- 🎯 Prefix and suffix support
-- 📝 TypeScript support
-- 🚀 Stream-based processing
-- 💡 Multiple extension handling
-- 🛠️ Directory structure preservation
-
-## 🚀 Installation
-
-```bash
-npm install @zilero/gulp-refilename --save-dev
-# or
-yarn add @zilero/gulp-refilename --dev
-# or
-pnpm add @zilero/gulp-refilename --save-dev
+```sh
+npm install --save-dev @zilero/gulp-refilename
 ```
 
-## ⚙️ Options
+```js
+import { dest, src } from 'gulp';
+import refilename from '@zilero/gulp-refilename';
 
-#### dirname
-- Type: `string`
-- Default: `original directory`
-- Change directory path
-
-### stem
-- Type: `string`
-- Default: `''`
-- Change filename
-
-#### extname
-- Type: `string`
-- Default: `original extension`
-- Change file extension
-
-#### prefix
-- Type: `string`
-- Default: `''`
-- Add prefix to filename
-
-#### suffix
-- Type: `string`
-- Default: `''`
-- Add suffix to filename
-
-## 📝 Example
-
-```typescript
-gulp.task('complex-rename', () => {
-  return gulp.src('src/**/*')
-    .pipe(GulpRefilename({
-      prefix: 'processed-',
-      suffix: '-v1',
-      extname: '.js',
-    }))
-    .pipe(gulp.dest('dist'));
-});
+export const scripts = () =>
+  src('src/js/*.js')
+    .pipe(refilename({ suffix: '.min' })) // app.js → app.min.js
+    .pipe(dest('dist/js'));
 ```
 
-## 🤝 Contributing
+| Option                  | Example                                                           | Result for `js/app.js` |
+| ----------------------- | ----------------------------------------------------------------- | ---------------------- |
+| a file name             | `refilename('bundle.js')`                                         | `js/bundle.js`         |
+| `prefix`, `suffix`      | `refilename({ prefix: 'v2-', suffix: '.min' })`                   | `js/v2-app.min.js`     |
+| `stem`, `extname`       | `refilename({ stem: 'main', extname: 'mjs' })`                    | `js/main.mjs`          |
+| `dirname`               | `refilename({ dirname: 'scripts' })`                              | `scripts/app.js`       |
+| a function of the parts | `refilename(({ parts }) => ({ stem: parts.stem.toUpperCase() }))` | `js/APP.js`            |
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+The function may be async; parts it returns as `undefined` stay as they were, and what it returns is checked like the object. A string, `stem`, `prefix` or `suffix` must not contain `/` or `\` (use `{ dirname }` to move files), and invalid options throw when the plugin is created. A rename that would leave `file.base` emits an error.
 
-If you would like to contribute to the project, please create a pull request or leave feedback. We are always open to new ideas and improvements!
+**[Documentation](https://zilero232.github.io/gulp-plugins-hub/plugins/refilename)** · [All plugins](https://github.com/Zilero232/gulp-plugins-hub) · Requires Node.js 22.13+ and gulp 4 or 5. ESM; in CommonJS use `const { refilename } = require(…)`.
 
-## 🐛 Issues
-
-[![GitHub Issues](https://img.shields.io/github/issues/zilero/gulp-plugins-hub.svg)](https://github.com/zilero/gulp-plugins-hub/issues)
-
-Found a bug? Want to request a feature? Please create an issue.
-
-## 📄 License
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-<div align="center">
-
-Made with ❤️ by [Zilero](https://github.com/zilero)
-
-</div>
+MIT © Artemev Alexandr

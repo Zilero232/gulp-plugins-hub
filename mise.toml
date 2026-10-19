@@ -1,0 +1,10 @@
+# The toolchain for this repo: `mise install` in the repo root.
+# CI installs it from here too (.github/actions/setup, jdx/mise-action), so a bump here is a bump everywhere.
+
+min_version = "2026.9.0"
+
+[tools]
+# Package manager and script runner. Keep in step with `packageManager` in package.json.
+bun = "1.4.3"
+# The plugins run inside gulp on Node, so tests, the build and publishing run on the active LTS.
+node = "24"

@@ -1,0 +1,21 @@
+{
+  "name": "@gulp-plugins-hub/tsdown-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The build every package shares: tsdown, ESM for Node, declarations, publint.",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "publint": "^0.3.25",
+    "tsdown": "catalog:"
+  },
+  "devDependencies": {
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

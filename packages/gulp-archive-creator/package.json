@@ -1,73 +1,73 @@
 {
   "name": "@zilero/gulp-archive-creator",
   "version": "1.0.4",
-  "type": "module",
-  "description": "A Gulp plugin for creating archives (zip, tar) from vinyl file streams with configurable compression options",
+  "description": "Pack the files of a gulp stream into a zip, tar or tar.gz archive with archiver.",
+  "keywords": [
+    "gulpplugin",
+    "gulp",
+    "gulp-plugin",
+    "archive",
+    "zip",
+    "tar",
+    "tgz",
+    "gzip",
+    "archiver",
+    "compress"
+  ],
+  "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/archive-creator",
+  "bugs": {
+    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zilero232/gulp-plugins-hub.git",
+    "directory": "packages/gulp-archive-creator"
+  },
+  "license": "MIT",
   "author": {
     "name": "Artemev Alexandr",
     "url": "https://github.com/Zilero232"
   },
-  "license": "MIT",
-  "homepage": "https://github.com/Zilero232/gulp-plugins-hub",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Zilero232/gulp-plugins-hub"
-  },
-  "bugs": {
-    "url": "https://github.com/Zilero232/gulp-plugins-hub/issues"
-  },
-  "keywords": [
-    "gulp",
-    "plugin",
-    "archive",
-    "zip",
-    "tar",
-    "compression",
-    "archiver",
-    "vinyl",
-    "stream",
-    "bundle",
-    "package",
-    "compress"
-  ],
+  "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.cts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
+      "@zilero/source": "./src/index.ts",
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "src",
+    "!src/**/_tests"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "clean": "rimraf dist",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
-  },
-  "engines": {
-    "node": ">= 16.0"
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@zilero/gulp-plugin-factory": "workspace:*",
-    "archiver": "^7.0.1",
-    "concat-stream": "^2.0.0",
-    "vinyl": "^3.0.1",
-    "zod": "^3.25.76",
-    "chalk": "5.4.1",
-    "consola": "^3.4.2",
-    "pretty-error": "^4.0.0"
+    "@types/archiver": "^8.0.0",
+    "@zilero/gulp-plugin-factory": "workspace:^",
+    "archiver": "^8.0.0",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@types/archiver": "^6.0.2",
-    "@types/concat-stream": "^2.0.3"
+    "@gulp-plugins-hub/tsdown-config": "workspace:*",
+    "@gulp-plugins-hub/typescript-config": "workspace:*",
+    "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "ts-pattern": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   },
   "publishConfig": {
-    "access": "public"
-  },
-  "peerDependencies": {
-    "gulp": "^4.0.0"
+    "access": "public",
+    "provenance": true
   }
 }
