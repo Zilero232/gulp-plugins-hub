@@ -51,9 +51,9 @@
     "prepare": "husky",
     "release": "bun run build && bun scripts/publish/index.ts",
     "spell": "cspell lint --config ./cspell.json --gitignore --no-progress --no-must-find-files .",
-    "test": "turbo run test && vitest run --project scripts",
-    "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest",
+    "test": "turbo run test && vitest run --configLoader runner --project scripts",
+    "test:coverage": "vitest run --configLoader runner --coverage",
+    "test:watch": "vitest --configLoader runner",
     "typecheck": "turbo run typecheck && tsc --noEmit",
     "verify": "bun run typecheck && bun run lint && bun run format:check && bun run spell && knip",
     "version": "changeset version && bun install --lockfile-only"

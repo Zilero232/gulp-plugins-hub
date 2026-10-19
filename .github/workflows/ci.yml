@@ -75,7 +75,8 @@ jobs:
       # Every package's unit tests, then the example site built by gulp from the packages' dist/.
       - name: Unit and integration tests
         if: matrix.scope == 'all'
-        run: bun run test
+        # --continue: every failing package shows up, not only the first one.
+        run: bunx turbo run test --continue && bunx vitest run --configLoader runner --project scripts
       - name: Package tests
         if: matrix.scope == 'packages'
-        run: bunx turbo run test --filter='./packages/*'
+        run: bunx turbo run test --continue --filter='./packages/*'

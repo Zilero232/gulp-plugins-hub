@@ -33,6 +33,7 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) before structural changes: the package l
 - Plugins filter by extension (lowercased) and pass other files through; binary plugins call `assertBinaryContents`
 - Source maps: `applySourceMap` stores a tool's map; tools that cannot take an input map use `chain: true`; `getChainableSourceMap` for remapping several maps
 - Untyped CommonJS libraries are loaded with `createRequire` into typed constants (`vendor/`), never with ambient `declare module`: sibling packages typecheck these sources
+- Vitest runs with `--configLoader runner`: the shared config is a TypeScript workspace (`tooling/vitest`), which Node 22.13 cannot load natively
 - Workspace packages resolve to sources through the `@zilero/source` export condition (tsconfig `customConditions` in `tooling/typescript`, `tooling/vitest`), so typecheck and tests need no build
 - Tests compare paths with `getRelativePath(file)` and build absolute ones with `path.join`, so they pass on Windows
 - JSDoc globs: write `**\/*.js`, since `*/` ends the comment
