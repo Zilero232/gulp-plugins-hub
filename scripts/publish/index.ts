@@ -6,7 +6,9 @@
 // trusted publishing. So `bun pm pack` builds the tarball (versions resolved) and `npm publish <tarball>`
 // publishes it with trusted publishing and provenance (`publishConfig.provenance`).
 //
-// `bun scripts/publish --dry-run` packs everything and runs `npm publish --dry-run`: nothing is uploaded.
+// `bun scripts/publish/index.ts --dry-run` packs everything and runs `npm publish --dry-run`: nothing is uploaded.
+// `--local` publishes from a maintainer's machine (after `npm login`), without provenance: how a package that is
+// not on npm yet gets its first version, since trusted publishing can only be set up for an existing package.
 import { mkdir, rm } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
@@ -18,8 +20,11 @@ import { readWorkspaces } from './read-workspaces';
 import { runCommand } from './run-command';
 import { sortByDependencies } from './sort-by-dependencies';
 
-const { values } = parseArgs({ options: { 'dry-run': { type: 'boolean', default: false } } });
+const { values } = parseArgs({
+  options: { 'dry-run': { type: 'boolean', default: false }, local: { type: 'boolean', default: false } }
+});
 const dryRun = values['dry-run'];
+const { local } = values;
 
 await rm(PACK_DIR, { recursive: true, force: true });
 await mkdir(PACK_DIR);
@@ -32,7 +37,7 @@ for (const workspace of sortByDependencies(await readWorkspaces())) {
     continue;
   }
 
-  publishTarball({ tarball: packWorkspace({ workspace, destination: PACK_DIR }), dryRun });
+  publishTarball({ tarball: packWorkspace({ workspace, destination: PACK_DIR }), dryRun, local });
   console.log(`${dryRun ? 'Checked' : 'Published'} ${name}@${version}`);
 }
 
