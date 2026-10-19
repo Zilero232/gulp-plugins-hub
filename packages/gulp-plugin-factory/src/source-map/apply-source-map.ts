@@ -27,7 +27,7 @@ const keepSourcesContent = ({ previous, sources, parsed }: KeepSourcesContentInp
 
   return sources.map((source, index) => {
     const own = parsed.sourcesContent?.[index];
-    const kept = contents[names.indexOf(source)];
+    const kept = contents[names.findIndex((name) => typeof name === 'string' && toPosixPath(name) === source)];
 
     return own ?? (typeof kept === 'string' ? kept : null);
   });

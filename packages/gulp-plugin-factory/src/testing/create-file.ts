@@ -3,6 +3,8 @@ import Vinyl from 'vinyl';
 
 import type { CreateFileInput } from './testing.types';
 
+import { toPosixPath } from '../shared';
+
 /**
  * Creates a Vinyl file the way `gulp.src` would, for tests: an absolute path under `base` and Buffer contents.
  *
@@ -24,12 +26,15 @@ export const createFile = ({
   });
 
   if (sourceMap) {
+    // With `/`, as vinyl-sourcemap writes them on every OS.
+    const relative = toPosixPath(file.relative);
+
     file.sourceMap = {
       version: 3,
-      file: file.relative,
+      file: relative,
       names: [],
       mappings: '',
-      sources: [file.relative],
+      sources: [relative],
       sourcesContent: [file.isBuffer() ? file.contents.toString() : null]
     };
   }

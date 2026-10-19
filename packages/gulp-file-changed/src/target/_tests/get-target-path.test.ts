@@ -12,7 +12,7 @@ describe('getTargetPath', () => {
     expect(getTargetPath({ file, destination })).toBe(path.join(destination, 'css', 'main.scss'));
     expect(getTargetPath({ file, destination, extname: '.css' })).toBe(path.join(destination, 'css', 'main.css'));
     expect(getTargetPath({ file, destination, extname: '.css', target: () => 'all.css' })).toBe(
-      path.join(destination, 'all.css')
+      path.resolve(destination, 'all.css')
     );
   });
 });

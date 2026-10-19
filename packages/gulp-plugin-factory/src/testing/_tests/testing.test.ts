@@ -9,7 +9,7 @@ describe('createFile', () => {
     const file = createFile({ path: 'a/b.txt', contents: 'hi' });
 
     expect(file).toMatchObject({
-      cwd: '/project',
+      cwd: path.normalize('/project'),
       base: path.join('/project', 'src'),
       path: path.join('/project', 'src', 'a', 'b.txt')
     });

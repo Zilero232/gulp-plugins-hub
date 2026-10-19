@@ -88,7 +88,7 @@ describe('applySourceMap with chain', () => {
 });
 
 describe('getChainableSourceMap', () => {
-  it('makes the sources absolute, honoring sourceRoot', () => {
+  it('makes the sources absolute file URLs, honoring sourceRoot', () => {
     const file = createFile({ path: 'js/app.js' });
     file.sourceMap = {
       version: 3,
@@ -99,7 +99,7 @@ describe('getChainableSourceMap', () => {
     };
 
     expect(getChainableSourceMap(file)?.sources).toEqual([
-      path.join(file.base, 'src', 'app.ts'),
+      pathToFileURL(path.resolve(file.base, 'src', 'app.ts')).href,
       'https://cdn.example/x.js'
     ]);
   });
