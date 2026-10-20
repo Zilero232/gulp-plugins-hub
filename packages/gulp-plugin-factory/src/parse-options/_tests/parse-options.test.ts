@@ -4,7 +4,7 @@ import PluginError from 'plugin-error';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { parseOptions } from '../..';
+import { parseOptions } from '..';
 
 const schema = z
   .object({

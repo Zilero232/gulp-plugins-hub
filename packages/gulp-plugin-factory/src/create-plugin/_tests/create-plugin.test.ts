@@ -3,8 +3,8 @@ import { PassThrough } from 'node:stream';
 import PluginError from 'plugin-error';
 import { describe, expect, it } from 'vitest';
 
-import { createPlugin } from '../..';
-import { createFile, runPlugin } from '../../../testing';
+import { createPlugin } from '..';
+import { createFile, runPlugin } from '../../testing';
 
 const contentsOf = (files: { contents: unknown }[]) => files.map(({ contents }) => String(contents));
 

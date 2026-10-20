@@ -4,7 +4,7 @@ import PluginError from 'plugin-error';
 
 import type { ParseOptionsInput } from './parse-options.types';
 
-import { formatIssues } from '../format-issues';
+import { formatIssues } from './format-issues';
 
 /**
  * Validates plugin options against a Standard Schema and returns the parsed value (defaults applied).

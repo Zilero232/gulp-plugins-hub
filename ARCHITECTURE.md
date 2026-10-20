@@ -46,7 +46,7 @@ packages/gulp-<name>/src/
         └── _tests/<unit>.test.ts
 ```
 
-One folder holds one function. A concern with a single function is that function's folder: `<unit>.ts`, its types and tests sit directly in it. As soon as a concern has two functions, each moves to a subfolder with everything that belongs to it, and only what several of them share stays one level up. No folder ever mixes several functions with their types and tests.
+One folder holds one function. A concern with a single function is that function's folder: `<unit>.ts`, its types and tests sit directly in it. As soon as a concern has two functions, each moves to a subfolder with everything that belongs to it, and only what several of them share stays one level up. No folder ever mixes several functions with their types and tests. When a concern is named after its main function (`create-plugin/`), it is that function's folder, and the helpers only it uses nest inside it (`create-plugin/to-plugin-error/`) rather than doubling the name (`create-plugin/create-plugin/`).
 
 The root only ever holds the public surface: internal parts always live in a concern folder, even when there is only one. A plugin with no internal parts (a thin wrapper around its engine) has no folder at all.
 

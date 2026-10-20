@@ -12,8 +12,8 @@ import type {
   TransformResult
 } from './create-plugin.types';
 
-import { assertBinaryContents } from '../../binary';
-import { toPluginError } from '../to-plugin-error';
+import { assertBinaryContents } from '../binary';
+import { toPluginError } from './to-plugin-error';
 
 const createContext = ({ definition, stream }: FlushStreamInput): PluginContext => ({
   name: definition.name,
