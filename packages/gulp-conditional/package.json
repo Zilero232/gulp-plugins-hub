@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-conditional",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Route each file of a gulp stream through a different plugin chain depending on a condition, like an if / else if / else for streams.",
   "keywords": [
     "gulpplugin",

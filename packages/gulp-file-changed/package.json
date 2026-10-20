@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-file-changed",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Pass only the files that changed since the last build, by modification time or contents, so watch builds skip the rest.",
   "keywords": [
     "gulpplugin",

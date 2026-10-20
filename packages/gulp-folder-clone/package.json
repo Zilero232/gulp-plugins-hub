@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-folder-clone",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Copy every file of a gulp stream into one or more extra folders in a single pass, with an optional hook to change each copy.",
   "keywords": [
     "gulpplugin",

@@ -73,7 +73,7 @@
     },
     "packages/gulp-archive-creator": {
       "name": "@zilero/gulp-archive-creator",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@types/archiver": "^8.0.0",
         "@zilero/gulp-plugin-factory": "workspace:^",
@@ -91,7 +91,7 @@
     },
     "packages/gulp-asset-revision": {
       "name": "@zilero/gulp-asset-revision",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "escape-string-regexp": "^5.0.0",
@@ -108,7 +108,7 @@
     },
     "packages/gulp-conditional": {
       "name": "@zilero/gulp-conditional",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "zod": "catalog:",
@@ -124,7 +124,7 @@
     },
     "packages/gulp-css-squeezer": {
       "name": "@zilero/gulp-css-squeezer",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "browserslist": "^4.29.4",
@@ -141,7 +141,7 @@
     },
     "packages/gulp-file-changed": {
       "name": "@zilero/gulp-file-changed",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "tinyglobby": "^0.2.17",
@@ -161,7 +161,7 @@
     },
     "packages/gulp-file-concat": {
       "name": "@zilero/gulp-file-concat",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@jridgewell/remapping": "^2.3.5",
         "@zilero/gulp-plugin-factory": "workspace:^",
@@ -181,7 +181,7 @@
     },
     "packages/gulp-file-exclude": {
       "name": "@zilero/gulp-file-exclude",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "zod": "catalog:",
@@ -196,7 +196,7 @@
     },
     "packages/gulp-folder-clone": {
       "name": "@zilero/gulp-folder-clone",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "zod": "catalog:",
@@ -212,7 +212,7 @@
     },
     "packages/gulp-font-switcher": {
       "name": "@zilero/gulp-font-switcher",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "fonteditor-core": "^2.6.3",
@@ -232,7 +232,7 @@
     },
     "packages/gulp-html-squeezer": {
       "name": "@zilero/gulp-html-squeezer",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "html-minifier-next": "^9.0.0",
@@ -248,7 +248,7 @@
     },
     "packages/gulp-image-squeezer": {
       "name": "@zilero/gulp-image-squeezer",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "sharp": "^0.35.5",
@@ -265,7 +265,7 @@
     },
     "packages/gulp-js-squeezer": {
       "name": "@zilero/gulp-js-squeezer",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "terser": "^5.51.2",
@@ -281,7 +281,7 @@
     },
     "packages/gulp-plugin-factory": {
       "name": "@zilero/gulp-plugin-factory",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@jridgewell/remapping": "^2.3.5",
         "@standard-schema/spec": "^1.1.0",
@@ -303,7 +303,7 @@
     },
     "packages/gulp-pug-compiler": {
       "name": "@zilero/gulp-pug-compiler",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@types/pug": "^2.0.10",
         "@zilero/gulp-plugin-factory": "workspace:^",
@@ -321,7 +321,7 @@
     },
     "packages/gulp-refilename": {
       "name": "@zilero/gulp-refilename",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "zod": "catalog:",
@@ -337,7 +337,7 @@
     },
     "packages/gulp-scss-compiler": {
       "name": "@zilero/gulp-scss-compiler",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@zilero/gulp-plugin-factory": "workspace:^",
         "sass-embedded": "^1.105.2",
@@ -353,7 +353,7 @@
     },
     "packages/gulp-text-replace": {
       "name": "@zilero/gulp-text-replace",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "dependencies": {
         "@jridgewell/remapping": "^2.3.5",
         "@zilero/gulp-plugin-factory": "workspace:^",

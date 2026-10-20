@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-html-squeezer",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Minify HTML in a gulp stream with html-minifier-next: presets, inline CSS and JavaScript, hooks before and after.",
   "keywords": [
     "gulpplugin",
