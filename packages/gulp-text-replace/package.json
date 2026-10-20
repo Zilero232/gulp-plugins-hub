@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-text-replace",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "Replace text in the files of a gulp stream with strings or regular expressions, sync or async replacers that see the file, and add a banner or footer. Binary files are left alone.",
   "keywords": [
     "gulpplugin",

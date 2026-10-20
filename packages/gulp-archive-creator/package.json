@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-archive-creator",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Pack the files of a gulp stream into one zip, tar or tar.gz archive.",
   "keywords": [
     "gulpplugin",

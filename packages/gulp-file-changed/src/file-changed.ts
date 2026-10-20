@@ -54,7 +54,7 @@ export const fileChanged = (options: FileChangedOptions): PluginStream => {
       const extraMtime = await getExtraMtime(file.cwd);
 
       // Whole milliseconds, as in the `mtime` comparison: `dest` keeps no fraction.
-      if (extraMtime !== undefined && Math.floor(extraMtime) > Math.floor(targetStat.mtimeMs)) {
+      if (extraMtime !== undefined && Math.floor(extraMtime) > Math.round(targetStat.mtimeMs)) {
         return;
       }
 

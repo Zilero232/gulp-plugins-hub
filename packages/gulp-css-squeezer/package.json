@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-css-squeezer",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "Minify CSS in a gulp stream, add vendor prefixes and lower modern syntax for your browserslist targets in one pass with Lightning CSS, keeping source maps.",
   "keywords": [
     "gulpplugin",

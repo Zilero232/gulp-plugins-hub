@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-asset-revision",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "Cache-busting for a gulp stream: add a content hash to asset names, rewrite the references in HTML, CSS and JavaScript, and write a manifest.",
   "keywords": [
     "gulpplugin",

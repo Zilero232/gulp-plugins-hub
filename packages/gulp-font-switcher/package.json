@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-font-switcher",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Convert fonts in a gulp stream to woff2, woff, ttf, eot or SVG and subset them to the glyphs you use, keeping every OpenType feature.",
   "keywords": [
     "gulpplugin",

@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-file-exclude",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Drop files from a gulp stream by glob, regular expression, size or your own predicate.",
   "keywords": [
     "gulpplugin",
