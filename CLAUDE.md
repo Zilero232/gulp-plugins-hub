@@ -26,7 +26,7 @@ Read [ARCHITECTURE.md](ARCHITECTURE.md) before structural changes: the package l
 
 ## Code
 
-- A package's `src/` root is its public surface (`index.ts`, `<name>.ts`, `.schema.ts`, `.types.ts`, `.constants.ts`, `_tests/`); internal parts live in folders named after what they do (`rewrite/`, `archive/`), one exported function per file, `XInput` types in `<folder>.types.ts`, an `index.ts` and `_tests/`
+- A package's `src/` root is its public surface (`index.ts`, `<name>.ts`, `.schema.ts`, `.types.ts`, `.constants.ts`, `_tests/`); internal parts live in folders named after what they do (`references/`, `archive/`). One folder holds one function: when a concern has several, each gets `<fn>/{<fn>.ts, <fn>.types.ts, <fn>.constants.ts, index.ts, _tests/}`, and only what several share stays in `<concern>.types.ts` / `.constants.ts`
 - Plugins use `createPlugin` and `parseOptions` from the factory and never depend on gulp. Callbacks in schemas are `z.custom<Fn>(isFunction)`: `z.function()` wraps and breaks async hooks
 - `type`, never `interface`; no `as` casts; two or more parameters become one `XInput` object (exceptions: the factory's `transform(file, context)` and `runPlugin(stream, files)`); explicit return types; braces on every `if`; a blank line between steps (declarations, multi-line statements, blocks, returns), enforced by `style/padding-line-between-statements`
 - Hooks take one object (`{ file }`, `{ content, file }`) and may return a promise

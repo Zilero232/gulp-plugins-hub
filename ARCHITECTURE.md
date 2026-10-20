@@ -34,16 +34,23 @@ packages/gulp-<name>/src/
 ├── <name>.types.ts          public types: hooks and what they receive
 ├── <name>.constants.ts      PLUGIN_NAME (the package name) and fixed values
 ├── _tests/<name>.test.ts    the plugin's behavior, through runPlugin
-└── <concern>/               internal parts, named after what they do: rewrite/, bundle/, archive/
-    ├── <unit>.ts            one exported function per file, named after it
-    ├── <concern>.types.ts   the `XInput` types of its functions
-    ├── index.ts
-    └── _tests/              unit tests of the parts that have logic of their own
+└── <concern>/               internal parts, named after what they do: references/, bundle/, archive/
+    ├── index.ts             re-exports its functions
+    ├── <concern>.types.ts   only types shared by several of its functions
+    ├── <concern>.constants.ts  only constants shared by several of its functions
+    └── <unit>/              one folder per function, named after it
+        ├── <unit>.ts        the function
+        ├── <unit>.types.ts  its `XInput` and other types
+        ├── <unit>.constants.ts
+        ├── index.ts
+        └── _tests/<unit>.test.ts
 ```
 
-The root only ever holds the public surface: internal parts always live in a concern folder, even when there is one. A plugin with no internal parts (a thin wrapper around its engine) has no folder at all.
+One folder holds one function. A concern with a single function is that function's folder: `<unit>.ts`, its types and tests sit directly in it. As soon as a concern has two functions, each moves to a subfolder with everything that belongs to it, and only what several of them share stays one level up. No folder ever mixes several functions with their types and tests.
 
-Scripts follow the same rules: `scripts/<name>/index.ts` is the entry, with its types, constants, one file per function and `_tests/`.
+The root only ever holds the public surface: internal parts always live in a concern folder, even when there is only one. A plugin with no internal parts (a thin wrapper around its engine) has no folder at all.
+
+Scripts follow the same rules: `scripts/<name>/index.ts` is the entry, with the shared types and constants next to it and a folder per function.
 
 ## Code style
 

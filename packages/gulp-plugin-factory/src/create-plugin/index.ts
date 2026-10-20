@@ -6,7 +6,7 @@ export type {
   PluginContext,
   PluginDefinition,
   PluginStream,
-  ToPluginErrorInput,
   TransformResult
-} from './create-plugin.types';
+} from './create-plugin';
+export type { ToPluginErrorInput } from './to-plugin-error';
 export { toPluginError } from './to-plugin-error';
