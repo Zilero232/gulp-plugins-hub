@@ -1,5 +1,6 @@
 import type { AssertBinaryContentsInput } from './binary.types';
 
+import { toPosixPath } from '../shared';
 import { HEADER_LENGTH, REPLACEMENT_CHARACTER } from './binary.constants';
 
 /**
@@ -10,7 +11,7 @@ import { HEADER_LENGTH, REPLACEMENT_CHARACTER } from './binary.constants';
 export const assertBinaryContents = ({ relative, contents }: AssertBinaryContentsInput): void => {
   if (contents.subarray(0, HEADER_LENGTH).includes(REPLACEMENT_CHARACTER)) {
     throw new Error(
-      `${relative} was read as UTF-8 text and is corrupted. Read binary files with \`src(globs, { encoding: false })\``
+      `${toPosixPath(relative)} was read as UTF-8 text and is corrupted. Read binary files with \`src(globs, { encoding: false })\``
     );
   }
 };
