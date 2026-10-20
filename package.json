@@ -24,7 +24,7 @@
       "tooling/*"
     ],
     "catalog": {
-      "@types/node": "^22.19.0",
+      "@types/node": "^26.6.5",
       "@types/vinyl": "^2.0.12",
       "gulp": "^5.0.1",
       "plugin-error": "^2.0.1",
