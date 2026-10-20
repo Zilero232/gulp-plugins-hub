@@ -1,6 +1,6 @@
 import { PluginError } from '@zilero/gulp-plugin-factory';
 import { createFile, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ import scssCompiler from '..';
 let base: string;
 
 beforeAll(async () => {
-  base = await mkdtemp(path.join(tmpdir(), 'scss-compiler-'));
+  base = await realpath(await mkdtemp(path.join(tmpdir(), 'scss-compiler-')));
   await mkdir(path.join(base, 'config'));
   await writeFile(path.join(base, 'config', '_variables.scss'), '$brand: #7c3aed;\n');
 });

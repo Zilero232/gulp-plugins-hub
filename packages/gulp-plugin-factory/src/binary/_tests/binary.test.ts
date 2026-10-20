@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { assertBinaryContents } from '..';
@@ -14,6 +15,14 @@ describe('assertBinaryContents', () => {
 
     expect(() => assertBinaryContents({ relative: 'img/a.png', contents: corrupted })).toThrow(
       'img/a.png was read as UTF-8 text and is corrupted. Read binary files with `src(globs, { encoding: false })`'
+    );
+  });
+
+  it('names the file with forward slashes on every platform', () => {
+    const corrupted = Buffer.from(PNG_HEADER.toString('utf8'));
+
+    expect(() => assertBinaryContents({ relative: path.join('img', 'icons', 'a.png'), contents: corrupted })).toThrow(
+      'img/icons/a.png was read as UTF-8 text'
     );
   });
 });

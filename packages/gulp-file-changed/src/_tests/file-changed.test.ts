@@ -1,7 +1,7 @@
 import type { Vinyl } from '@zilero/gulp-plugin-factory';
 
 import { createFile, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
-import { mkdir, mkdtemp, rm, stat, utimes, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rm, stat, utimes, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -13,7 +13,7 @@ import fileChanged from '..';
 let cwd: string;
 
 beforeEach(async () => {
-  cwd = await mkdtemp(path.join(tmpdir(), 'file-changed-'));
+  cwd = await realpath(await mkdtemp(path.join(tmpdir(), 'file-changed-')));
   await mkdir(path.join(cwd, 'dist', 'css'), { recursive: true });
 });
 

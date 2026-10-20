@@ -1,6 +1,6 @@
 import { PluginError } from '@zilero/gulp-plugin-factory';
 import { createFile, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ import pugCompiler from '..';
 let base: string;
 
 beforeAll(async () => {
-  base = await mkdtemp(path.join(tmpdir(), 'pug-compiler-'));
+  base = await realpath(await mkdtemp(path.join(tmpdir(), 'pug-compiler-')));
   await mkdir(path.join(base, 'templates'));
   await writeFile(path.join(base, 'templates', '_layout.pug'), 'html\n  body\n    block content\n');
   await writeFile(path.join(base, 'templates', '_nav.pug'), 'nav Menu\n');
@@ -27,7 +27,7 @@ describe('pugCompiler', () => {
   it('renders the file contents to .html', async () => {
     const [file] = await compile({}, 'h1.title Hello');
 
-    expect(getRelativePath(file)).toBe(path.join('pages', 'index.html'));
+    expect(getRelativePath(file)).toBe('pages/index.html');
     expect(String(file!.contents)).toBe('<h1 class="title">Hello</h1>');
   });
 
