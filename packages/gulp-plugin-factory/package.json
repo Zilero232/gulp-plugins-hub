@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-plugin-factory",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Build typed gulp plugins in a few lines: a stream factory that follows the gulp plugin guidelines, option validation with any Standard Schema, source map and testing helpers.",
   "keywords": [
     "gulpplugin",

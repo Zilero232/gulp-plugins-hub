@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-font-switcher",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Convert fonts to woff2, woff, ttf, eot and svg in a gulp stream, several formats at once, and subset them to the glyphs you use with harfbuzz. Every OpenType table is kept; WebAssembly, no native build.",
   "keywords": [
     "gulpplugin",
