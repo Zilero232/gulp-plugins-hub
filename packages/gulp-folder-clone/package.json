@@ -11,7 +11,8 @@
     "duplicate",
     "folder",
     "directory",
-    "mirror"
+    "mirror",
+    "gulp-clone"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/folder-clone",
   "bugs": {
@@ -56,6 +57,7 @@
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "remeda": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"
   },

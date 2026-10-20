@@ -1,7 +1,7 @@
 {
   "name": "@zilero/gulp-css-squeezer",
   "version": "0.0.0",
-  "description": "Minify CSS, add vendor prefixes and lower modern syntax for your browserslist targets in one pass with Lightning CSS, keeping source maps.",
+  "description": "Minify CSS in a gulp stream, add vendor prefixes and lower modern syntax for your browserslist targets in one pass with Lightning CSS, keeping source maps.",
   "keywords": [
     "gulpplugin",
     "gulp",
@@ -12,7 +12,10 @@
     "lightningcss",
     "browserslist",
     "prefix",
-    "sourcemaps"
+    "sourcemaps",
+    "gulp-clean-css",
+    "gulp-autoprefixer",
+    "gulp-cssnano"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/css-squeezer",
   "bugs": {

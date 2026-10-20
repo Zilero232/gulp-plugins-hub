@@ -13,6 +13,7 @@ describe('createFile', () => {
       base: path.join('/project', 'src'),
       path: path.join('/project', 'src', 'a', 'b.txt')
     });
+
     expect(getRelativePath(file)).toBe('a/b.txt');
     expect(file.contents?.toString()).toBe('hi');
   });

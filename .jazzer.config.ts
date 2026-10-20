@@ -1,48 +1,35 @@
-// The config for this repo's commits: `bun run commit`. A scope per package (without the `gulp-` prefix),
-// plus the parts of the repo around them.
+// The config for this repo's commits: `bun run commit`. A scope per package (its folder without the `gulp-`
+// prefix, read from packages/ so a new package needs no edit here), plus the parts of the repo around them.
+// commitlint.config.ts allows the same types.
 import { defineConfig } from 'commit-jazzer';
+import { readdirSync } from 'node:fs';
+import path from 'node:path';
+
+const packageScopes = readdirSync(path.join(import.meta.dirname, 'packages'), { withFileTypes: true })
+  .filter((entry) => entry.isDirectory() && entry.name.startsWith('gulp-'))
+  .map((entry) => entry.name.replace(/^gulp-/, ''))
+  .sort();
+
+export const COMMIT_TYPES = [
+  'feat',
+  'fix',
+  'refactor',
+  'perf',
+  'chore',
+  'docs',
+  'test',
+  'build',
+  'ci',
+  'security',
+  'upgrade',
+  'downgrade',
+  'remove',
+  'revert'
+] as const;
 
 export default defineConfig({
-  scopes: [
-    'plugin-factory',
-    'archive-creator',
-    'asset-revision',
-    'conditional',
-    'css-squeezer',
-    'file-changed',
-    'file-concat',
-    'file-exclude',
-    'folder-clone',
-    'font-switcher',
-    'html-squeezer',
-    'image-squeezer',
-    'js-squeezer',
-    'pug-compiler',
-    'refilename',
-    'scss-compiler',
-    'text-replace',
-    'example',
-    'docs',
-    'deps',
-    'ci',
-    'release'
-  ],
-  availableCommitTypes: [
-    'feat',
-    'fix',
-    'refactor',
-    'perf',
-    'chore',
-    'docs',
-    'test',
-    'build',
-    'ci',
-    'security',
-    'upgrade',
-    'downgrade',
-    'remove',
-    'revert'
-  ],
+  scopes: [...packageScopes, 'example', 'docs', 'deps', 'ci', 'release'],
+  availableCommitTypes: [...COMMIT_TYPES],
   aliases: {
     deps: { type: 'upgrade', component: 'deps', title: 'update dependencies' }
   }

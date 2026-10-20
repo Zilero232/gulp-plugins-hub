@@ -1,6 +1,6 @@
 import type { AssertBinaryContentsInput } from './binary.types';
 
-import { toPosixPath } from '../shared';
+import { toPosixPath } from '../path';
 import { HEADER_LENGTH, REPLACEMENT_CHARACTER } from './binary.constants';
 
 /**

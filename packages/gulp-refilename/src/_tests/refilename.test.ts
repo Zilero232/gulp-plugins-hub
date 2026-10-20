@@ -1,10 +1,12 @@
 import { createFile, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
+import { statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import refilename from '..';
 
 const rename = async (options: Parameters<typeof refilename>[0], relative = 'js/app.js') => {
   const [file] = await runPlugin(refilename(options), [createFile({ path: relative, sourceMap: true })]);
+
   return file!;
 };
 
@@ -46,6 +48,7 @@ describe('refilename', () => {
 
     await rename(({ parts }) => {
       seen = parts;
+
       return parts;
     }, 'css/theme.min.css');
 
@@ -56,6 +59,40 @@ describe('refilename', () => {
     const file = await rename(async () => ({ stem: undefined, extname: undefined, dirname: 'out' }));
 
     expect(getRelativePath(file)).toBe('out/app.js');
+  });
+
+  it('uses the parts the function changed in place when it returns nothing', async () => {
+    const file = await rename(({ parts }) => {
+      parts.stem += '.min';
+      parts.dirname = 'dist';
+    });
+
+    expect(getRelativePath(file)).toBe('dist/app.min.js');
+  });
+
+  it('applies a prefix and a suffix the function returns', async () => {
+    expect(getRelativePath(await rename(() => ({ prefix: 'v2-', suffix: '.min' })))).toBe('js/v2-app.min.js');
+  });
+
+  it('explains a gulp-rename callback that changes the input instead of its parts', async () => {
+    // @ts-expect-error: written for gulp-rename, which passes the parts themselves
+    const run = rename((input: { basename: string }) => {
+      input.basename += '.min';
+    });
+
+    await expect(run).rejects.toThrow('change parts.stem instead of basename');
+  });
+
+  it('rejects unknown keys in what the function returns, with a hint', async () => {
+    // @ts-expect-error: basename is gulp-rename's key
+    const run = rename(() => ({ basename: 'main' }));
+
+    await expect(run).rejects.toThrow('Unknown key "basename" (use stem)');
+  });
+
+  it('emits an error when the function returns something other than an object', async () => {
+    // @ts-expect-error: a file name is not a result
+    await expect(rename(() => 'main.js')).rejects.toThrow('The rename function returned invalid parts');
   });
 
   it('emits an error when the function returns parts that are not allowed', async () => {
@@ -86,6 +123,16 @@ describe('refilename', () => {
     expect(getRelativePath(file)).toBe('assets-dir');
   });
 
+  it('passes directories through under their own names', async () => {
+    const directory = createFile({ path: 'assets', contents: null });
+
+    directory.stat = statSync(import.meta.dirname);
+
+    const [file] = await runPlugin(refilename({ suffix: '-dir' }), [directory]);
+
+    expect(getRelativePath(file)).toBe('assets');
+  });
+
   it('rejects invalid options when the plugin is created', () => {
     expect(() => refilename('')).toThrow(/Invalid options/);
     expect(() => refilename('sub/app.js')).toThrow('Expected a file name without a folder');
@@ -97,6 +144,8 @@ describe('refilename', () => {
     expect(() => refilename({ extname: '.' })).toThrow('Expected an extension');
     expect(() => refilename({ dirname: '../out' })).toThrow('Expected a folder inside the base');
     // @ts-expect-error: an unknown option
-    expect(() => refilename({ stemm: 'x' })).toThrow(/Invalid options/);
+    expect(() => refilename({ stemm: 'x' })).toThrow('Unknown key "stemm"');
+    // @ts-expect-error: gulp-rename's key
+    expect(() => refilename({ basename: 'x' })).toThrow('Unknown key "basename" (use stem)');
   });
 });

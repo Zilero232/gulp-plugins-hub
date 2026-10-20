@@ -1,11 +1,14 @@
 import type { ResolveArchiveInput, ResolvedArchive } from './archive.types';
 
-import { EXTENSION_FORMATS, FORMAT_EXTENSIONS } from '../archive-creator.constants';
+import { FORMAT_EXTENSIONS } from '../archive-creator.constants';
+import { getExtensionFormat } from './get-extension-format';
 
-/** The format and the final file name: an explicit format wins, else the extension decides, else zip. */
+/**
+ * The format and the final file name: an explicit format wins, else the extension decides, else zip. The schema
+ * rejects an explicit format that differs from the extension's.
+ */
 export const resolveArchive = ({ name, format }: ResolveArchiveInput): ResolvedArchive => {
-  const lowerName = name.toLowerCase();
-  const fromExtension = EXTENSION_FORMATS.find(([extension]) => lowerName.endsWith(extension))?.[1];
+  const fromExtension = getExtensionFormat(name);
   const resolvedFormat = format ?? fromExtension ?? 'zip';
 
   return {

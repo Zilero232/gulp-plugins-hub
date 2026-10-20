@@ -15,11 +15,13 @@ describe('getPathParts', () => {
 describe('renamePath', () => {
   it('handles a file name, an object and a function', async () => {
     expect(await renamePath({ parts, rename: 'a.js', file })).toEqual({ dirname: 'css', stem: 'a', extname: '.js' });
+
     expect(await renamePath({ parts, rename: { prefix: 'x-', extname: 'scss' }, file })).toEqual({
       dirname: 'css',
       stem: 'x-theme.min',
       extname: '.scss'
     });
+
     expect(await renamePath({ parts, rename: () => ({ extname: 'txt' }), file })).toMatchObject({ extname: '.txt' });
   });
 });

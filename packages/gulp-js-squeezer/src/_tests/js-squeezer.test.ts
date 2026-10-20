@@ -14,6 +14,7 @@ const squeeze = async (
   file = createFile({ path: 'js/app.js', contents: SOURCE })
 ) => {
   const [output] = await runPlugin(jsSqueezer(options), [file]);
+
   return output!;
 };
 
@@ -56,6 +57,7 @@ describe('jsSqueezer', () => {
       sources: ['js/app.js'],
       sourcesContent: [SOURCE]
     });
+
     expect(output.sourceMap.mappings).not.toBe('');
   });
 
@@ -64,7 +66,9 @@ describe('jsSqueezer', () => {
       { 'src/add.js': SOURCE },
       { compress: false, mangle: false, sourceMap: { asObject: true, includeSources: true } }
     );
+
     const file = createFile({ path: 'js/app.js', contents: bundled.code! });
+
     file.sourceMap = bundled.map;
 
     const output = await squeeze({}, file);
@@ -73,10 +77,50 @@ describe('jsSqueezer', () => {
     expect(output.sourceMap.file).toBe('js/app.js');
   });
 
+  it('minifies .mjs files as ES modules by default', async () => {
+    const output = await squeeze({}, createFile({ path: 'js/app.mjs', contents: 'const unused = 1;\nexport {};\n' }));
+
+    // Top-level declarations are local to a module, so the unused one goes.
+    expect(String(output.contents)).toBe('export{};');
+  });
+
+  it('minifies .cjs and .js files as scripts by default', async () => {
+    const contents = 'var unused = 1;\n';
+
+    for (const name of ['app.cjs', 'app.js']) {
+      const output = await squeeze({}, createFile({ path: name, contents }));
+
+      expect(String(output.contents)).toBe('var unused=1;');
+    }
+  });
+
+  it('lets terserOptions.module win over the extension', async () => {
+    const output = await squeeze(
+      { terserOptions: { module: false } },
+      createFile({ path: 'app.mjs', contents: 'var unused = 1;\n' })
+    );
+
+    expect(String(output.contents)).toBe('var unused=1;');
+  });
+
+  it('minifies extensions in any case', async () => {
+    const output = await squeeze({}, createFile({ path: 'APP.MJS', contents: 'const unused = 1;\nexport {};\n' }));
+
+    expect(String(output.contents)).toBe('export{};');
+  });
+
+  it('emits a PluginError naming the hook that returns no text', async () => {
+    // @ts-expect-error: a JavaScript hook that forgets to return
+    const run = squeeze({ onAfterMinify: () => {} });
+
+    await expect(run).rejects.toThrow('onAfterMinify must return the text as a string, got undefined');
+  });
+
   it('emits a PluginError for invalid JavaScript', async () => {
     const run = squeeze({}, createFile({ path: 'broken.js', contents: 'function (' }));
 
     await expect(run).rejects.toBeInstanceOf(PluginError);
+
     await expect(run).rejects.toMatchObject({
       plugin: '@zilero/gulp-js-squeezer',
       fileName: path.join('/project', 'src', 'broken.js')

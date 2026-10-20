@@ -13,6 +13,9 @@ export const INPUT_FORMATS = {
   '.svg': 'svg'
 } as const;
 
+/** The extensions the plugin reads. */
+export const INPUT_EXTENSIONS = Object.keys(INPUT_FORMATS);
+
 /** The highest Unicode code point, U+10FFFF. */
 export const MAX_CODE_POINT = 1_114_111;
 

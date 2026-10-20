@@ -17,7 +17,8 @@ export type ApplySourceMapInput = {
   map: string | SourceMap;
   /**
    * Chain the file's current map into the new one, for tools that cannot take an input map themselves.
-   * The new map's only source must be the file itself. Default false.
+   * Only the sources that are the file itself get its map; others (an inlined import) stay as they are.
+   * Default false.
    */
   chain?: boolean;
 };

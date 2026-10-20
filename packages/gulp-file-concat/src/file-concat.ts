@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import type { FileConcatOptions } from './file-concat.schema';
 
-import { createBundle, createBundleMap } from './bundle';
+import { createBundle, createBundleMap, getNewestStat, toBundleSources } from './bundle';
 import { PLUGIN_NAME } from './file-concat.constants';
 import { fileConcatOptionsSchema } from './file-concat.schema';
 import { sortByGlobs } from './order';
@@ -26,6 +26,7 @@ export const fileConcat = (options: FileConcatOptions): PluginStream => {
     schema: fileConcatOptionsSchema,
     options
   });
+
   const files: BufferFile[] = [];
 
   return createPlugin({
@@ -43,17 +44,19 @@ export const fileConcat = (options: FileConcatOptions): PluginStream => {
       }
 
       const ordered = order ? sortByGlobs({ files, order: [order].flat() }) : files;
-      const bundle = await createBundle({ files: ordered, base: first.base, separator, header, footer });
+      const sources = toBundleSources({ files: ordered, base: first.base });
+      const bundle = await createBundle({ sources, separator, header, footer });
 
       const output = new Vinyl({
         cwd: first.cwd,
         base: first.base,
         path: path.join(first.base, name),
-        contents: Buffer.from(bundle.toString())
+        contents: Buffer.from(bundle.toString()),
+        stat: getNewestStat(files)
       });
 
       if (files.some((file) => file.sourceMap)) {
-        applySourceMap({ file: output, map: createBundleMap({ bundle, files: ordered, base: first.base }) });
+        applySourceMap({ file: output, map: createBundleMap({ bundle, sources }) });
       }
 
       push(output);

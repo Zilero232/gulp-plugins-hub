@@ -6,6 +6,7 @@ import textReplace from '..';
 
 const replace = async (options: Parameters<typeof textReplace>[0], contents: string | Buffer = 'a.b a.b $1') => {
   const [output] = await runPlugin(textReplace(options), [createFile({ path: 'js/app.js', contents })]);
+
   return getContents(output).toString();
 };
 
@@ -30,11 +31,13 @@ describe('textReplace', () => {
 
   it('calls async replacers with the match, groups, offset and file', async () => {
     const seen: unknown[] = [];
+
     const output = await replace({
       rules: {
         search: /(?<name>\w)\.(\w)/g,
         replace: async ({ match, groups, namedGroups, offset, file }) => {
           seen.push({ match, groups, namedGroups, offset });
+
           return `${file.stem}:${groups[1]}`;
         }
       }
@@ -56,8 +59,38 @@ describe('textReplace', () => {
     ).toBe('/* banner */\nx\n// js/app.js');
   });
 
+  it('converts what a replacer returns to a string, like String.prototype.replace', async () => {
+    // @ts-expect-error: JavaScript replacers may return numbers or null
+    expect(await replace({ rules: { search: /\d/g, replace: ({ match }) => Number(match) * 2 } }, 'a1 b4')).toBe(
+      'a2 b8'
+    );
+
+    // @ts-expect-error: JavaScript replacers may return null
+    expect(await replace({ rules: { search: 'x', replace: () => null } }, 'x')).toBe('null');
+    expect(await replace({ rules: { search: 'x', replace: () => '' } }, 'axb')).toBe('ab');
+  });
+
+  it('emits an error when a replacer returns undefined', async () => {
+    // @ts-expect-error: a replacer that forgot to return
+    const run = replace({ rules: { search: /a/, replace: () => {} } });
+
+    await expect(run).rejects.toThrow('The replacer for /a/ returned undefined; return the replacement text');
+  });
+
+  it('emits an error when a header function returns something other than a string', async () => {
+    // @ts-expect-error: a header that forgot to return
+    await expect(replace({ header: () => {} })).rejects.toThrow(
+      'header must return the text as a string, got undefined'
+    );
+  });
+
+  it('adds the header after a byte order mark', async () => {
+    expect(await replace({ header: '/* h */\n', footer: '\n// f' }, '\uFEFFx')).toBe('\uFEFF/* h */\nx\n// f');
+  });
+
   it('starts a sticky or global RegExp from the beginning in every file', async () => {
     const rules = { search: /a/y, replace: 'X' };
+
     const output = await runPlugin(textReplace({ rules }), [
       createFile({ contents: 'aaa' }),
       createFile({ contents: 'aaa' })
@@ -78,6 +111,7 @@ describe('textReplace', () => {
 
   it('keeps the source map pointing at the original text', async () => {
     const file = createFile({ path: 'js/app.js', contents: 'const x = 1;\nlog(x);', sourceMap: true });
+
     const [output] = await runPlugin(
       textReplace({ rules: { search: 'log', replace: 'console.log' }, header: '// h\n' }),
       [file]

@@ -12,7 +12,8 @@
     "extname",
     "dirname",
     "suffix",
-    "prefix"
+    "prefix",
+    "gulp-rename"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/refilename",
   "bugs": {

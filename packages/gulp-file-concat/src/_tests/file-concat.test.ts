@@ -1,4 +1,6 @@
 import { createFile, getContents, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
+import { stat } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import fileConcat from '..';
@@ -69,6 +71,7 @@ describe('fileConcat', () => {
 
   it('chains the source map each input already has', async () => {
     const compiled = createFile({ path: 'js/a.js', contents: 'const a = 1;' });
+
     compiled.sourceMap = {
       version: 3,
       sources: ['ts/a.ts'],
@@ -87,6 +90,7 @@ describe('fileConcat', () => {
 
   it('chains input maps when the bundle goes into a folder', async () => {
     const compiled = createFile({ path: 'js/a.js', contents: 'const a = 1;' });
+
     compiled.sourceMap = { version: 3, sources: ['ts/a.ts'], names: [], mappings: 'AAAA' };
 
     const [output] = await runPlugin(fileConcat({ name: 'vendor/bundle.js' }), [
@@ -97,10 +101,51 @@ describe('fileConcat', () => {
     expect(output!.sourceMap).toMatchObject({ file: 'vendor/bundle.js', sources: ['ts/a.ts', 'js/b.js'] });
   });
 
+  it('gives inputs with the same path and different contents their own source names', async () => {
+    const input = [
+      createFile({ path: 'a.js', contents: 'one', sourceMap: true }),
+      createFile({ path: 'a.js', contents: 'two', sourceMap: true }),
+      createFile({ path: 'a.js', contents: 'one', sourceMap: true })
+    ];
+
+    const [output] = await runPlugin(fileConcat({ name: 'all.js' }), input);
+
+    expect(getContents(output).toString()).toBe('one\ntwo\none');
+    expect(output!.sourceMap).toMatchObject({ sources: ['a.js', 'a.js?2'], sourcesContent: ['one', 'two'] });
+  });
+
+  it('strips the byte order mark of every input', async () => {
+    const input = [
+      createFile({ path: 'a.css', contents: '\uFEFFa{}' }),
+      createFile({ path: 'b.css', contents: '\uFEFFb{}' })
+    ];
+
+    const [output] = await runPlugin(fileConcat({ name: 'all.css' }), input);
+
+    expect(getContents(output).toString()).toBe('a{}\nb{}');
+  });
+
+  it('gives the bundle the stat of the newest input', async () => {
+    const [older, newer] = files();
+
+    older!.stat = await stat(fileURLToPath(import.meta.url));
+    newer!.stat = await stat(fileURLToPath(import.meta.url));
+    Object.assign(older!.stat, { mtime: new Date('2026-01-01'), mtimeMs: Date.parse('2026-01-01') });
+    Object.assign(newer!.stat, { mtime: new Date('2026-06-01'), mtimeMs: Date.parse('2026-06-01') });
+
+    const [output] = await runPlugin(fileConcat({ name: 'bundle.js' }), [newer!, older!]);
+
+    expect(output!.stat?.mtimeMs).toBe(Date.parse('2026-06-01'));
+    expect(output!.stat).not.toBe(newer!.stat);
+    expect(output!.isDirectory()).toBe(false);
+    expect((await runPlugin(fileConcat({ name: 'bundle.js' }), files()))[0]!.stat).toBeNull();
+  });
+
   it('emits nothing for an empty stream and passes files without contents through', async () => {
     expect(await runPlugin(fileConcat({ name: 'x.js' }), [])).toEqual([]);
 
     const directory = createFile({ path: 'dir', contents: null });
+
     expect(await runPlugin(fileConcat({ name: 'x.js' }), [directory])).toEqual([directory]);
   });
 

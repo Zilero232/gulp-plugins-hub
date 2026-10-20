@@ -27,8 +27,18 @@ type PluginDefinitionBase = {
    * Use it to limit a plugin to certain extensions.
    */
   filter?: (file: Vinyl) => boolean;
+  /**
+   * Only files with one of these extensions (`'.css'`, compared in lowercase) are transformed; the others pass
+   * through untouched. Checked together with `filter`.
+   */
+  extensions?: readonly string[];
   /** Runs once after the last file, before the stream ends; `context.push` emits files from here. */
   flush?: (context: PluginContext) => Promise<void> | void;
+  /**
+   * Runs once when the stream is done: ended, failed or destroyed. Closes what the plugin opened (a compiler
+   * process, workers), which `flush` cannot do since it never runs on a destroyed stream.
+   */
+  dispose?: () => Promise<void> | void;
 };
 
 export type BufferPluginDefinition = PluginDefinitionBase & {
@@ -37,6 +47,11 @@ export type BufferPluginDefinition = PluginDefinitionBase & {
    * (directories, `read: false`) pass through, and streamed contents emit an error.
    */
   accept?: 'buffer';
+  /**
+   * The plugin works on binary formats: files read as UTF-8 text (gulp 5's default without
+   * `src(globs, { encoding: false })`) emit an error with the fix, instead of reaching `transform` corrupted.
+   */
+  binary?: boolean;
   transform?: (file: BufferFile, context: PluginContext) => Promise<TransformResult> | TransformResult;
 };
 

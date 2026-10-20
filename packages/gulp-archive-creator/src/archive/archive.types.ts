@@ -16,6 +16,8 @@ export type ResolvedArchive = {
 export type CreateArchiveCollectorInput = {
   format: ArchiveFormat;
   options?: ArchiverOptions;
+  /** The date of every entry; default each file's `stat.mtime`, else a fixed date. */
+  modifiedTime?: Date;
 };
 
 export type ArchiveCollector = {

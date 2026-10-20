@@ -1,6 +1,6 @@
 import type { PluginStream } from '@zilero/gulp-plugin-factory';
 
-import { applySourceMap, createPlugin, parseOptions, toPosixPath } from '@zilero/gulp-plugin-factory';
+import { applySourceMap, createPlugin, parseOptions, runContentHook, toPosixPath } from '@zilero/gulp-plugin-factory';
 
 import type { CssSqueezerOptions } from './css-squeezer.schema';
 
@@ -20,29 +20,31 @@ import { transformCss } from './transform';
  *   .pipe(dest('dist/css', { sourcemaps: '.' }));
  */
 export const cssSqueezer = (options: CssSqueezerOptions = {}): PluginStream => {
-  const { targets, minify, lightningcssOptions, onBeforeMinify, onAfterMinify } = parseOptions({
+  const { targets, minify, lightningcssOptions, onBeforeMinify, onAfterMinify, onWarning } = parseOptions({
     name: PLUGIN_NAME,
     schema: cssSqueezerOptionsSchema,
     options
   });
+
   const resolveTargets = toTargetsResolver(targets);
 
   return createPlugin({
     name: PLUGIN_NAME,
-    filter: (file) => CSS_EXTENSIONS.includes(file.extname.toLowerCase()),
+    extensions: CSS_EXTENSIONS,
     transform: async (file) => {
-      let content = file.contents.toString();
-
-      if (onBeforeMinify) {
-        content = await onBeforeMinify({ content, file });
-      }
+      const source = await runContentHook({
+        name: 'onBeforeMinify',
+        hook: onBeforeMinify,
+        content: file.contents.toString(),
+        file
+      });
 
       const result = transformCss({
         filePath: file.path,
         options: {
           ...lightningcssOptions,
           filename: toPosixPath(file.relative),
-          code: Buffer.from(content),
+          code: Buffer.from(source),
           minify,
           targets: resolveTargets(file.path),
           sourceMap: Boolean(file.sourceMap),
@@ -51,11 +53,18 @@ export const cssSqueezer = (options: CssSqueezerOptions = {}): PluginStream => {
         }
       });
 
-      content = Buffer.from(result.code).toString();
-
-      if (onAfterMinify) {
-        content = await onAfterMinify({ content, file });
+      if (onWarning) {
+        for (const { message, type, loc } of result.warnings) {
+          await onWarning({ message, type, line: loc.line, column: loc.column, file });
+        }
       }
+
+      const content = await runContentHook({
+        name: 'onAfterMinify',
+        hook: onAfterMinify,
+        content: Buffer.from(result.code).toString(),
+        file
+      });
 
       file.contents = Buffer.from(content);
 

@@ -59,6 +59,7 @@
     "@jridgewell/remapping": "^2.3.5",
     "@standard-schema/spec": "^1.1.0",
     "@types/vinyl": "catalog:",
+    "picomatch": "^4.0.7",
     "plugin-error": "catalog:",
     "vinyl": "catalog:"
   },
@@ -66,6 +67,8 @@
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "@types/picomatch": "^4.0.3",
+    "remeda": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"

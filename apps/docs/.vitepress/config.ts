@@ -3,6 +3,7 @@ import llmstxt from 'vitepress-plugin-llms';
 
 const REPO = 'https://github.com/Zilero232/gulp-plugins-hub';
 const SITE = 'https://zilero232.github.io/gulp-plugins-hub/';
+
 const DESCRIPTION =
   'Typed gulp 5 plugins for HTML, Pug, Sass, CSS, JavaScript, images, fonts, archives and cache-busting, and the factory to build your own.';
 
@@ -83,18 +84,20 @@ export default defineConfig({
     ],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'gulp-plugins-hub' }],
-    ['meta', { property: 'og:title', content: 'gulp-plugins-hub' }],
-    ['meta', { property: 'og:description', content: DESCRIPTION }],
-    ['meta', { property: 'og:url', content: SITE }],
     ['meta', { name: 'twitter:card', content: 'summary' }],
     ['script', { type: 'application/ld+json' }, JSON.stringify(STRUCTURED_DATA)]
   ],
-  // A canonical URL per page, so copies and the trailing-slash variant do not compete with it.
-  transformPageData: (pageData) => {
-    const path = pageData.relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '');
+  // Per page: a canonical URL, so copies and the trailing-slash variant do not compete with it, and the page's own
+  // title and description (its `description:` frontmatter, else the site's) for link previews.
+  transformHead: ({ pageData, title, description }) => {
+    const url = `${SITE}${pageData.relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')}`;
 
-    pageData.frontmatter.head ??= [];
-    pageData.frontmatter.head.push(['link', { rel: 'canonical', href: `${SITE}${path}` }]);
+    return [
+      ['link', { rel: 'canonical', href: url }],
+      ['meta', { property: 'og:url', content: url }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }]
+    ];
   },
   themeConfig: {
     logo: '/logo.svg',
@@ -102,7 +105,15 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
       { text: 'Plugins', link: '/plugins/', activeMatch: '/plugins/' },
       { text: 'Reference', link: '/reference/factory', activeMatch: '/reference/' },
-      { text: 'Changelogs', link: `${REPO}/tree/master/packages` }
+      {
+        // Every package shares one version: the major is the one these pages document.
+        text: 'v2',
+        items: [
+          { text: 'Releases', link: `${REPO}/releases` },
+          { text: 'Changelogs', link: `${REPO}/tree/master/packages` },
+          { text: 'Migrating from 1.x', link: '/guide/migration' }
+        ]
+      }
     ],
     sidebar: {
       '/guide/': [
@@ -112,8 +123,16 @@ export default defineConfig({
             { text: 'Getting started', link: '/guide/getting-started' },
             { text: 'Gulp 5 essentials', link: '/guide/gulp-5' },
             { text: 'Recipes', link: '/guide/recipes' },
+            { text: 'Example project', link: '/guide/example-project' },
             { text: 'Writing a plugin', link: '/guide/writing-plugins' },
-            { text: 'Migrating from 1.x', link: '/guide/migration' }
+            { text: 'Troubleshooting', link: '/guide/troubleshooting' }
+          ]
+        },
+        {
+          text: 'Migrating',
+          items: [
+            { text: 'From other plugins', link: '/guide/migrating-from-other-plugins' },
+            { text: 'From 1.x', link: '/guide/migration' }
           ]
         }
       ],

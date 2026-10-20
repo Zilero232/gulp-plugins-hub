@@ -10,6 +10,7 @@ const stats = (mtimeMs: number): Stats => Object.assign(Object.create(null), { m
 describe('getComparer', () => {
   it('compares modification times in whole milliseconds', async () => {
     const file = createFile();
+
     file.stat = stats(1000.75);
 
     expect(await getComparer('mtime')({ file, target: { path: 'x', stat: stats(1000) } })).toBe(false);

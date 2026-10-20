@@ -47,6 +47,7 @@ describe('fontSwitcher', () => {
       'fonts/test.eot',
       'fonts/test.svg'
     ]);
+
     expect(magic(output[0])).toBe(MAGIC.woff2);
     expect(magic(output[1])).toBe(MAGIC.woff);
     expect(getContents(output[3]).toString()).toContain('<font');
@@ -63,9 +64,11 @@ describe('fontSwitcher', () => {
 
   it('reads woff2, woff and svg fonts', async () => {
     const [woff2] = await runPlugin(fontSwitcher({ formats: 'woff2' }), [ttfFile()]);
+
     const fromWoff2 = await runPlugin(fontSwitcher({ formats: 'ttf' }), [
       createFile({ path: 'a.woff2', contents: getContents(woff2) })
     ]);
+
     const fromSvg = await runPlugin(fontSwitcher({ formats: 'ttf' }), [
       createFile({ path: 'b.svg', contents: SVG_FONT })
     ]);
@@ -108,6 +111,7 @@ describe('fontSwitcher', () => {
       path: 'icon.svg',
       contents: '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h1v1z"/></svg>'
     });
+
     const [output] = await runPlugin(fontSwitcher({ formats: 'woff' }), [icon]);
 
     expect(output!.basename).toBe('icon.svg');
@@ -126,6 +130,35 @@ describe('fontSwitcher', () => {
 
     await expect(run).rejects.toBeInstanceOf(PluginError);
     await expect(run).rejects.toThrow('Read binary files with `src(globs, { encoding: false })`');
+  });
+
+  it('writes woff2 by default', async () => {
+    const output = await runPlugin(fontSwitcher(), [ttfFile()]);
+
+    expect(output.map(getRelativePath)).toEqual(['fonts/test.woff2']);
+    expect(magic(output[0])).toBe(MAGIC.woff2);
+  });
+
+  it('fails, naming both sources, when two fonts would write the same file', async () => {
+    const [woff] = await runPlugin(fontSwitcher({ formats: 'woff' }), [ttfFile()]);
+
+    const run = runPlugin(fontSwitcher(), [
+      ttfFile(),
+      createFile({ path: 'fonts/test.woff', contents: getContents(woff) })
+    ]);
+
+    await expect(run).rejects.toThrow('fonts/test.woff and fonts/test.ttf both write fonts/test.woff2');
+  });
+
+  it('fails when a kept original has the name of a converted font', async () => {
+    const [woff2] = await runPlugin(fontSwitcher(), [ttfFile()]);
+
+    const run = runPlugin(fontSwitcher({ keepOriginal: true }), [
+      createFile({ path: 'fonts/test.woff2', contents: getContents(woff2) }),
+      ttfFile()
+    ]);
+
+    await expect(run).rejects.toThrow('fonts/test.ttf and fonts/test.woff2 both write fonts/test.woff2');
   });
 
   it('rejects unknown formats and an empty list', () => {

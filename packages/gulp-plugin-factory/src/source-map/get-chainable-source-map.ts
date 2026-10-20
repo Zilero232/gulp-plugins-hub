@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 
 import type { SourceMap } from './source-map.types';
 
+import { isUrl } from '../path';
 import { getInputSourceMap } from './get-input-source-map';
 
 /**
@@ -27,7 +28,7 @@ export const getChainableSourceMap = (file: Vinyl): SourceMap | undefined => {
     ...map,
     sourceRoot: undefined,
     sources: map.sources.map((source) =>
-      source === null || /^[a-z][\w+.-]*:\/\//i.test(source) ? source : pathToFileURL(path.resolve(root, source)).href
+      source === null || isUrl(source) ? source : pathToFileURL(path.resolve(root, source)).href
     )
   };
 };

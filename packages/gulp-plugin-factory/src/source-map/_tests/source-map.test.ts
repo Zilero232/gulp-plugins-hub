@@ -1,9 +1,8 @@
-// cspell:ignore AAEA
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-import { applySourceMap, getChainableSourceMap, getInputSourceMap } from '..';
+import { applySourceMap, getChainableSourceMap, getInputSourceMap, syncSourceMapFile } from '..';
 import { createFile } from '../../testing';
 
 const map = (sources: string[]) => ({ version: 3, names: [], mappings: 'AAAA', sources });
@@ -38,6 +37,7 @@ describe('applySourceMap', () => {
 describe('getInputSourceMap', () => {
   it('returns the map as JSON when it has mappings', () => {
     const file = createFile({ path: 'app.js' });
+
     file.sourceMap = map(['src/app.ts']);
 
     expect(getInputSourceMap(file)).toBe(JSON.stringify(map(['src/app.ts'])));
@@ -52,6 +52,7 @@ describe('getInputSourceMap', () => {
 describe('applySourceMap with chain', () => {
   it("chains the file's current map into the new one", () => {
     const file = createFile({ path: 'app.js' });
+
     // app.js line 1 comes from src/app.ts line 3.
     file.sourceMap = { version: 3, sources: ['src/app.ts'], names: [], mappings: 'AAEA' };
 
@@ -63,6 +64,7 @@ describe('applySourceMap with chain', () => {
 
   it('keeps chained sources relative to the base when the file is in a folder', () => {
     const file = createFile({ path: 'css/main.css' });
+
     file.sourceMap = { version: 3, sources: ['scss/main.scss'], names: [], mappings: 'AAAA' };
 
     applySourceMap({ file, map: { version: 3, sources: ['css/main.css'], names: [], mappings: 'AAAA' }, chain: true });
@@ -78,6 +80,21 @@ describe('applySourceMap with chain', () => {
     expect(file.sourceMap.sourcesContent).toEqual(['const a = 1;']);
   });
 
+  it('chains only the source that is the file itself', () => {
+    const file = createFile({ path: 'css/main.css' });
+
+    file.sourceMap = { version: 3, sources: ['scss/main.scss'], names: [], mappings: 'AAAA' };
+
+    // Line 1 comes from main.css, line 2 from an inlined import that has no map of its own.
+    applySourceMap({
+      file,
+      map: { version: 3, sources: ['css/main.css', 'css/reset.css'], names: [], mappings: 'AAAA;ACAA' },
+      chain: true
+    });
+
+    expect(file.sourceMap.sources).toEqual(['scss/main.scss', 'css/reset.css']);
+  });
+
   it('keeps the new map when the file has nothing to chain', () => {
     const file = createFile({ path: 'app.js', contents: 'x', sourceMap: true });
 
@@ -90,6 +107,7 @@ describe('applySourceMap with chain', () => {
 describe('getChainableSourceMap', () => {
   it('makes the sources absolute file URLs, honoring sourceRoot', () => {
     const file = createFile({ path: 'js/app.js' });
+
     file.sourceMap = {
       version: 3,
       sourceRoot: 'src',
@@ -106,5 +124,23 @@ describe('getChainableSourceMap', () => {
 
   it('is undefined without mappings', () => {
     expect(getChainableSourceMap(createFile({ contents: 'x', sourceMap: true }))).toBeUndefined();
+  });
+});
+
+describe('syncSourceMapFile', () => {
+  it("points the map at the file's new name and leaves files without a map alone", () => {
+    const file = createFile({ path: 'a.js', contents: 'x', sourceMap: true });
+
+    file.path = path.join(file.base, 'js', 'b.min.js');
+
+    syncSourceMapFile(file);
+
+    expect(file.sourceMap.file).toBe('js/b.min.js');
+
+    const plain = createFile({ path: 'a.js' });
+
+    syncSourceMapFile(plain);
+
+    expect(plain.sourceMap).toBeUndefined();
   });
 });

@@ -1,9 +1,10 @@
 import type { Vinyl } from '@zilero/gulp-plugin-factory';
 
-import type { BranchHandler, BranchStream, Condition } from '../conditional.types';
+import type { BranchHandler, BranchStream, ConditionFunction } from '../conditional.types';
 
 export type FindBranchInput = {
-  conditions: Condition[];
+  /** One per branch, in order: the conditions turned into functions by `toPredicate`. */
+  predicates: ConditionFunction[];
   file: Vinyl;
 };
 
@@ -24,6 +25,12 @@ export type BranchRegistry = {
   closeAll: () => Promise<void>;
   /** Destroys every branch, for a conditional that failed or was destroyed: no branch outlives it. */
   destroyAll: () => void;
+};
+
+export type CreateBranchStreamInput = {
+  handler: BranchHandler;
+  /** The option the handler came from (`handlers[0].handler`, `defaultHandler`), for errors. */
+  name: string;
 };
 
 export type WriteToBranchInput = {

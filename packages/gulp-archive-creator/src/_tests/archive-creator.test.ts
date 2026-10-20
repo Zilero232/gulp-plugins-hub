@@ -1,7 +1,7 @@
 import { createFile, getContents, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
 import { PassThrough, Readable } from 'node:stream';
 import { gunzipSync } from 'node:zlib';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import archiveCreator from '..';
 import { resolveArchive } from '../archive';
@@ -17,6 +17,7 @@ const readTar = (buffer: Buffer) => {
 
   for (let offset = 0; offset + 512 <= buffer.length && buffer[offset] !== 0;) {
     const name = buffer.toString('utf8', offset, offset + 100).replace(/\0.*$/s, '');
+
     const size = Number.parseInt(
       buffer
         .toString('utf8', offset + 124, offset + 136)
@@ -32,7 +33,14 @@ const readTar = (buffer: Buffer) => {
   return entries;
 };
 
+/** The modification time of the first tar entry, in seconds: 12 octal digits at offset 136 of the header. */
+const tarMtime = (buffer: Buffer) => Number.parseInt(buffer.toString('utf8', 136, 148).replace(/\0.*$/s, '').trim(), 8);
+
 describe('archiveCreator', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('packs every file into one zip named relative to the first base', async () => {
     const output = await runPlugin(archiveCreator({ name: 'site.zip', archiverOptions: { store: true } }), files());
 
@@ -40,6 +48,7 @@ describe('archiveCreator', () => {
     expect(getRelativePath(output[0])).toBe('site.zip');
 
     const zip = getContents(output[0]);
+
     expect(zip.subarray(0, 4)).toEqual(Buffer.from('PK\x03\x04', 'latin1'));
     expect(zip.toString('latin1')).toContain('css/main.css');
     expect(zip.toString('latin1')).toContain('<h1>hi</h1>');
@@ -60,6 +69,7 @@ describe('archiveCreator', () => {
 
   it('archives streamed contents', async () => {
     const stream = new PassThrough();
+
     stream.end('streamed');
 
     const [archive] = await runPlugin(archiveCreator({ name: 'a.tar' }), [
@@ -83,6 +93,7 @@ describe('archiveCreator', () => {
 
   it('adds directory entries only when asked', async () => {
     const directory = createFile({ path: 'empty', contents: null });
+
     directory.stat = Object.assign(Object.create(null), { isDirectory: () => true, mode: 0o40755 });
 
     const [without] = await runPlugin(archiveCreator({ name: 'a.tar' }), [directory, createFile({ path: 'x.txt' })]);
@@ -94,6 +105,7 @@ describe('archiveCreator', () => {
 
   it('skips the base folder itself as a directory entry', async () => {
     const base = createFile({ path: '', contents: null });
+
     base.stat = Object.assign(Object.create(null), { isDirectory: () => true, mode: 0o40755 });
 
     const [archive] = await runPlugin(archiveCreator({ name: 'a.tar', directories: true }), [
@@ -108,6 +120,7 @@ describe('archiveCreator', () => {
     expect(await runPlugin(archiveCreator(), [])).toEqual([]);
 
     const [empty] = await runPlugin(archiveCreator({ emptyArchive: true }), []);
+
     expect(empty!.basename).toBe('archive.zip');
   });
 
@@ -115,7 +128,39 @@ describe('archiveCreator', () => {
     expect(resolveArchive({ name: 'a.TGZ' })).toEqual({ format: 'tgz', fileName: 'a.TGZ' });
     expect(resolveArchive({ name: 'a.tar.gz' })).toEqual({ format: 'tgz', fileName: 'a.tar.gz' });
     expect(resolveArchive({ name: 'a' })).toEqual({ format: 'zip', fileName: 'a.zip' });
-    expect(resolveArchive({ name: 'a.zip', format: 'tar' })).toEqual({ format: 'tar', fileName: 'a.zip' });
+    expect(resolveArchive({ name: 'a', format: 'tar' })).toEqual({ format: 'tar', fileName: 'a.tar' });
+  });
+
+  it('rejects a format that differs from the extension of the name', () => {
+    expect(() => archiveCreator({ name: 'a.zip', format: 'tar' })).toThrow(
+      'a.zip is a zip name, but format is tar: change one of them or drop format'
+    );
+
+    expect(() => archiveCreator({ name: 'a.tar.gz', format: 'tgz' })).not.toThrow();
+  });
+
+  it('gives files without a stat a fixed date, so archives do not change with the build time', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    const [first] = await runPlugin(archiveCreator({ name: 'a.zip' }), files());
+
+    vi.setSystemTime(new Date('2027-06-01T08:30:00Z'));
+    const [second] = await runPlugin(archiveCreator({ name: 'a.zip' }), files());
+
+    expect(getContents(second)).toEqual(getContents(first));
+  });
+
+  it('dates every entry with modifiedTime', async () => {
+    const file = createFile({ path: 'x.txt', contents: 'x' });
+
+    file.stat = Object.assign(Object.create(null), { mtime: new Date('2020-01-01T00:00:00Z'), mode: 0o100644 });
+    const modifiedTime = new Date('2024-05-06T07:08:09Z');
+
+    const [archive] = await runPlugin(archiveCreator({ name: 'a.tar', modifiedTime }), [file]);
+
+    expect(tarMtime(getContents(archive))).toBe(modifiedTime.getTime() / 1000);
+    // @ts-expect-error: a Date, not a timestamp
+    expect(() => archiveCreator({ modifiedTime: Date.now() })).toThrow(/Invalid options/);
   });
 
   it('rejects an absolute name or an unknown format', () => {

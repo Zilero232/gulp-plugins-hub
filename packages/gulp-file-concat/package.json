@@ -6,6 +6,7 @@
     "gulpplugin",
     "gulp",
     "gulp-plugin",
+    "gulp-concat",
     "concat",
     "concatenate",
     "bundle",

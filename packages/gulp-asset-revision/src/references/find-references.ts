@@ -9,6 +9,12 @@ import type { FindReferencesInput, GetCandidatesInput, Reference } from './refer
 const BEFORE = String.raw`(?<=^|[\s"'\`(=,])`;
 const AFTER = String.raw`(?=$|[\s"'\`),;?#\\<>}])`;
 
+/**
+ * The pattern of every reference from a folder, built once per set of assets and folder: a site has many files
+ * per folder, and each is scanned twice (to order the hashing, then to rewrite).
+ */
+const patterns = new WeakMap<ReadonlySet<string>, Map<string, RegExp | undefined>>();
+
 /** Every way an asset can be written from `fromDir`: relative to the base, and relative to the file. */
 const getCandidates = ({ fromDir, assets }: GetCandidatesInput): string[] => {
   const candidates = new Set<string>();
@@ -22,22 +28,42 @@ const getCandidates = ({ fromDir, assets }: GetCandidatesInput): string[] => {
   return [...candidates].sort((a, b) => b.length - a.length);
 };
 
+/** The reference pattern for `fromDir`, from the cache; undefined when there is no asset to find. */
+const getPattern = ({ fromDir, assets }: GetCandidatesInput): RegExp | undefined => {
+  const byFolder = patterns.get(assets) ?? new Map<string, RegExp | undefined>();
+
+  patterns.set(assets, byFolder);
+
+  if (!byFolder.has(fromDir)) {
+    const candidates = getCandidates({ fromDir, assets });
+
+    byFolder.set(
+      fromDir,
+      candidates.length
+        ? new RegExp(
+            `${BEFORE}(\\/|\\.\\/)?(${candidates.map((candidate) => escapeStringRegexp(candidate)).join('|')})${AFTER}`,
+            'g'
+          )
+        : undefined
+    );
+  }
+
+  return byFolder.get(fromDir);
+};
+
 /**
  * The references to assets in a text file, resolved the way a browser does: `/img/a.png` from the base,
  * `../img/a.png` and `./img/a.png` from the file, and a bare `img/a.png` from the file when that asset exists,
  * else from the base (pages at the root, scripts that build URLs).
  */
 export const findReferences = ({ content, fromDir, assets, files = assets }: FindReferencesInput): Reference[] => {
-  const candidates = getCandidates({ fromDir, assets });
+  const pattern = getPattern({ fromDir, assets });
 
-  if (!candidates.length) {
+  if (!pattern) {
     return [];
   }
 
-  const pattern = new RegExp(
-    `${BEFORE}(\\/|\\.\\/)?(${candidates.map((candidate) => escapeStringRegexp(candidate)).join('|')})${AFTER}`,
-    'g'
-  );
+  // matchAll works on a copy of the pattern, so the cached one keeps no position between files.
   const references: Reference[] = [];
 
   for (const match of content.matchAll(pattern)) {

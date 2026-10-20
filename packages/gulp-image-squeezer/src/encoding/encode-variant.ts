@@ -23,6 +23,7 @@ export const encodeVariant = async ({
   const keepsPages =
     (ANIMATED_ENCODERS.includes(sourceEncoder) && ANIMATED_ENCODERS.includes(variant.encoder)) ||
     (sourceEncoder === 'tiff' && variant.encoder === 'tiff');
+
   const image = sharp(file.contents, { autoOrient: true, pages: keepsPages ? -1 : 1 });
 
   if (variant.width) {

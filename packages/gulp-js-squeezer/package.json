@@ -12,7 +12,9 @@
     "uglify",
     "terser",
     "sourcemaps",
-    "compress"
+    "compress",
+    "gulp-terser",
+    "gulp-uglify"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/js-squeezer",
   "bugs": {

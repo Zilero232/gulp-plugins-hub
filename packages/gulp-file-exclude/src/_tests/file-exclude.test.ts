@@ -40,6 +40,7 @@ describe('fileExclude', () => {
 
   it('uses the size on disk for files read without contents and keeps files of unknown size', async () => {
     const onDisk = createFile({ path: 'big.bin', contents: null });
+
     onDisk.stat = Object.assign(Object.create(null), { size: 500 });
 
     expect(await kept({ size: { max: 100 } }, [onDisk, createFile({ path: 'dir', contents: null })])).toEqual(['dir']);
@@ -47,6 +48,7 @@ describe('fileExclude', () => {
 
   it('never drops directories by size', async () => {
     const directory = createFile({ path: 'assets', contents: null });
+
     directory.stat = Object.assign(Object.create(null), { size: 4096, isDirectory: () => true });
 
     expect(await kept({ size: { max: 100 } }, [directory])).toEqual(['assets']);
@@ -66,6 +68,15 @@ describe('fileExclude', () => {
     ]);
   });
 
+  it('keeps only the matching files with invert', async () => {
+    expect(await kept({ patterns: ['*.map', 'drafts/**'], invert: true })).toEqual(['app.js.map', 'drafts/post.md']);
+
+    expect(await kept({ size: { max: 20 }, exclude: ({ file }) => file.extname === '.md', invert: true })).toEqual([
+      'app.js.map',
+      'drafts/post.md'
+    ]);
+  });
+
   it('rejects options that exclude nothing or a reversed size range', () => {
     expect(() => fileExclude({})).toThrow('Set at least one of patterns, size or exclude');
     expect(() => fileExclude({ patterns: [] })).toThrow('Add at least one pattern');
@@ -73,5 +84,6 @@ describe('fileExclude', () => {
     expect(() => fileExclude({ patterns: 'drafts\\*.md' })).toThrow('Expected / in globs');
     expect(() => fileExclude({ patterns: '/project/src/drafts/**' })).toThrow('not an absolute path');
     expect(() => fileExclude({ size: { min: 10, max: 1 } })).toThrow('min must not be greater than max');
+    expect(() => fileExclude({ invert: true })).toThrow('Set at least one of patterns, size or exclude');
   });
 });

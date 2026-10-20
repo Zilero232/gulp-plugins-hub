@@ -35,7 +35,9 @@ describe('createPlugin', () => {
       name: 'gulp-twice',
       transform: async (file) => {
         const copy = file.clone();
+
         copy.stem = `${file.stem}-copy`;
+
         return [file, copy];
       }
     });
@@ -106,6 +108,7 @@ describe('createPlugin', () => {
 
   it('gives every file to transform when accept is "any"', async () => {
     const kinds: string[] = [];
+
     const plugin = createPlugin({
       name: 'gulp-any',
       accept: 'any',
@@ -132,6 +135,7 @@ describe('createPlugin', () => {
     const error = await runPlugin(plugin, [createFile({ path: 'a.txt' })]).catch((caught: unknown) => caught);
 
     expect(error).toBeInstanceOf(PluginError);
+
     expect(error).toMatchObject({
       plugin: 'gulp-broken',
       message: 'boom',
@@ -151,6 +155,7 @@ describe('createPlugin', () => {
 
   it('keeps a PluginError thrown by transform as it is', async () => {
     const original = new PluginError('gulp-inner', 'inner');
+
     const plugin = createPlugin({
       name: 'gulp-outer',
       transform: () => {
@@ -163,10 +168,12 @@ describe('createPlugin', () => {
 
   it('runs flush after the last file and emits what it pushes', async () => {
     const names: string[] = [];
+
     const plugin = createPlugin({
       name: 'gulp-collect',
       transform: (file) => {
         names.push(file.stem);
+
         return null;
       },
       flush: ({ push }) => push(createFile({ path: 'all.txt', contents: names.join(',') }))
@@ -199,6 +206,7 @@ describe('createPlugin', () => {
       name: 'gulp-extra',
       transform: (file, { push, name }) => {
         push(createFile({ path: `${name}.txt` }));
+
         return file;
       }
     });
@@ -206,5 +214,70 @@ describe('createPlugin', () => {
     const output = await runPlugin(plugin, [createFile({ path: 'a.txt' })]);
 
     expect(output.map(({ basename }) => basename)).toEqual(['gulp-extra.txt', 'a.txt']);
+  });
+
+  it('transforms only the listed extensions, whatever their case', async () => {
+    const plugin = createPlugin({
+      name: 'gulp-css',
+      extensions: ['.css'],
+      transform: (file) => {
+        file.contents = Buffer.from('changed');
+      }
+    });
+
+    const output = await runPlugin(plugin, [
+      createFile({ path: 'a.CSS', contents: 'a' }),
+      createFile({ path: 'b.js', contents: 'b' })
+    ]);
+
+    expect(contentsOf(output)).toEqual(['changed', 'b']);
+  });
+
+  it('refuses binary files read as UTF-8 text', async () => {
+    const plugin = createPlugin({ name: 'gulp-png', binary: true, transform: () => undefined });
+    const corrupted = Buffer.from(Buffer.from('\x89PNG\r\n\x1A\n', 'latin1').toString('utf8'));
+
+    await expect(runPlugin(plugin, [createFile({ path: 'a.png', contents: corrupted })])).rejects.toMatchObject({
+      plugin: 'gulp-png',
+      message: expect.stringContaining('a.png was read as UTF-8 text')
+    });
+  });
+
+  it('disposes once when the stream ends', async () => {
+    let disposed = 0;
+    const plugin = createPlugin({ name: 'gulp-dispose', dispose: () => void disposed++ });
+
+    await runPlugin(plugin, [createFile()]);
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(disposed).toBe(1);
+  });
+
+  it('disposes when the stream is destroyed before it ends', async () => {
+    let disposed = 0;
+    const plugin = createPlugin({ name: 'gulp-dispose', dispose: async () => void disposed++ });
+
+    plugin.write(createFile());
+    plugin.destroy();
+    await new Promise((resolve) => plugin.once('close', resolve));
+
+    expect(disposed).toBe(1);
+  });
+
+  it('disposes and emits the error when a file fails', async () => {
+    let disposed = 0;
+
+    const plugin = createPlugin({
+      name: 'gulp-fail',
+      transform: () => {
+        throw new Error('broken');
+      },
+      dispose: () => void disposed++
+    });
+
+    await expect(runPlugin(plugin, [createFile()])).rejects.toMatchObject({ message: 'broken' });
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(disposed).toBe(1);
   });
 });

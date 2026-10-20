@@ -49,17 +49,19 @@ Scripts follow the same rules: `scripts/<name>/index.ts` is the entry, with its 
 
 - `type`, never `interface`; no `as` casts; two or more parameters become one object typed `XInput`. Exceptions kept on purpose: the factory's `transform(file, context)` and `runPlugin(stream, files)`, which follow the stream conventions plugin authors know.
 - Exported functions are named arrow functions with an explicit return type and a JSDoc line.
-- `if` always takes braces; a blank line separates the steps of a function.
+- `if` always takes braces; a blank line separates the steps of a function: declarations, multi-line statements, blocks and the return each stand apart. ESLint enforces it (`style/padding-line-between-statements`), so `bun run fix` adds missing ones.
 - Hooks receive one object (`{ file }`, `{ content, file }`) and may return a promise.
-- Established packages over hand-written helpers: remeda and ts-pattern are bundled into each package by tsdown.
+- Established packages over hand-written helpers: remeda for guards and collections, ts-pattern for branching on values. Both are bundled into each package by tsdown, so users install nothing extra.
 
 ## Gulp plugin rules
 
 - Built on `createPlugin`: files without contents pass through, streamed contents are refused unless the plugin handles them, errors are emitted as PluginErrors with the file, files stay in order.
 - Options are validated by `parseOptions` when the plugin is created. Callbacks are checked with `z.custom<Fn>(isFunction)`: `z.function()` wraps the callback and validates its result, which breaks async hooks.
-- Plugins work on their own formats (extensions compared in lowercase) and pass everything else through.
-- Plugins for binary formats call `assertBinaryContents` first, since gulp 5 reads files as UTF-8 by default.
-- A new file made from another is a `file.clone()`; source maps follow renames (`sourceMap.file`) and changes (`applySourceMap`).
+- Plugins work on their own formats and pass everything else through: `extensions: ['.css']` in the definition (compared in lowercase), `filter` for anything else.
+- Plugins for binary formats set `binary: true`: gulp 5 reads files as UTF-8 by default, and the factory refuses a corrupted file with the fix instead of handing it to `transform`.
+- Content hooks run through `runContentHook`, which checks that a hook returned text and names it when it did not.
+- What a plugin opens (a compiler process, workers) is closed in `dispose`, which runs once however the stream ends: finished, failed or destroyed.
+- A new file made from another is a `file.clone()`; source maps follow renames (`syncSourceMapFile`) and changes (`applySourceMap`).
 - gulp is never a dependency.
 
 ## Engines

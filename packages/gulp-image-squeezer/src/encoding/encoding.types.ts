@@ -20,7 +20,4 @@ export type EncodeVariantInput = {
   keepSmaller: boolean;
 };
 
-export type GetQualityInput = {
-  encoder: Encoder;
-  quality: Quality | undefined;
-};
+export type GetQualityInput = GetEncoderOptionsInput;

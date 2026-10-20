@@ -35,6 +35,7 @@ const source = async ({ relative, contents, mtime }: { relative: string; content
   await utimes(sourcePath, mtime, mtime);
 
   const file = createFile({ cwd, base: path.join(cwd, 'src'), path: relative, contents });
+
   file.stat = await stat(sourcePath);
 
   return file;
@@ -99,6 +100,40 @@ describe('fileChanged', () => {
     });
   });
 
+  it('passes files when dest points at a file instead of a folder', async () => {
+    await writeBuilt({ relative: 'a.txt', contents: 'a', mtime: NEW });
+
+    const file = await source({ relative: 'a.txt', contents: 'a', mtime: OLD });
+
+    expect(await passed({ dest: path.join('dist', 'a.txt') }, [file])).toEqual(['a.txt']);
+  });
+
+  it('passes every file when an extra file is newer than its built file', async () => {
+    await mkdir(path.join(cwd, 'src', 'partials'), { recursive: true });
+    await writeBuilt({ relative: 'a.txt', contents: 'a', mtime: NEW });
+    await writeBuilt({ relative: 'b.txt', contents: 'b', mtime: OLD });
+
+    const partial = path.join(cwd, 'src', 'partials', '_vars.txt');
+
+    const files = async () => [
+      await source({ relative: 'a.txt', contents: 'a', mtime: OLD }),
+      await source({ relative: 'b.txt', contents: 'b', mtime: OLD })
+    ];
+
+    await writeFile(partial, 'v');
+    await utimes(partial, OLD, OLD);
+
+    expect(await passed({ dest: 'dist', extra: 'src/partials/*.txt' }, await files())).toEqual([]);
+
+    await utimes(partial, new Date('2026-03-01'), new Date('2026-03-01'));
+
+    expect(await passed({ dest: 'dist', extra: ['src/partials/*.txt', 'missing/*'] }, await files())).toEqual([
+      'b.txt'
+    ]);
+
+    expect(await passed({ dest: 'dist', extra: 'nothing/*.txt' }, await files())).toEqual([]);
+  });
+
   it('compares contents when asked', async () => {
     await writeBuilt({ relative: 'same.txt', contents: 'same', mtime: OLD });
     await writeBuilt({ relative: 'other.txt', contents: 'before', mtime: OLD });
@@ -118,6 +153,7 @@ describe('fileChanged', () => {
       dest: ({ file }: { file: Vinyl }) => (file.stem === 'a' ? 'dist' : 'elsewhere'),
       compare: () => false
     };
+
     const files = [
       await source({ relative: 'a.txt', contents: 'a', mtime: NEW }),
       await source({ relative: 'b.txt', contents: 'b', mtime: NEW })
@@ -150,6 +186,7 @@ describe('fileChanged', () => {
 
     const noStat = createFile({ cwd, base: path.join(cwd, 'src'), path: 'a.txt', contents: 'a' });
     const directory = createFile({ cwd, base: path.join(cwd, 'src'), path: 'css', contents: null });
+
     directory.stat = await stat(path.join(cwd, 'dist', 'css'));
 
     expect(await passed({ dest: 'dist' }, [noStat, directory])).toEqual(['a.txt', 'css']);

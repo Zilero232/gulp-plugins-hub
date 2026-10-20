@@ -1,5 +1,5 @@
 import { PluginError } from '@zilero/gulp-plugin-factory';
-import { createFile, getContents, runPlugin } from '@zilero/gulp-plugin-factory/testing';
+import { createFile, getContents, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
 import { mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -21,6 +21,7 @@ const squeeze = async (
   file = createFile({ path: 'css/main.css', contents: SOURCE })
 ) => {
   const [output] = await runPlugin(cssSqueezer(options), [file]);
+
   return output;
 };
 
@@ -73,6 +74,41 @@ describe('cssSqueezer', () => {
     expect(getContents(output).toString()).toMatch(/^\/\* main\.css \*\/\.card\{/);
   });
 
+  it('reports Lightning CSS warnings to onWarning', async () => {
+    const warnings: unknown[] = [];
+
+    await squeeze(
+      {
+        targets: 'chrome 130',
+        lightningcssOptions: { errorRecovery: true },
+        onWarning: ({ file, ...warning }) => {
+          warnings.push({ ...warning, path: getRelativePath(file) });
+        }
+      },
+      createFile({ path: 'css/main.css', contents: '.a { color: red; }\n@foo bar;\n' })
+    );
+
+    expect(warnings).toEqual([
+      { type: 'AtRuleInvalid', message: 'Unknown at rule: @foo', line: 2, column: 5, path: 'css/main.css' }
+    ]);
+  });
+
+  it('processes extensions in any case', async () => {
+    const output = await squeeze(
+      { targets: 'chrome 130' },
+      createFile({ path: 'MAIN.CSS', contents: '.a { color: #ff0000; }' })
+    );
+
+    expect(getContents(output).toString()).toBe('.a{color:red}');
+  });
+
+  it('emits a PluginError naming the hook that returns no text', async () => {
+    // @ts-expect-error: a JavaScript hook that forgets to return
+    const run = squeeze({ onBeforeMinify: () => {} });
+
+    await expect(run).rejects.toThrow('onBeforeMinify must return the text as a string, got undefined');
+  });
+
   it('adds a source map when the file has one', async () => {
     const output = await squeeze({}, createFile({ path: 'css/main.css', contents: SOURCE, sourceMap: true }));
 
@@ -82,6 +118,7 @@ describe('cssSqueezer', () => {
 
   it('chains the map from an earlier step without an extra source', async () => {
     const file = createFile({ path: 'css/main.css', contents: '.a{color:red}' });
+
     file.sourceMap = {
       version: 3,
       sources: ['scss/main.scss'],

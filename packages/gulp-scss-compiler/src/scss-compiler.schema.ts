@@ -20,7 +20,7 @@ export const scssCompilerOptionsSchema = z
     skipPartials: z.boolean().default(true),
     /** Runs on the source before Sass. */
     onBeforeCompile: hookSchema.optional(),
-    /** Runs on the compiled CSS. Source maps do not follow changes made here. */
+    /** Runs on the compiled CSS, once the file is renamed to `.css`. The source map does not follow changes made here. */
     onAfterCompile: hookSchema.optional()
   })
   .strict();

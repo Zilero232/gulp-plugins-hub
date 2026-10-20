@@ -1,6 +1,6 @@
 import type { PluginStream } from '@zilero/gulp-plugin-factory';
 
-import { createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import { createPlugin, parseOptions, runContentHook } from '@zilero/gulp-plugin-factory';
 import { minify, presets } from 'html-minifier-next';
 
 import type { HtmlSqueezerOptions } from './html-squeezer.schema';
@@ -10,7 +10,8 @@ import { htmlSqueezerOptionsSchema } from './html-squeezer.schema';
 
 /**
  * Minifies HTML (`.html`, `.htm`) with html-minifier-next, starting from one of its presets; other files pass
- * through.
+ * through. html-minifier-next makes no source maps, so a map the file arrives with is dropped instead of
+ * pointing at text that no longer exists.
  *
  * @example
  * src('dist/**\/*.html')
@@ -23,25 +24,30 @@ export const htmlSqueezer = (options: HtmlSqueezerOptions = {}): PluginStream =>
     schema: htmlSqueezerOptionsSchema,
     options
   });
+
   const minifierOptions = { ...(preset && presets[preset]), ...htmlMinifierOptions };
 
   return createPlugin({
     name: PLUGIN_NAME,
-    filter: (file) => HTML_EXTENSIONS.includes(file.extname.toLowerCase()),
+    extensions: HTML_EXTENSIONS,
     transform: async (file) => {
-      let content = file.contents.toString();
+      const source = await runContentHook({
+        name: 'onBeforeMinify',
+        hook: onBeforeMinify,
+        content: file.contents.toString(),
+        file
+      });
 
-      if (onBeforeMinify) {
-        content = await onBeforeMinify({ content, file });
-      }
-
-      content = await minify(content, minifierOptions);
-
-      if (onAfterMinify) {
-        content = await onAfterMinify({ content, file });
-      }
+      const content = await runContentHook({
+        name: 'onAfterMinify',
+        hook: onAfterMinify,
+        content: await minify(source, minifierOptions),
+        file
+      });
 
       file.contents = Buffer.from(content);
+
+      file.sourceMap = undefined;
     }
   });
 };

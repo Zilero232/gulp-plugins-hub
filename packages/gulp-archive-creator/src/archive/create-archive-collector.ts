@@ -8,6 +8,8 @@ import { match } from 'ts-pattern';
 
 import type { ArchiveCollector, CreateArchiveCollectorInput } from './archive.types';
 
+import { FALLBACK_MODIFIED_TIME } from '../archive-creator.constants';
+
 const createArchive = ({ format, options = {} }: CreateArchiveCollectorInput): Archiver =>
   match(format)
     .with('zip', () => new ZipArchive(options))
@@ -17,7 +19,8 @@ const createArchive = ({ format, options = {} }: CreateArchiveCollectorInput): A
 
 /**
  * Collects files into one archive. Reading starts with the first entry, so archiver never waits on a full
- * buffer; entries keep the modification time and mode of files that came from disk.
+ * buffer; entries keep the mode of files that came from disk, and their modification time unless `modifiedTime`
+ * is given. Files without a stat get a fixed date, so the archive does not change with the time of the build.
  */
 export const createArchiveCollector = (input: CreateArchiveCollectorInput): ArchiveCollector => {
   const archive = createArchive(input);
@@ -29,6 +32,7 @@ export const createArchiveCollector = (input: CreateArchiveCollectorInput): Arch
   // instead of an unhandled error event that would crash gulp. archiver never finishes after a failed entry,
   // so finish races it against this promise.
   const failed = Promise.withResolvers<never>();
+
   failed.promise.catch(() => {});
 
   const fail = (error: unknown): void => {
@@ -61,7 +65,11 @@ export const createArchiveCollector = (input: CreateArchiveCollectorInput): Arch
 
       first ??= file;
 
-      const entry = { name: toPosixPath(file.relative), date: file.stat?.mtime, mode: file.stat?.mode };
+      const entry = {
+        name: toPosixPath(file.relative),
+        date: input.modifiedTime ?? file.stat?.mtime ?? FALLBACK_MODIFIED_TIME,
+        mode: file.stat?.mode
+      };
 
       if (file.isDirectory()) {
         // The base folder itself (`src('dist')`) has no path inside the archive.

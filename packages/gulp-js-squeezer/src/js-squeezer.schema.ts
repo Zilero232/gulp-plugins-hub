@@ -8,11 +8,14 @@ const hookSchema = z.custom<ContentHook>(isFunction, 'Expected a function');
 
 export const jsSqueezerOptionsSchema = z
   .object({
-    /** Passed to terser's `minify`: `compress`, `mangle`, `format`, `module`, … `sourceMap` is set by the plugin. */
+    /**
+     * Passed to terser's `minify`: `compress`, `mangle`, `format`, `module`, … `sourceMap` is set by the plugin.
+     * Without `module`, `.mjs` files are minified as ES modules and `.js`, `.cjs` as scripts.
+     */
     terserOptions: z.custom<Omit<MinifyOptions, 'sourceMap'>>(isObject, 'Expected an object').optional(),
     /** Runs on the source before terser. */
     onBeforeMinify: hookSchema.optional(),
-    /** Runs on terser's output. Source maps do not follow changes made here. */
+    /** Runs on terser's output. The source map does not follow changes made here. */
     onAfterMinify: hookSchema.optional()
   })
   .strict();

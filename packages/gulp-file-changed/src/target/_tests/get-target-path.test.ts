@@ -11,6 +11,7 @@ describe('getTargetPath', () => {
   it('keeps the relative path, changes the extension, or takes the target', () => {
     expect(getTargetPath({ file, destination })).toBe(path.join(destination, 'css', 'main.scss'));
     expect(getTargetPath({ file, destination, extname: '.css' })).toBe(path.join(destination, 'css', 'main.css'));
+
     expect(getTargetPath({ file, destination, extname: '.css', target: () => 'all.css' })).toBe(
       path.resolve(destination, 'all.css')
     );

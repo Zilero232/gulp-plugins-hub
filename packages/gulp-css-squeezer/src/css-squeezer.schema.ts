@@ -4,6 +4,8 @@ import type { CustomAtRules, TransformOptions } from 'lightningcss';
 import { isFunction, isObject } from '@zilero/gulp-plugin-factory';
 import { z } from 'zod';
 
+import type { CssWarningHook } from './css-squeezer.types';
+
 const hookSchema = z.custom<ContentHook>(isFunction, 'Expected a function');
 
 /** Lightning CSS options the plugin sets itself. */
@@ -21,14 +23,19 @@ export const cssSqueezerOptionsSchema = z
       .optional(),
     /** Minify the output. Default true; false only prefixes and lowers syntax. */
     minify: z.boolean().default(true),
-    /** Other Lightning CSS options: `drafts`, `nonStandard`, `errorRecovery`, `cssModules`, `visitor`, … */
+    /**
+     * Other Lightning CSS options: `drafts`, `nonStandard`, `errorRecovery`, `visitor`, … `cssModules` is not
+     * supported: the class name mapping it produces is not kept.
+     */
     lightningcssOptions: z
       .custom<Omit<TransformOptions<CustomAtRules>, ManagedOption>>(isObject, 'Expected an object')
       .optional(),
     /** Runs on the source before Lightning CSS. */
     onBeforeMinify: hookSchema.optional(),
-    /** Runs on the output. Source maps do not follow changes made here. */
-    onAfterMinify: hookSchema.optional()
+    /** Runs on the output. The source map does not follow changes made here. */
+    onAfterMinify: hookSchema.optional(),
+    /** Receives each warning Lightning CSS reports (with `errorRecovery`, the rules it dropped). Default: ignored. */
+    onWarning: z.custom<CssWarningHook>(isFunction, 'Expected a function').optional()
   })
   .strict();
 

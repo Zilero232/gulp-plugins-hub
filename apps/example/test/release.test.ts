@@ -10,6 +10,7 @@ const ROOT = path.join(import.meta.dirname, '..');
 
 const read = (file: string): Promise<Buffer> => readFile(path.join(ROOT, file));
 const text = async (file: string): Promise<string> => (await read(file)).toString();
+
 type SignatureInput = {
   file: string;
   length: number;
@@ -39,6 +40,7 @@ describe('dist', () => {
     expect(html).not.toContain('\n    ');
     expect(html).toContain('<title>About · Example</title>');
     expect(html).toContain('<a class=active href=/about.html>About</a>');
+
     expect(await list('dist')).toEqual(
       expect.arrayContaining(['about.html', 'contact.html', 'index.html', 'services.html'])
     );
@@ -77,9 +79,11 @@ describe('dist', () => {
 
     expect(woff2.toString('latin1', 0, 4)).toBe('wOF2');
     expect(readWoff2Tables(woff2)).toEqual(expect.arrayContaining(['GDEF', 'GPOS', 'GSUB', 'glyf', 'cmap']));
+
     expect(readWoff2Tables(await read('dist/fonts/SimpleTags-VGA2w.woff2'))).toEqual(
       expect.arrayContaining(['CFF', 'GSUB'])
     );
+
     expect(await signature({ file: 'dist/fonts/F563-Regular.woff', length: 4 })).toBe('wOFF');
   });
 

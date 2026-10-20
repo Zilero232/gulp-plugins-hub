@@ -31,3 +31,7 @@ export type ReplaceMatchesInput = {
   rule: { search: string | RegExp; replace: string | Replacer };
   file: Vinyl;
 };
+
+export type GetReplacementInput = Omit<ReplaceMatchesInput, 'magic'> & {
+  match: Match;
+};

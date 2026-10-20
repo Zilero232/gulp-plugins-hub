@@ -7,7 +7,10 @@ import type { ExcludePredicate } from './file-exclude.types';
 const globSchema = z
   .string()
   .min(1, 'Expected a glob')
-  .refine((glob) => !glob.startsWith('!'), 'Negated globs are not supported: list what to drop')
+  .refine(
+    (glob) => !glob.startsWith('!'),
+    'Negated globs are not supported: list what to drop, or set invert to keep only what matches'
+  )
   .refine((glob) => !glob.includes('\\'), 'Expected / in globs, not \\')
   .refine((glob) => !path.isAbsolute(glob), 'Expected a glob relative to file.base, not an absolute path');
 
@@ -33,7 +36,9 @@ export const fileExcludeOptionsSchema = z
     /** Drops files outside this size range, in bytes. */
     size: sizeSchema.optional(),
     /** Your own check, after patterns and size: return true to drop the file. */
-    exclude: z.custom<ExcludePredicate>(isFunction, 'Expected a function').optional()
+    exclude: z.custom<ExcludePredicate>(isFunction, 'Expected a function').optional(),
+    /** Keeps only the files the rules match and drops the rest, like gulp-filter. */
+    invert: z.boolean().default(false)
   })
   .strict()
   .refine(
@@ -42,3 +47,4 @@ export const fileExcludeOptionsSchema = z
   );
 
 export type FileExcludeOptions = z.input<typeof fileExcludeOptionsSchema>;
+export type SizeRange = z.input<typeof sizeSchema>;

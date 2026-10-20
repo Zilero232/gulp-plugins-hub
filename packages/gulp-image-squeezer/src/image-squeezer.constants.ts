@@ -12,6 +12,9 @@ export const INPUT_FORMATS = {
   '.tiff': 'tiff'
 } as const;
 
+/** The extensions the plugin processes. */
+export const INPUT_EXTENSIONS = Object.keys(INPUT_FORMATS);
+
 export const OUTPUT_FORMATS = ['original', 'webp', 'avif', 'jpeg', 'png'] as const;
 
 /** The extension of each encoder's output when it is not the original format. */
@@ -30,10 +33,14 @@ export const ANIMATED_ENCODERS = ['gif', 'webp'];
 /** JPEG has no transparency: transparent pixels become this color instead of black. */
 export const JPEG_BACKGROUND = '#ffffff';
 
-/** Defaults tuned for the web: visually lossless, and AVIF at a moderate effort because it encodes slowly. */
+/**
+ * Defaults tuned for the web: visually lossless, and AVIF at a moderate effort because it encodes slowly. PNG stays
+ * lossless: sharp's `effort`, `quality` and `colors` switch it to a 256-color palette, which is opt-in
+ * (`encoderOptions: { png: { palette: true } }`).
+ */
 export const DEFAULT_ENCODER_OPTIONS = {
   jpeg: { quality: 80, mozjpeg: true },
-  png: { compressionLevel: 9, effort: 10 },
+  png: { compressionLevel: 9, adaptiveFiltering: true },
   webp: { quality: 80, effort: 5 },
   avif: { quality: 55, effort: 4 },
   gif: { effort: 10 },

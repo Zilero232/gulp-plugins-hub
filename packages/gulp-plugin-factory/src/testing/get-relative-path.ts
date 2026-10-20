@@ -1,6 +1,6 @@
 import type Vinyl from 'vinyl';
 
-import { toPosixPath } from '../shared';
+import { toPosixPath } from '../path';
 
 /**
  * The file's path relative to its base with `/` separators, so tests compare the same string on every OS.

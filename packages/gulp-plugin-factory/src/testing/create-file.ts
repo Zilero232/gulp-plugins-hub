@@ -3,7 +3,7 @@ import Vinyl from 'vinyl';
 
 import type { CreateFileInput } from './testing.types';
 
-import { toPosixPath } from '../shared';
+import { toPosixPath } from '../path';
 
 /**
  * Creates a Vinyl file the way `gulp.src` would, for tests: an absolute path under `base` and Buffer contents.

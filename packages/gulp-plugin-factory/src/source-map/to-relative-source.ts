@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 import type { ToRelativeSourceInput } from './source-map.types';
 
-import { toPosixPath } from '../shared';
+import { isUrl, toPosixPath } from '../path';
 
 /**
  * An absolute or `file://` source relative to the base, with `/` separators; a relative source gets `/`
@@ -18,7 +18,7 @@ export const toRelativeSource = ({ base, source }: ToRelativeSourceInput): strin
     return toPosixPath(path.relative(base, source));
   }
 
-  if (/^[a-z][\w+.-]*:/i.test(source)) {
+  if (isUrl(source)) {
     return source;
   }
 

@@ -1,19 +1,29 @@
-import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 
-const { values } = parseArgs({ options: { production: { type: 'boolean', default: false } }, strict: false });
+import packageJson from '../package.json' with { type: 'json' };
 
-/** `gulp build --production` (or NODE_ENV=production): minified, no source maps, AVIF images. */
-export const production = values.production === true || process.env.NODE_ENV === 'production';
+// gulp-cli has parsed the command line already; the tasks only need the mode, read once when the gulpfile loads.
+const { values, positionals } = parseArgs({
+  options: { production: { type: 'boolean', default: false } },
+  strict: false
+});
 
-export const version: string = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
+/**
+ * Minified, no source maps, AVIF images: `gulp build --production`, NODE_ENV=production, or `gulp release`, which
+ * is only ever a production build.
+ */
+export const production =
+  values.production === true || process.env.NODE_ENV === 'production' || positionals.includes('release');
+
+export const { version } = packageJson;
 
 export const paths = {
   src: 'src',
   dist: 'dist',
   release: 'release',
   pages: { src: 'src/pages/**/*.pug', watch: 'src/**/*.pug' },
-  styles: { src: 'src/scss/**/*.scss', watch: 'src/scss/**', dest: 'dist/css' },
+  // Only the entry stylesheets: the partials in the folders under src/scss/ are compiled through their `@use`.
+  styles: { src: 'src/scss/*.scss', watch: 'src/scss/**', dest: 'dist/css' },
   scripts: { entry: 'src/js/main.js', vendor: 'src/js/vendor/*.js', watch: 'src/js/**', dest: 'dist/js' },
   assets: { src: 'src/{images,fonts}/**' },
   statics: { src: 'src/static/**' }

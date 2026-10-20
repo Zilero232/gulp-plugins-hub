@@ -19,9 +19,18 @@ describe('planVariants', () => {
     ]);
   });
 
-  it('keeps the source format when original is not asked for', () => {
+  it('writes the source format as original when original is not asked for', () => {
     expect(planVariants({ formats: ['png'], widths: undefined, sourceEncoder: 'png' })).toEqual([
-      { encoder: 'png', original: false, width: undefined }
+      { encoder: 'png', original: true, width: undefined }
+    ]);
+  });
+
+  it('turns widths larger than the source into one at its own width', () => {
+    expect(
+      planVariants({ formats: ['webp'], widths: [300, 1280, 1920], sourceEncoder: 'jpeg', sourceWidth: 1000 })
+    ).toEqual([
+      { encoder: 'webp', original: false, width: 300 },
+      { encoder: 'webp', original: false, width: 1000 }
     ]);
   });
 });

@@ -1,21 +1,18 @@
 import MagicString, { Bundle } from 'magic-string';
+import { isString } from 'remeda';
 
 import type { CreateBundleInput, ResolveBundleTextInput } from './bundle.types';
 
-import { getSourceName } from './get-source-name';
-
 const resolveBundleText = async ({ text, files }: ResolveBundleTextInput): Promise<string | undefined> =>
-  typeof text === 'function' ? text({ files }) : text;
+  text === undefined || isString(text) ? text : text({ files });
 
-/** The files joined with the separator, between the header and the footer; it can generate a source map. */
-export const createBundle = async ({ files, base, separator, header, footer }: CreateBundleInput): Promise<Bundle> => {
+/** The inputs joined with the separator, between the header and the footer; it can generate a source map. */
+export const createBundle = async ({ sources, separator, header, footer }: CreateBundleInput): Promise<Bundle> => {
   const bundle = new Bundle({ separator });
+  const files = sources.map(({ file }) => file);
 
-  for (const file of files) {
-    bundle.addSource({
-      filename: getSourceName({ base, filePath: file.path }),
-      content: new MagicString(file.contents.toString())
-    });
+  for (const { name, content } of sources) {
+    bundle.addSource({ filename: name, content: new MagicString(content) });
   }
 
   const headerText = await resolveBundleText({ text: header, files });

@@ -1,7 +1,7 @@
 {
   "name": "@zilero/gulp-archive-creator",
   "version": "1.0.4",
-  "description": "Pack the files of a gulp stream into a zip, tar or tar.gz archive with archiver.",
+  "description": "Pack the files of a gulp stream into one zip, tar or tar.gz archive.",
   "keywords": [
     "gulpplugin",
     "gulp",
@@ -12,7 +12,11 @@
     "tgz",
     "gzip",
     "archiver",
-    "compress"
+    "compress",
+    "gulp-zip",
+    "gulp-tar",
+    "gulp-gzip",
+    "gulp-vinyl-zip"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/archive-creator",
   "bugs": {

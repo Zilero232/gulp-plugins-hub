@@ -1,14 +1,14 @@
 import type { UserConfig } from '@commitlint/types';
 
-import { BUILT_IN_COMMIT_TYPE_NAMES } from 'commit-jazzer';
+import { COMMIT_TYPES } from './.jazzer.config.ts';
 
-// Commits are made with commit-jazzer (`bun run commit`), so any of its types is allowed. The emoji sits right
-// after the colon and starts the subject, which subject-case cannot judge.
+// Commits are made with commit-jazzer (`bun run commit`), so the types it offers are the ones allowed. The emoji
+// sits right after the colon and starts the subject, which subject-case cannot judge.
 export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'header-max-length': [2, 'always', 120],
     'subject-case': [0],
-    'type-enum': [2, 'always', [...BUILT_IN_COMMIT_TYPE_NAMES]]
+    'type-enum': [2, 'always', [...COMMIT_TYPES]]
   }
 } satisfies UserConfig;

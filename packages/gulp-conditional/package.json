@@ -6,6 +6,8 @@
     "gulpplugin",
     "gulp",
     "gulp-plugin",
+    "gulp-if",
+    "ternary-stream",
     "if",
     "conditional",
     "condition",
@@ -56,6 +58,7 @@
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "remeda": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"
   },

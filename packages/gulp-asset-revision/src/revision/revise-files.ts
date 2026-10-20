@@ -1,4 +1,4 @@
-import { toPosixPath } from '@zilero/gulp-plugin-factory';
+import { syncSourceMapFile, toPosixPath } from '@zilero/gulp-plugin-factory';
 import path from 'node:path';
 
 import type { RevisionManifest } from '../asset-revision.types';
@@ -6,6 +6,7 @@ import type { RevisedFiles, ReviseFilesInput, RevisionEntry } from './revision.t
 
 import { orderByDependencies } from '../graph';
 import { findReferences, rewriteReferences } from '../references';
+import { assertUniqueKeys } from './assert-unique-keys';
 import { hashContents } from './hash-contents';
 import { revisePath } from './revise-path';
 
@@ -13,7 +14,8 @@ import { revisePath } from './revise-path';
  * Renames every asset after a hash of its contents and rewrites the references between files. An asset is hashed
  * after every asset it references, so its hash covers its rewritten references. Files on a reference cycle (and
  * the ones depending on it) and files that reference themselves cannot get a hash that covers their own new name,
- * so they keep their names, which keeps every reference to them valid. Files that keep their names are rewritten once every asset has its new name.
+ * so they keep their names, which keeps every reference to them valid. Files that keep their names are rewritten
+ * once every asset has its new name. Files without an extension (`CNAME`, `.htaccess`) are never renamed.
  */
 export const reviseFiles = ({ files, hashLength, isExcluded, isRewritable }: ReviseFilesInput): RevisedFiles => {
   const entries = files.map((file): RevisionEntry => {
@@ -21,17 +23,26 @@ export const reviseFiles = ({ files, hashLength, isExcluded, isRewritable }: Rev
 
     return { file, key, fromDir: path.posix.dirname(key) };
   });
+
+  assertUniqueKeys(entries);
+
   const byKey = new Map(entries.map((entry) => [entry.key, entry]));
-  const assetEntries = entries.filter(({ key }) => !isExcluded(key));
+  const assetEntries = entries.filter(({ key }) => path.posix.extname(key) !== '' && !isExcluded(key));
   const assets = new Set(assetEntries.map(({ key }) => key));
   const allKeys = new Set(entries.map(({ key }) => key));
   const manifest: RevisionManifest = {};
 
+  // Contents are replaced only when a reference changed, so text that is not UTF-8 is never re-encoded.
   const rewrite = ({ file, fromDir }: RevisionEntry): void => {
-    if (isRewritable(file)) {
-      file.contents = Buffer.from(
-        rewriteReferences({ content: file.contents.toString(), fromDir, assets, files: allKeys, revisions: manifest })
-      );
+    if (!isRewritable(file)) {
+      return;
+    }
+
+    const content = file.contents.toString();
+    const rewritten = rewriteReferences({ content, fromDir, assets, files: allKeys, revisions: manifest });
+
+    if (rewritten !== content) {
+      file.contents = Buffer.from(rewritten);
     }
   };
 
@@ -49,6 +60,7 @@ export const reviseFiles = ({ files, hashLength, isExcluded, isRewritable }: Rev
   );
 
   const { ordered, cyclic } = orderByDependencies({ nodes: assetEntries.map(({ key }) => key), dependencies });
+
   const kept = new Set([
     ...cyclic,
     ...[...dependencies].filter(([key, targets]) => targets.has(key)).map(([key]) => key)
@@ -63,17 +75,18 @@ export const reviseFiles = ({ files, hashLength, isExcluded, isRewritable }: Rev
 
     rewrite(entry);
 
-    const revised = revisePath({
-      relative: key,
-      hash: hashContents({ contents: entry.file.contents, length: hashLength })
-    });
+    const hash = hashContents({ contents: entry.file.contents, length: hashLength });
+    const revised = revisePath({ relative: key, hash });
 
     manifest[key] = revised;
+
+    // The same metadata gulp-rev sets, for the tools that read it (gulp-rev-delete-original, …).
+    entry.file.revOrigPath = entry.file.path;
+    entry.file.revOrigBase = entry.file.base;
+    entry.file.revHash = hash;
     entry.file.path = path.join(entry.file.base, revised);
 
-    if (entry.file.sourceMap) {
-      entry.file.sourceMap.file = revised;
-    }
+    syncSourceMapFile(entry.file);
   }
 
   for (const entry of entries) {

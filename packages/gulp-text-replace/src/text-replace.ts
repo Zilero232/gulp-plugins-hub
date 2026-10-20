@@ -5,15 +5,12 @@ import { applySourceMap, createPlugin, parseOptions, toPosixPath } from '@zilero
 import MagicString from 'magic-string';
 
 import type { TextReplaceOptions } from './text-replace.schema';
-import type { ResolveFileTextInput } from './text-replace.types';
 
 import { isBinary } from './binary';
+import { resolveFileText } from './file-text';
 import { replaceMatches } from './replace';
-import { PLUGIN_NAME } from './text-replace.constants';
+import { BOM, PLUGIN_NAME } from './text-replace.constants';
 import { textReplaceOptionsSchema } from './text-replace.schema';
-
-const resolveFileText = async ({ text, file }: ResolveFileTextInput): Promise<string> =>
-  typeof text === 'function' ? text({ file }) : (text ?? '');
 
 /**
  * Replaces text in every file with strings or regular expressions, then adds an optional header and footer.
@@ -42,6 +39,7 @@ export const textReplace = (options: TextReplaceOptions): PluginStream => {
     schema: textReplaceOptionsSchema,
     options
   });
+
   const ruleList = [rules].flat();
 
   return createPlugin({
@@ -68,8 +66,13 @@ export const textReplace = (options: TextReplaceOptions): PluginStream => {
 
       const magic = new MagicString(content);
 
-      magic.prepend(await resolveFileText({ text: header, file }));
-      magic.append(await resolveFileText({ text: footer, file }));
+      // After a byte order mark: it must stay the first character for editors and parsers to see it.
+      magic.prependLeft(
+        content.startsWith(BOM) ? BOM.length : 0,
+        await resolveFileText({ name: 'header', text: header, file })
+      );
+
+      magic.append(await resolveFileText({ name: 'footer', text: footer, file }));
 
       if (file.sourceMap) {
         maps.unshift(magic.generateMap({ source, hires: true }).toString());

@@ -1,4 +1,5 @@
 import { eslint } from '@siberiacancode/eslint';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default eslint(
   {
@@ -29,6 +30,31 @@ export default eslint(
       'ts/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
       'node/prefer-global/buffer': 'off',
       'node/prefer-global/process': 'off'
+    }
+  },
+
+  // Blank lines between the steps of the code: declarations, multi-line statements, blocks, functions, types
+  // and returns each stand apart. Prettier keeps blank lines but never adds them; eslint --fix does.
+  {
+    name: 'hub/padding',
+    files: ['**/*.?([cm])[jt]s?(x)'],
+    plugins: { '@stylistic': stylistic },
+    rules: {
+      '@stylistic/padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: '*', next: 'return' },
+        { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+        {
+          blankLine: 'any',
+          prev: ['singleline-const', 'singleline-let'],
+          next: ['singleline-const', 'singleline-let']
+        },
+        { blankLine: 'always', prev: '*', next: ['multiline-const', 'multiline-let', 'multiline-expression'] },
+        { blankLine: 'always', prev: ['multiline-const', 'multiline-let', 'multiline-expression'], next: '*' },
+        { blankLine: 'always', prev: '*', next: ['block-like', 'function', 'class', 'type', 'interface'] },
+        { blankLine: 'always', prev: ['block-like', 'function', 'class', 'type', 'interface'], next: '*' },
+        { blankLine: 'always', prev: 'directive', next: '*' }
+      ]
     }
   },
 

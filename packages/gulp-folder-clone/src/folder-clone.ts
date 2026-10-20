@@ -1,6 +1,6 @@
 import type { PluginStream, Vinyl } from '@zilero/gulp-plugin-factory';
 
-import { createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import { createPlugin, parseOptions, syncSourceMapFile } from '@zilero/gulp-plugin-factory';
 
 import type { FolderCloneOptions } from './folder-clone.schema';
 
@@ -24,6 +24,7 @@ export const folderClone = (options: FolderCloneOptions): PluginStream => {
     schema: folderCloneOptionsSchema,
     options
   });
+
   const targets = [dirs].flat();
 
   return createPlugin({
@@ -36,9 +37,16 @@ export const folderClone = (options: FolderCloneOptions): PluginStream => {
         const copy = cloneInto({ original, dir });
         const result = onClone ? await onClone({ file: copy, dir, original }) : undefined;
 
-        if (result !== null) {
-          output.push(result ?? copy);
+        if (result === null) {
+          continue;
         }
+
+        const file = result ?? copy;
+
+        // The hook may have renamed or moved the copy: its map must name the file dest writes.
+        syncSourceMapFile(file);
+
+        output.push(file);
       }
 
       return output;

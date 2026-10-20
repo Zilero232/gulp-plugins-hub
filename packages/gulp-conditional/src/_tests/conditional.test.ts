@@ -2,6 +2,8 @@ import type { Duplex } from 'node:stream';
 
 import { createPlugin, PluginError } from '@zilero/gulp-plugin-factory';
 import { createFile, runPlugin } from '@zilero/gulp-plugin-factory/testing';
+import path from 'node:path';
+import { Transform } from 'node:stream';
 import { describe, expect, it, vi } from 'vitest';
 
 import conditional from '..';
@@ -69,7 +71,80 @@ describe('conditional', () => {
   it('emits an error for a handler that returns an empty array', async () => {
     const stream = conditional({ handlers: [{ condition: true, handler: () => [] }] });
 
-    await expect(runPlugin(stream, files())).rejects.toThrow('A handler returned an empty array');
+    await expect(runPlugin(stream, files())).rejects.toThrow('handlers[0].handler returned an empty array');
+  });
+
+  it('emits a clear error for a handler that returns something other than a stream', async () => {
+    // @ts-expect-error: a handler that forgets to return the stream
+    const nothing = conditional({ handlers: [{ condition: true, handler: () => {} }] });
+
+    const factory = conditional({
+      handlers: [{ condition: false, handler: tag('x') }],
+      // @ts-expect-error: a plugin factory instead of the plugin
+      defaultHandler: () => [tag('a')(), tag('b')]
+    });
+
+    await expect(runPlugin(nothing, files())).rejects.toThrow(
+      'handlers[0].handler must return a stream or an array of streams, got undefined'
+    );
+
+    await expect(runPlugin(factory, files())).rejects.toThrow(
+      'defaultHandler must return a stream or an array of streams, got function'
+    );
+  });
+
+  it('matches glob, RegExp and array conditions against the relative path', async () => {
+    const nested = () => [
+      createFile({ path: 'a.js', contents: 'a' }),
+      createFile({ path: path.join('lib', 'b.js'), contents: 'b' }),
+      createFile({ path: 'c.css', contents: 'c' }),
+      createFile({ path: 'd.txt', contents: 'd' })
+    ];
+
+    const run = async (stream: ReturnType<typeof conditional>) =>
+      (await runPlugin(stream, nested())).map((file) => String(file.contents)).sort();
+
+    expect(await run(conditional({ handlers: [{ condition: '*.js', handler: tag('js') }] }))).toEqual([
+      'c',
+      'd',
+      'js:a',
+      'js:b'
+    ]);
+
+    expect(await run(conditional({ handlers: [{ condition: 'lib/**', handler: tag('lib') }] }))).toEqual([
+      'a',
+      'c',
+      'd',
+      'lib:b'
+    ]);
+
+    expect(await run(conditional({ handlers: [{ condition: /\.css$/, handler: tag('css') }] }))).toEqual([
+      'a',
+      'b',
+      'css:c',
+      'd'
+    ]);
+
+    expect(await run(conditional({ handlers: [{ condition: ['*.css', /^d\./], handler: tag('x') }] }))).toEqual([
+      'a',
+      'b',
+      'x:c',
+      'x:d'
+    ]);
+  });
+
+  it('emits the error a branch failed with when it fails while ending', async () => {
+    const failsOnEnd = () =>
+      new Transform({
+        objectMode: true,
+        transform: (file, _encoding, callback) => callback(null, file),
+        flush: (callback) => callback(new Error('flush failed'))
+      });
+
+    const run = runPlugin(conditional({ handlers: [{ condition: true, handler: failsOnEnd }] }), files());
+
+    await expect(run).rejects.toBeInstanceOf(PluginError);
+    await expect(run).rejects.toMatchObject({ plugin: '@zilero/gulp-conditional', message: 'flush failed' });
   });
 
   it('fails instead of hanging when a branch fails while a condition is awaited', async () => {
@@ -106,9 +181,12 @@ describe('conditional', () => {
 
   it('destroys its branches when it fails', async () => {
     const opened: Duplex[] = [];
+
     const tracked = () => {
       const branch = tag('t')();
+
       opened.push(branch);
+
       return branch;
     };
 
@@ -172,6 +250,7 @@ describe('conditional', () => {
     const many = Array.from({ length: 100 }, (_, index) =>
       createFile({ path: `${index}.js`, contents: String(index) })
     );
+
     const stream = conditional({ handlers: [{ condition: true, handler: tag('x') }] });
 
     expect(await runPlugin(stream, many)).toHaveLength(100);
@@ -209,9 +288,10 @@ describe('conditional', () => {
 
   it('rejects options without handlers or with an invalid condition', () => {
     expect(() => conditional({ handlers: [] })).toThrow('Add at least one handler');
-    // @ts-expect-error: a string is not a condition
-    expect(() => conditional({ handlers: [{ condition: 'yes', handler: tag('x') }] })).toThrow(
-      'Expected a boolean or a function'
+
+    // @ts-expect-error: a number is not a condition
+    expect(() => conditional({ handlers: [{ condition: 1, handler: tag('x') }] })).toThrow(
+      'Expected a boolean, a glob, a RegExp, an array of globs or a function'
     );
   });
 });

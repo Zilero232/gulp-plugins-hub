@@ -8,6 +8,7 @@ import { PACKAGES_DIR } from './publish.constants';
 /** The workspaces under packages/ that are published (not private). */
 export const readWorkspaces = async (): Promise<Workspace[]> => {
   const entries = await readdir(PACKAGES_DIR, { withFileTypes: true });
+
   // Sorted, so the publish order does not depend on the file system.
   const directories = entries
     .filter((entry) => entry.isDirectory())

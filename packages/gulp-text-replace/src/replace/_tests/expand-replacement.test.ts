@@ -20,6 +20,7 @@ const TEMPLATES = [
   '$',
   '[$1$2]'
 ];
+
 const SEARCHES = [/(b)/, /(?<word>b)(c)?/, /(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)/, /b/];
 
 describe('expandReplacement', () => {
@@ -29,6 +30,7 @@ describe('expandReplacement', () => {
 
     for (const template of TEMPLATES) {
       const expected = content.replace(search, template);
+
       const actual = match
         ? content.slice(0, match.index) +
           expandReplacement({ template, match, content }) +

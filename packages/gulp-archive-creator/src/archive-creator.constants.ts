@@ -12,3 +12,10 @@ export const EXTENSION_FORMATS = [
   ['.tar', 'tar'],
   ['.zip', 'zip']
 ] as const;
+
+/**
+ * The date of entries from files without a stat (made by other plugins), so the same files always give the same
+ * archive. Noon UTC keeps it on 1 January 1980, the earliest date zip can store, in every time zone (zip stores
+ * local time).
+ */
+export const FALLBACK_MODIFIED_TIME = new Date('1980-01-01T12:00:00Z');

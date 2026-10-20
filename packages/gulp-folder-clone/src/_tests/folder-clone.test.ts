@@ -55,6 +55,25 @@ describe('folderClone', () => {
     expect(output.map((file) => file.sourceMap.file)).toEqual(['app.js', 'a/app.js', 'b/app.js']);
   });
 
+  it('points the map of a copy renamed in onClone at its new name', async () => {
+    const output = await runPlugin(
+      folderClone({
+        dirs: 'v2',
+        keepOriginal: false,
+        onClone: ({ file }) => {
+          file.stem = 'renamed';
+        }
+      }),
+      [createFile({ path: 'js/app.js', sourceMap: true })]
+    );
+
+    expect(output.map((file) => file.sourceMap.file)).toEqual(['v2/js/renamed.js']);
+  });
+
+  it('rejects a folder listed twice', () => {
+    expect(() => folderClone({ dirs: ['backup', './backup/'] })).toThrow('Each folder may be listed only once');
+  });
+
   it('rejects folders outside the base, the base itself and an empty list', () => {
     for (const dirs of ['/tmp', '.', '../up']) {
       expect(() => folderClone({ dirs })).toThrow('Expected a folder inside file.base');

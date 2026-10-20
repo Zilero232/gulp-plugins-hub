@@ -5,13 +5,14 @@ import {
   createPlugin,
   getInputSourceMap,
   parseOptions,
+  runContentHook,
   toPosixPath
 } from '@zilero/gulp-plugin-factory';
 import { minify } from 'terser';
 
 import type { JsSqueezerOptions } from './js-squeezer.schema';
 
-import { JS_EXTENSIONS, PLUGIN_NAME } from './js-squeezer.constants';
+import { JS_EXTENSIONS, MODULE_BY_EXTENSION, PLUGIN_NAME } from './js-squeezer.constants';
 import { jsSqueezerOptionsSchema } from './js-squeezer.schema';
 
 /**
@@ -36,22 +37,28 @@ export const jsSqueezer = (options: JsSqueezerOptions = {}): PluginStream => {
 
   return createPlugin({
     name: PLUGIN_NAME,
-    filter: (file) => JS_EXTENSIONS.includes(file.extname.toLowerCase()),
+    extensions: JS_EXTENSIONS,
     transform: async (file) => {
-      let content = file.contents.toString();
-
-      if (onBeforeMinify) {
-        content = await onBeforeMinify({ content, file });
-      }
+      const source = await runContentHook({
+        name: 'onBeforeMinify',
+        hook: onBeforeMinify,
+        content: file.contents.toString(),
+        file
+      });
 
       const sourceMap = file.sourceMap ? { content: getInputSourceMap(file), includeSources: true } : false;
-      const result = await minify({ [toPosixPath(file.relative)]: content }, { ...terserOptions, sourceMap });
+      const isModule = terserOptions.module ?? MODULE_BY_EXTENSION[file.extname.toLowerCase()] ?? false;
 
-      content = result.code ?? '';
+      const result = await minify(
+        { [toPosixPath(file.relative)]: source },
+        { ...terserOptions, module: isModule, sourceMap }
+      );
 
-      if (onAfterMinify) {
-        content = await onAfterMinify({ content, file });
+      if (result.code === undefined) {
+        throw new Error('terser returned no code');
       }
+
+      const content = await runContentHook({ name: 'onAfterMinify', hook: onAfterMinify, content: result.code, file });
 
       file.contents = Buffer.from(content);
 

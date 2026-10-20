@@ -1,8 +1,9 @@
 import remapping from '@jridgewell/remapping';
+import path from 'node:path';
 
 import type { ApplySourceMapInput, KeepSourcesContentInput, SourceMap } from './source-map.types';
 
-import { toPosixPath } from '../shared';
+import { toPosixPath } from '../path';
 import { getChainableSourceMap } from './get-chainable-source-map';
 import { toRelativeSource } from './to-relative-source';
 
@@ -44,9 +45,16 @@ const keepSourcesContent = ({ previous, sources, parsed }: KeepSourcesContentInp
 export const applySourceMap = ({ file, map, chain = false }: ApplySourceMapInput): void => {
   const json = typeof map === 'string' ? map : JSON.stringify(map);
   const input = chain ? getChainableSourceMap(file) : undefined;
+
+  // The input map belongs to the file itself: other sources of the tool's map (an inlined import) keep theirs.
+  const isFile = (source: string): boolean =>
+    path.posix.normalize(toRelativeSource({ base: file.base, source })) === toPosixPath(file.relative);
+
   const parsed = parseMap(
     input
-      ? JSON.stringify(remapping(json, (_source, context) => (context.depth === 1 ? JSON.stringify(input) : null)))
+      ? JSON.stringify(
+          remapping(json, (source, context) => (context.depth === 1 && isFile(source) ? JSON.stringify(input) : null))
+        )
       : json
   );
 

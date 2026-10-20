@@ -1,13 +1,13 @@
 import type { BufferFile, PluginStream } from '@zilero/gulp-plugin-factory';
 
-import { createPlugin, parseOptions, Vinyl } from '@zilero/gulp-plugin-factory';
+import { createPathMatcher, createPlugin, parseOptions, Vinyl } from '@zilero/gulp-plugin-factory';
 import path from 'node:path';
 
 import type { AssetRevisionOptions } from './asset-revision.schema';
 
 import { DEFAULT_MANIFEST_PATH, PLUGIN_NAME } from './asset-revision.constants';
 import { assetRevisionOptionsSchema } from './asset-revision.schema';
-import { createExcludeMatcher, reviseFiles } from './revision';
+import { reviseFiles } from './revision';
 
 /**
  * Cache-busting: renames assets after a hash of their contents (`main.css` → `main-3f2a9c1b7d.css`), rewrites
@@ -25,7 +25,8 @@ export const assetRevision = (options: AssetRevisionOptions = {}): PluginStream 
     schema: assetRevisionOptionsSchema,
     options
   });
-  const isExcluded = createExcludeMatcher(exclude);
+
+  const isExcluded = createPathMatcher({ patterns: exclude, ignoreCase: true });
   const isRewritable = (file: BufferFile): boolean => rewrite !== false && rewrite.includes(file.extname.toLowerCase());
   const files: BufferFile[] = [];
 

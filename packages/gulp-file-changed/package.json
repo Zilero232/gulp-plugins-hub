@@ -6,6 +6,8 @@
     "gulpplugin",
     "gulp",
     "gulp-plugin",
+    "gulp-changed",
+    "gulp-newer",
     "changed",
     "newer",
     "incremental",
@@ -51,6 +53,7 @@
   },
   "dependencies": {
     "@zilero/gulp-plugin-factory": "workspace:^",
+    "tinyglobby": "^0.2.17",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -58,6 +61,7 @@
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
     "@types/vinyl-fs": "^3.0.8",
+    "remeda": "catalog:",
     "ts-pattern": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",

@@ -8,3 +8,14 @@ export type RenamePathInput = {
   rename: string | RenameFunction | RenameObject;
   file: Vinyl;
 };
+
+export type RunRenameFunctionInput = {
+  parts: PathParts;
+  rename: RenameFunction;
+  file: Vinyl;
+};
+
+export type ApplyChangesInput = {
+  parts: PathParts;
+  changes: RenameObject;
+};

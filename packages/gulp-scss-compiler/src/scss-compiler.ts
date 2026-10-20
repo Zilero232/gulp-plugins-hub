@@ -1,20 +1,26 @@
 import type { PluginStream } from '@zilero/gulp-plugin-factory';
 
-import { applySourceMap, createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import {
+  applySourceMap,
+  createPlugin,
+  parseOptions,
+  runContentHook,
+  syncSourceMapFile
+} from '@zilero/gulp-plugin-factory';
 import { pathToFileURL } from 'node:url';
 
 import type { ScssCompilerOptions } from './scss-compiler.schema';
 
 import { createCompilerHandle } from './compiler';
 import { toSassError } from './errors';
-import { PLUGIN_NAME } from './scss-compiler.constants';
+import { PLUGIN_NAME, SYNTAXES } from './scss-compiler.constants';
 import { scssCompilerOptionsSchema } from './scss-compiler.schema';
 import { getSyntax } from './syntax';
 
 /**
  * Compiles SCSS and indented Sass (`.scss`, `.sass`) to `.css` with the modern Sass compiler, from the file
  * contents. One compiler process serves the whole stream and stops when it ends. Partials are dropped, and the
- * file gets a source map when it had one (`src(…, { sourcemaps: true })`).
+ * file gets a source map when it had one (`src(…, { sourcemaps: true })`), chained to that map.
  *
  * @example
  * src('src/styles/**\/*.scss', { sourcemaps: true })
@@ -32,15 +38,16 @@ export const scssCompiler = (options: ScssCompilerOptions = {}): PluginStream =>
     schema: scssCompilerOptionsSchema,
     options
   });
+
   const compiler = createCompilerHandle();
 
-  const plugin = createPlugin({
+  return createPlugin({
     name: PLUGIN_NAME,
-    filter: (file) => getSyntax(file.extname) !== undefined,
+    extensions: Object.keys(SYNTAXES),
     transform: async (file) => {
       const syntax = getSyntax(file.extname);
 
-      // Narrows the syntax; the filter already let only Sass files through.
+      // Narrows the syntax; `extensions` already let only Sass files through.
       if (!syntax) {
         return;
       }
@@ -49,15 +56,17 @@ export const scssCompiler = (options: ScssCompilerOptions = {}): PluginStream =>
         return null;
       }
 
-      let content = file.contents.toString();
-
-      if (onBeforeCompile) {
-        content = await onBeforeCompile({ content, file });
-      }
+      const source = await runContentHook({
+        name: 'onBeforeCompile',
+        hook: onBeforeCompile,
+        content: file.contents.toString(),
+        file
+      });
 
       const sass = await compiler.acquire();
+
       const result = await sass
-        .compileStringAsync(content, {
+        .compileStringAsync(source, {
           ...sassOptions,
           loadPaths: [...(sassOptions.loadPaths ?? []), file.base],
           url: pathToFileURL(file.path),
@@ -69,24 +78,20 @@ export const scssCompiler = (options: ScssCompilerOptions = {}): PluginStream =>
           throw toSassError({ error, filePath: file.path });
         });
 
-      content = result.css;
+      // Before the rename: Sass takes no input map, so the file's own map is chained into the source that is it.
+      if (file.sourceMap && result.sourceMap) {
+        applySourceMap({ file, map: result.sourceMap, chain: true });
+      }
+
       file.extname = '.css';
 
-      if (onAfterCompile) {
-        content = await onAfterCompile({ content, file });
-      }
+      syncSourceMapFile(file);
+
+      const content = await runContentHook({ name: 'onAfterCompile', hook: onAfterCompile, content: result.css, file });
 
       file.contents = Buffer.from(content);
-
-      if (file.sourceMap && result.sourceMap) {
-        applySourceMap({ file, map: result.sourceMap });
-      }
     },
-    flush: compiler.dispose
+    // Also runs when the stream is destroyed by an error, so the compiler never outlives it.
+    dispose: compiler.dispose
   });
-
-  // A stream destroyed by an error gets no flush: the compiler must not outlive it.
-  plugin.once('close', () => void compiler.dispose());
-
-  return plugin;
 };

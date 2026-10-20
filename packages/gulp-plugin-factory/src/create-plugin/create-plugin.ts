@@ -12,6 +12,7 @@ import type {
   TransformResult
 } from './create-plugin.types';
 
+import { assertBinaryContents } from '../binary';
 import { toPluginError } from './to-plugin-error';
 
 const createContext = ({ definition, stream }: FlushStreamInput): PluginContext => ({
@@ -20,6 +21,10 @@ const createContext = ({ definition, stream }: FlushStreamInput): PluginContext 
 });
 
 const passesThrough = ({ definition, file }: PassesThroughInput): boolean => {
+  if (definition.extensions && !definition.extensions.includes(file.extname.toLowerCase())) {
+    return true;
+  }
+
   if (definition.filter && !definition.filter(file)) {
     return true;
   }
@@ -38,12 +43,17 @@ const runTransform = async ({ definition, file, stream }: TransformFileInput): P
     throw new Error('Streaming is not supported');
   }
 
+  if (definition.binary) {
+    assertBinaryContents(file);
+  }
+
   return definition.transform?.(file, context);
 };
 
 const transformFile = async ({ definition, file, stream }: TransformFileInput): Promise<void> => {
   if (passesThrough({ definition, file })) {
     stream.push(file);
+
     return;
   }
 
@@ -93,6 +103,13 @@ export const createPlugin = (definition: PluginDefinition): PluginStream => {
       flushStream({ definition, stream }).then(
         () => callback(),
         (error: unknown) => callback(toPluginError({ name, error }))
+      );
+    },
+    // Called once whichever way the stream is done: after it ends (autoDestroy), on an error or on destroy().
+    destroy: (error, callback) => {
+      Promise.resolve(definition.dispose?.()).then(
+        () => callback(error),
+        (disposeError: unknown) => callback(error ?? toPluginError({ name, error: disposeError }))
       );
     }
   });

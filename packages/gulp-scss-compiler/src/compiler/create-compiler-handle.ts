@@ -24,6 +24,7 @@ export const createCompilerHandle = ({ init = initAsyncCompiler }: CreateCompile
       disposed = true;
 
       const running = compiler;
+
       compiler = undefined;
 
       try {

@@ -1,3 +1,7 @@
+---
+description: 'Build a typed gulp plugin with @zilero/gulp-plugin-factory: a stream from a transform function, validated options, source maps, hooks and tests.'
+---
+
 # Writing a plugin
 
 Every plugin in the hub is built with `@zilero/gulp-plugin-factory`. It turns a function that changes one file into a stream that follows the [gulp plugin guidelines](https://github.com/gulpjs/gulp/blob/master/docs/writing-a-plugin/guidelines.md): files without contents pass through, streamed contents are refused, errors become `PluginError`s with the plugin name and file and are emitted rather than thrown, and files leave in the order they came.
@@ -26,8 +30,8 @@ export const banner = (options: BannerOptions) => {
 
   return createPlugin({
     name: PLUGIN_NAME,
-    // Other files pass through untouched.
-    filter: (file) => extensions.includes(file.extname),
+    // Other files pass through untouched; extensions are compared in lowercase.
+    extensions,
     transform: (file) => {
       file.contents = Buffer.concat([Buffer.from(`${text}\n`), file.contents]);
     }
@@ -69,6 +73,42 @@ export const fileList = () => {
 
 By default `transform` gets only files with Buffer contents (`accept: 'buffer'`): files without contents pass through and streamed contents emit `Streaming is not supported`. Set `accept: 'any'` to get every file, for plugins that work on paths or handle streams themselves.
 
+## Choosing the files
+
+`extensions: ['.css', '.scss']` limits `transform` to those extensions (compared in lowercase, so `MAIN.CSS` counts); other files pass through untouched. `filter` takes any other test and is checked together with `extensions`. For user-facing include or exclude lists, `createPathMatcher` turns globs and regular expressions into one test of the path relative to the base: a glob without `/` (`*.min.js`) matches the file name in any folder, a glob with `/` (`vendor/**`) matches from the base, and a RegExp tests the path with `/` separators.
+
+```ts
+import { createPathMatcher, createPlugin } from '@zilero/gulp-plugin-factory';
+
+const isExcluded = createPathMatcher({ patterns: ['*.min.js', 'vendor/**', /\.generated\./] });
+
+createPlugin({
+  name: 'gulp-my-minifier',
+  extensions: ['.js', '.mjs'],
+  filter: (file) => !isExcluded(file.relative),
+  transform: (file) => {
+    // only .js and .mjs files that are not excluded get here
+  }
+});
+```
+
+## Cleaning up
+
+A plugin that starts something long-lived (a compiler process, a worker pool) closes it in `dispose`. It runs once whichever way the stream is done: after the last file, on an error, or when the stream is destroyed, where `flush` never runs.
+
+```ts
+let compiler: Compiler | undefined;
+
+createPlugin({
+  name: 'gulp-my-compiler',
+  transform: async (file) => {
+    compiler ??= await startCompiler();
+    file.contents = Buffer.from(await compiler.compile(file.contents.toString()));
+  },
+  dispose: () => compiler?.close()
+});
+```
+
 ## Source maps
 
 When `src(…, { sourcemaps: true })` gave the file a map, pass it to the tool as its input map and store the tool's map:
@@ -91,15 +131,35 @@ createPlugin({
 });
 ```
 
-For a tool that cannot take an input map, let `applySourceMap` chain it: `applySourceMap({ file, map, chain: true })`. To chain several inputs into one map yourself (a bundle), `getChainableSourceMap(file)` gives each file's map with absolute sources, ready for `@jridgewell/remapping`.
+For a tool that cannot take an input map, let `applySourceMap` chain it: `applySourceMap({ file, map, chain: true })`. Only the sources that are the file itself get its map; other sources of the tool's map (an inlined import) stay as they are. To chain several inputs into one map yourself (a bundle), `getChainableSourceMap(file)` gives each file's map with absolute `file://` sources, ready for `@jridgewell/remapping`. Sources that are already URLs (`webpack://…`, `data:…`) are kept; `isUrl(value)` makes the same check.
+
+A plugin that renames or moves a file calls `syncSourceMapFile(file)` afterwards, so `dest(…, { sourcemaps: '.' })` writes the map for the new name:
+
+```ts
+transform: (file) => {
+  file.stem += '.min';
+  syncSourceMapFile(file); // file.sourceMap.file is now 'js/app.min.js'; files without a map are left alone
+};
+```
 
 ## Binary files
 
-Call `assertBinaryContents(file)` first in plugins for images, fonts or other binary formats: when gulp 5 read the file as UTF-8 (no `encoding: false`), it throws an error that tells the user how to fix it.
+Set `binary: true` in plugins for images, fonts or other binary formats. When gulp 5 read the file as UTF-8 (no `src(globs, { encoding: false })`), the file emits an error that tells the user how to fix it, instead of reaching `transform` corrupted. The check is `assertBinaryContents(file)`, exported for plugins that need it elsewhere.
+
+```ts
+createPlugin({
+  name: 'gulp-my-images',
+  extensions: ['.png', '.jpg'],
+  binary: true,
+  transform: async (file) => {
+    file.contents = await optimize(file.contents);
+  }
+});
+```
 
 ## Options with any schema library
 
-`parseOptions` takes any synchronous [Standard Schema](https://standardschema.dev): zod 4, valibot, arktype and others. Check callbacks with `isFunction` rather than zod's `z.function()`, which wraps the function and validates its result, and breaks async hooks. `ContentHook` is the type of a hook on a file's text, and `isRelativePathInside` checks paths that must stay inside an output folder:
+`parseOptions` takes any synchronous [Standard Schema](https://standardschema.dev): zod 4, valibot, arktype and others. Check callbacks with `isFunction` rather than zod's `z.function()`, which wraps the function and validates its result, and breaks async hooks. `ContentHook` is the type of a hook on a file's text, `FileHookInput` (`{ file }`) the input of a hook on a file, and `isRelativePathInside` checks paths that must stay inside an output folder:
 
 ```ts
 import type { ContentHook } from '@zilero/gulp-plugin-factory';
@@ -114,6 +174,27 @@ const optionsSchema = z
   })
   .strict();
 ```
+
+## Hooks
+
+Hooks take one object and may return a promise. Run a hook on a file's text with `runContentHook`: without a hook it returns the text as it is, and a hook written in JavaScript that forgets to return the text gets a clear error (`onBeforeWrite must return the text as a string, got undefined`) instead of an obscure one from `Buffer.from`.
+
+```ts
+import { runContentHook } from '@zilero/gulp-plugin-factory';
+
+transform: async (file) => {
+  const content = await runContentHook({
+    name: 'onBeforeWrite',
+    hook: onBeforeWrite,
+    content: file.contents.toString(),
+    file
+  });
+
+  file.contents = Buffer.from(content);
+};
+```
+
+For other hooks, type the input with `FileHookInput` and add what the hook needs: `type CloneInput = FileHookInput & { dir: string }`.
 
 ## Testing
 

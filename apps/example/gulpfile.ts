@@ -21,10 +21,11 @@ build.description = 'Build the site into dist/ (add --production for minified ou
 
 // The default task (`gulp`). No clean: images unchanged since the last run are not encoded again.
 const dev = gulp.series(compile, serve);
+
 dev.description = 'Build, serve with live reload and rebuild on change';
 
 export const release = gulp.series(build, revision, archive);
-release.description = 'Build, hash the asset names into release/site/ and zip it (run with --production)';
+release.description = 'Build for production, hash the asset names into release/site/ and zip it';
 
 export { clean };
 
