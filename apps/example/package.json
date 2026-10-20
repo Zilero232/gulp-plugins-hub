@@ -7,8 +7,8 @@
   "scripts": {
     "build": "gulp build --production",
     "dev": "gulp",
-    "release": "gulp release --production",
-    "test": "gulp release --production && vitest run",
+    "release": "gulp release",
+    "test": "gulp release && vitest run",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

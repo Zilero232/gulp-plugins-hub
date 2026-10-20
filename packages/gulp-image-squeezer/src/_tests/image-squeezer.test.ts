@@ -12,6 +12,7 @@ let photo: Buffer;
 beforeAll(async () => {
   // A noisy image, so the encoders have something to compress.
   const pixels = Buffer.alloc(400 * 200 * 3, 0).map((_, index) => (index * 7919) % 256);
+
   photo = await sharp(pixels, { raw: { width: 400, height: 200, channels: 3 } })
     .png({ compressionLevel: 0 })
     .toBuffer();
@@ -37,6 +38,7 @@ describe('imageSqueezer', () => {
     const output = await squeeze({ formats: ['webp', 'avif', 'jpeg'] });
 
     expect(output.map(({ basename }) => basename)).toEqual(['photo.webp', 'photo.avif', 'photo.jpg']);
+
     expect(await Promise.all(output.map(async (file) => (await metadata(file)).format))).toEqual([
       'webp',
       'heif',
@@ -44,17 +46,69 @@ describe('imageSqueezer', () => {
     ]);
   });
 
-  it('resizes to every width without enlarging', async () => {
-    const output = await squeeze({ formats: ['original', 'webp'], widths: [100, 800] });
+  it('resizes to every width without enlarging, naming each file after its real width', async () => {
+    const output = await squeeze({ formats: ['original', 'webp'], widths: [100, 800, 1600] });
 
     expect(output.map(({ basename }) => basename)).toEqual([
       'photo-100w.png',
       'photo-100w.webp',
-      'photo-800w.png',
-      'photo-800w.webp'
+      'photo-400w.png',
+      'photo-400w.webp'
     ]);
+
     expect((await metadata(output[0])).width).toBe(100);
     expect((await metadata(output[2])).width).toBe(400);
+  });
+
+  it('caps widths at the upright width of a rotated photo', async () => {
+    const sideways = await sharp({ create: { width: 40, height: 20, channels: 3, background: '#0f0' } })
+      .jpeg()
+      .withMetadata({ orientation: 6 })
+      .toBuffer();
+
+    const output = await squeeze({ widths: [10, 30] }, createFile({ path: 'phone.jpg', contents: sideways }));
+
+    expect(output.map(({ basename }) => basename)).toEqual(['phone-10w.jpg', 'phone-20w.jpg']);
+  });
+
+  it('keeps PNG lossless by default', async () => {
+    // A smooth gradient with far more than 256 colors: a palette would band it.
+    const pixels = Buffer.alloc(256 * 64 * 3).map((_, index) => {
+      const pixel = Math.floor(index / 3);
+      const channel = index % 3;
+
+      return channel === 0 ? pixel % 256 : channel === 1 ? Math.floor(pixel / 256) * 4 : (pixel * 3) % 256;
+    });
+
+    const gradient = await sharp(pixels, { raw: { width: 256, height: 64, channels: 3 } })
+      .png({ compressionLevel: 0 })
+      .toBuffer();
+
+    const [output] = await squeeze({ quality: 50 }, createFile({ path: 'gradient.png', contents: gradient }));
+    const decode = async (image: Buffer) => sharp(image).raw().toBuffer();
+
+    expect((await metadata(output)).isPalette).toBe(false);
+    expect((await decode(getContents(output))).equals(await decode(gradient))).toBe(true);
+  });
+
+  it('quantizes PNG to a palette, with quality, only when asked', async () => {
+    const [output] = await squeeze({ quality: { png: 60 }, encoderOptions: { png: { palette: true } } });
+
+    expect((await metadata(output)).isPalette).toBe(true);
+  });
+
+  it('treats the source format as original: extension kept and keepSmaller applied', async () => {
+    const tiny = await sharp({ create: { width: 1, height: 1, channels: 3, background: '#000' } })
+      .jpeg()
+      .toBuffer();
+
+    const [output] = await squeeze(
+      { formats: 'jpeg', encoderOptions: { jpeg: { quality: 100, mozjpeg: false } } },
+      createFile({ path: 'dot.jpeg', contents: tiny })
+    );
+
+    expect(output!.basename).toBe('dot.jpeg');
+    expect(getContents(output)).toEqual(tiny);
   });
 
   it('applies quality and encoder options', async () => {
@@ -70,6 +124,7 @@ describe('imageSqueezer', () => {
     const tiny = await sharp({ create: { width: 1, height: 1, channels: 3, background: '#000' } })
       .png()
       .toBuffer();
+
     const file = () => createFile({ path: 'dot.png', contents: tiny });
     const heavy = { encoderOptions: { png: { compressionLevel: 0 } } };
 
@@ -82,7 +137,9 @@ describe('imageSqueezer', () => {
       sharp({ create: { width: 20, height: 10, channels: 3, background } })
         .png()
         .toBuffer();
+
     const frames = await Promise.all(['#f00', '#0f0', '#00f'].map(frame));
+
     const gif = await sharp(frames, { join: { animated: true } })
       .gif()
       .toBuffer();
@@ -98,7 +155,9 @@ describe('imageSqueezer', () => {
       sharp({ create: { width: 8, height: 8, channels: 3, background } })
         .png()
         .toBuffer();
+
     const pages = await Promise.all(['#f00', '#0f0', '#00f'].map(page));
+
     const tiff = await sharp(pages, { join: { animated: true } })
       .tiff()
       .toBuffer();
@@ -160,6 +219,13 @@ describe('imageSqueezer', () => {
 
     await expect(run).rejects.toBeInstanceOf(PluginError);
     await expect(run).rejects.toThrow('img/photo.png was read as UTF-8 text');
+  });
+
+  it('rejects unknown encoders and encoder options that are not objects', () => {
+    // @ts-expect-error: not an encoder
+    expect(() => imageSqueezer({ encoderOptions: { jpg: {} } })).toThrow(/Invalid options/);
+    // @ts-expect-error: not an object
+    expect(() => imageSqueezer({ encoderOptions: { png: 9 } })).toThrow('Expected an object of sharp options');
   });
 
   it('rejects an out-of-range quality and empty lists', () => {

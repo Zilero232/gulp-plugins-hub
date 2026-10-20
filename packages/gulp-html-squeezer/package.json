@@ -11,7 +11,8 @@
     "minifier",
     "html-minifier",
     "html-minifier-next",
-    "compress"
+    "compress",
+    "gulp-htmlmin"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/html-squeezer",
   "bugs": {

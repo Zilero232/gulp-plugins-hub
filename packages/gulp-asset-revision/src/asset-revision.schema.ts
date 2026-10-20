@@ -24,7 +24,9 @@ export const assetRevisionOptionsSchema = z
     hashLength: z.number().int().min(4).max(64).default(10),
     /**
      * Globs of files that keep their names; their references are still rewritten. A glob without a slash matches
-     * the file name in any directory; case does not matter. Replaces the default `['*.html', '*.htm', '*.map']`.
+     * the file name in any directory; case does not matter. Replaces the default list (pages, source maps,
+     * robots.txt, favicon.ico, sitemaps, service workers, web app manifests, `.well-known/**`, …). Files without
+     * an extension keep their names whatever the list.
      */
     exclude: z.array(z.string().min(1, 'Expected a glob')).default(DEFAULT_EXCLUDE),
     /** Rewrite references in text files with these extensions, or `false` to only rename. */

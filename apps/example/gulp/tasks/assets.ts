@@ -36,6 +36,8 @@ const builtPath = ({ file }: { file: Vinyl }): string => {
 export const assets = (): Promise<void> =>
   pipeline(
     gulp.src(paths.assets.src, { encoding: false }),
+    // Before the encoders: a file dropped here is never read by sharp or harfbuzz.
+    fileExclude({ patterns: ['*.psd', '.DS_Store'], size: { max: 2 * 1024 * 1024 } }),
     fileChanged({ dest: paths.dist, target: builtPath }),
     conditional({
       handlers: [
@@ -52,6 +54,5 @@ export const assets = (): Promise<void> =>
       dirs: 'email',
       onClone: ({ file, original }) => (isImage(file) && original.relative.startsWith('images') ? file : null)
     }),
-    fileExclude({ patterns: ['*.psd', '.DS_Store'], size: { max: 2 * 1024 * 1024 } }),
     gulp.dest(paths.dist)
   );

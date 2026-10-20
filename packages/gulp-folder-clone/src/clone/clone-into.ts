@@ -1,6 +1,6 @@
 import type { Vinyl } from '@zilero/gulp-plugin-factory';
 
-import { toPosixPath } from '@zilero/gulp-plugin-factory';
+import { syncSourceMapFile } from '@zilero/gulp-plugin-factory';
 import path from 'node:path';
 
 import type { CloneIntoInput } from './clone.types';
@@ -12,9 +12,7 @@ export const cloneInto = ({ original, dir }: CloneIntoInput): Vinyl => {
 
   copy.path = path.join(original.base, dir, original.relative);
 
-  if (copy.sourceMap) {
-    copy.sourceMap.file = toPosixPath(copy.relative);
-  }
+  syncSourceMapFile(copy);
 
   return copy;
 };

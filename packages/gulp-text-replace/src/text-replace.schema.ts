@@ -31,10 +31,7 @@ export const textReplaceOptionsSchema = z
     'Set at least one of rules, header or footer'
   );
 
-export type ReplaceRule = z.input<typeof textReplaceOptionsSchema>['rules'] extends infer Rules
-  ? Rules extends (infer Rule)[]
-    ? Rule
-    : NonNullable<Rules>
-  : never;
+/** One `{ search, replace }` rule. */
+export type ReplaceRule = z.input<typeof ruleSchema>;
 
 export type TextReplaceOptions = z.input<typeof textReplaceOptionsSchema>;

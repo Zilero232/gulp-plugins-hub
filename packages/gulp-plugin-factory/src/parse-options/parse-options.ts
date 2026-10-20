@@ -18,7 +18,8 @@ export const parseOptions = <Schema extends StandardSchemaV1>({
 }: ParseOptionsInput<Schema>): StandardSchemaV1.InferOutput<Schema> => {
   const result = schema['~standard'].validate(options);
 
-  if (result instanceof Promise) {
+  // Any thenable, not only native promises: schema libraries may return their own.
+  if ('then' in result) {
     throw new PluginError(name, 'The options schema must be synchronous');
   }
 

@@ -1,7 +1,7 @@
 {
   "name": "@zilero/gulp-font-switcher",
   "version": "2.0.0",
-  "description": "Convert fonts to woff2, woff, ttf, eot and svg in a gulp stream, several formats at once, and subset them to the glyphs you use with harfbuzz. Every OpenType table is kept; WebAssembly, no native build.",
+  "description": "Convert fonts in a gulp stream to woff2, woff, ttf, eot or SVG and subset them to the glyphs you use, keeping every OpenType feature.",
   "keywords": [
     "gulpplugin",
     "gulp",
@@ -16,7 +16,11 @@
     "eot",
     "svg",
     "subset",
-    "harfbuzz"
+    "harfbuzz",
+    "gulp-ttf2woff2",
+    "gulp-ttf2woff",
+    "gulp-fontmin",
+    "gulp-subset-font"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/font-switcher",
   "bugs": {
@@ -64,6 +68,7 @@
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "remeda": "catalog:",
     "ts-pattern": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"

@@ -20,6 +20,7 @@ afterAll(() => rm(base, { recursive: true, force: true }));
 
 const compile = async (options: Parameters<typeof pugCompiler>[0], contents: string, relative = 'pages/index.pug') => {
   const output = await runPlugin(pugCompiler(options), [createFile({ base, cwd: base, path: relative, contents })]);
+
   return output;
 };
 
@@ -46,6 +47,16 @@ describe('pugCompiler', () => {
     expect(String(fromFunction!.contents)).toBe('<p>Hello index</p>');
   });
 
+  it('renders with file.data, under the data option', async () => {
+    const file = createFile({ base, cwd: base, path: 'pages/index.pug', contents: 'p #{title} #{name}' });
+
+    Object.assign(file, { data: { title: 'From front matter', name: 'file' } });
+
+    const [output] = await runPlugin(pugCompiler({ data: { name: 'option' } }), [file]);
+
+    expect(String(output!.contents)).toBe('<p>From front matter option</p>');
+  });
+
   it('passes pug options through', async () => {
     const [file] = await compile({ pugOptions: { pretty: true } }, 'div\n  p a');
 
@@ -68,6 +79,23 @@ describe('pugCompiler', () => {
   it('drops partials unless skipPartials is false', async () => {
     expect(await compile({}, 'p a', 'templates/_mixins.pug')).toEqual([]);
     expect(await compile({ skipPartials: false }, 'p a', 'templates/_mixins.pug')).toHaveLength(1);
+  });
+
+  it('drops files in a folder starting with _', async () => {
+    expect(await compile({}, 'nav Menu', '_includes/nav.pug')).toEqual([]);
+  });
+
+  it('compiles extensions in any case', async () => {
+    const [file] = await compile({}, 'p a', 'pages/INDEX.PUG');
+
+    expect(getRelativePath(file)).toBe('pages/INDEX.html');
+  });
+
+  it('emits a PluginError naming the hook that returns no text', async () => {
+    // @ts-expect-error: a JavaScript hook that forgets to return
+    await expect(compile({ onAfterCompile: () => {} }, 'p a')).rejects.toThrow(
+      'onAfterCompile must return the text as a string, got undefined'
+    );
   });
 
   it('leaves other files alone', async () => {

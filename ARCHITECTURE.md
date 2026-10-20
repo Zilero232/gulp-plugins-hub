@@ -34,32 +34,41 @@ packages/gulp-<name>/src/
 ├── <name>.types.ts          public types: hooks and what they receive
 ├── <name>.constants.ts      PLUGIN_NAME (the package name) and fixed values
 ├── _tests/<name>.test.ts    the plugin's behavior, through runPlugin
-└── <concern>/               internal parts, named after what they do: rewrite/, bundle/, archive/
-    ├── <unit>.ts            one exported function per file, named after it
-    ├── <concern>.types.ts   the `XInput` types of its functions
-    ├── index.ts
-    └── _tests/              unit tests of the parts that have logic of their own
+└── <concern>/               internal parts, named after what they do: references/, bundle/, archive/
+    ├── index.ts             re-exports its functions
+    ├── <concern>.types.ts   only types shared by several of its functions
+    ├── <concern>.constants.ts  only constants shared by several of its functions
+    └── <unit>/              one folder per function, named after it
+        ├── <unit>.ts        the function
+        ├── <unit>.types.ts  its `XInput` and other types
+        ├── <unit>.constants.ts
+        ├── index.ts
+        └── _tests/<unit>.test.ts
 ```
 
-The root only ever holds the public surface: internal parts always live in a concern folder, even when there is one. A plugin with no internal parts (a thin wrapper around its engine) has no folder at all.
+One folder holds one function. A concern with a single function is that function's folder: `<unit>.ts`, its types and tests sit directly in it. As soon as a concern has two functions, each moves to a subfolder with everything that belongs to it, and only what several of them share stays one level up. No folder ever mixes several functions with their types and tests. When a concern is named after its main function (`create-plugin/`), it is that function's folder, and the helpers only it uses nest inside it (`create-plugin/to-plugin-error/`) rather than doubling the name (`create-plugin/create-plugin/`).
 
-Scripts follow the same rules: `scripts/<name>/index.ts` is the entry, with its types, constants, one file per function and `_tests/`.
+The root only ever holds the public surface: internal parts always live in a concern folder, even when there is only one. A plugin with no internal parts (a thin wrapper around its engine) has no folder at all.
+
+Scripts follow the same rules: `scripts/<name>/index.ts` is the entry, with the shared types and constants next to it and a folder per function.
 
 ## Code style
 
 - `type`, never `interface`; no `as` casts; two or more parameters become one object typed `XInput`. Exceptions kept on purpose: the factory's `transform(file, context)` and `runPlugin(stream, files)`, which follow the stream conventions plugin authors know.
 - Exported functions are named arrow functions with an explicit return type and a JSDoc line.
-- `if` always takes braces; a blank line separates the steps of a function.
+- `if` always takes braces; a blank line separates the steps of a function: declarations, multi-line statements, blocks and the return each stand apart. ESLint enforces it (`style/padding-line-between-statements`), so `bun run fix` adds missing ones.
 - Hooks receive one object (`{ file }`, `{ content, file }`) and may return a promise.
-- Established packages over hand-written helpers: remeda and ts-pattern are bundled into each package by tsdown.
+- Established packages over hand-written helpers: remeda for guards and collections, ts-pattern for branching on values. Both are bundled into each package by tsdown, so users install nothing extra.
 
 ## Gulp plugin rules
 
 - Built on `createPlugin`: files without contents pass through, streamed contents are refused unless the plugin handles them, errors are emitted as PluginErrors with the file, files stay in order.
 - Options are validated by `parseOptions` when the plugin is created. Callbacks are checked with `z.custom<Fn>(isFunction)`: `z.function()` wraps the callback and validates its result, which breaks async hooks.
-- Plugins work on their own formats (extensions compared in lowercase) and pass everything else through.
-- Plugins for binary formats call `assertBinaryContents` first, since gulp 5 reads files as UTF-8 by default.
-- A new file made from another is a `file.clone()`; source maps follow renames (`sourceMap.file`) and changes (`applySourceMap`).
+- Plugins work on their own formats and pass everything else through: `extensions: ['.css']` in the definition (compared in lowercase), `filter` for anything else.
+- Plugins for binary formats set `binary: true`: gulp 5 reads files as UTF-8 by default, and the factory refuses a corrupted file with the fix instead of handing it to `transform`.
+- Content hooks run through `runContentHook`, which checks that a hook returned text and names it when it did not.
+- What a plugin opens (a compiler process, workers) is closed in `dispose`, which runs once however the stream ends: finished, failed or destroyed.
+- A new file made from another is a `file.clone()`; source maps follow renames (`syncSourceMapFile`) and changes (`applySourceMap`).
 - gulp is never a dependency.
 
 ## Engines

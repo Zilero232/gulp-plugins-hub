@@ -6,8 +6,8 @@ const formatSchema = z.enum(OUTPUT_FORMATS);
 
 export const fontSwitcherOptionsSchema = z
   .object({
-    /** One format or several: each font becomes one file per format. */
-    formats: z.union([formatSchema, z.array(formatSchema).min(1, 'Add at least one format')]),
+    /** One format or several: each font becomes one file per format. Default `['woff2']`. */
+    formats: z.union([formatSchema, z.array(formatSchema).min(1, 'Add at least one format')]).default(['woff2']),
     /**
      * Keep only these glyphs, with harfbuzz: the characters of a string, or Unicode code points. Ligatures,
      * kerning and the other OpenType features of the kept glyphs stay. Default: every glyph.

@@ -7,7 +7,6 @@ on:
     branches: [master]
     paths:
       - apps/docs/**
-      - packages/*/package.json
       - package.json
       - bun.lock
       - mise.toml
@@ -17,7 +16,6 @@ on:
   pull_request:
     paths:
       - apps/docs/**
-      - packages/*/package.json
       - package.json
       - bun.lock
       - mise.toml
@@ -30,6 +28,7 @@ permissions: {}
 
 env:
   HUSKY: 0
+  TURBO_TELEMETRY_DISABLED: 1
 
 concurrency:
   # Every deploy shares one group, so two never push to gh-pages at once; on pull requests the newest run wins.

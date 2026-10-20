@@ -12,7 +12,10 @@ export const pugCompilerOptionsSchema = z
   .object({
     /** Passed to pug: `pretty`, `doctype`, `filters`, `basedir` (default `file.base`, for absolute includes)… */
     pugOptions: z.custom<Omit<Options, 'filename'>>(isObject, 'Expected an object').optional(),
-    /** Locals for every template, or a function that returns them for each file. */
+    /**
+     * Locals for every template, or a function that returns them for each file. Merged over `file.data` (set by
+     * gulp-data or a front-matter plugin): these win.
+     */
     data: z
       .union(
         [z.custom<TemplateData>(isObject), z.custom<TemplateDataFunction>(isFunction)],
@@ -24,11 +27,14 @@ export const pugCompilerOptionsSchema = z
       .string()
       .regex(/^\.\w[\w.-]*$/, 'Expected an extension with its dot, like .html')
       .default('.html'),
-    /** Drop files whose name starts with `_` (layouts, mixins, includes) instead of rendering them. Default true. */
+    /**
+     * Drop partials instead of rendering them: files whose name, or the name of a folder they are in (relative to
+     * the base), starts with `_` (`_layout.pug`, `_includes/nav.pug`). Default true.
+     */
     skipPartials: z.boolean().default(true),
     /** Runs on the template source before pug. */
     onBeforeCompile: hookSchema.optional(),
-    /** Runs on the rendered HTML. */
+    /** Runs on the rendered HTML, once the file has its new extension. */
     onAfterCompile: hookSchema.optional()
   })
   .strict();

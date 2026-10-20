@@ -1,3 +1,7 @@
+---
+description: 'Test gulp plugins without gulp: createFile, runPlugin, getContents and getRelativePath from @zilero/gulp-plugin-factory/testing.'
+---
+
 # Testing helpers
 
 `@zilero/gulp-plugin-factory/testing` runs a plugin without gulp, for Vitest, Jest or `node:test`.
@@ -37,3 +41,7 @@ The file's path relative to its base with `/` separators, so a test compares the
 ```ts
 expect(output.map(getRelativePath)).toEqual(['js/app.min.js']);
 ```
+
+## Types
+
+`CreateFileInput`, the input of `createFile`.

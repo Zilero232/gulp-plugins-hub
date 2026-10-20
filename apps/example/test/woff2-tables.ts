@@ -1,6 +1,5 @@
 // The table tags of a WOFF2 font, read from its table directory (https://www.w3.org/TR/WOFF2/#table_dir_format),
 // to check that a conversion kept the font's OpenType tables.
-// cspell:disable -- OpenType table tags
 const KNOWN_TAGS = [
   'cmap',
   'head',
@@ -66,7 +65,6 @@ const KNOWN_TAGS = [
   'Feat',
   'Sill'
 ];
-// cspell:enable
 
 const HEADER_LENGTH = 48;
 
@@ -87,6 +85,7 @@ export const readWoff2Tables = (font: Buffer): string[] => {
 
     for (let index = 0; index < 5; index++) {
       const byte = font[offset++] ?? 0;
+
       value = value * 128 + (byte & VALUE_BITS);
 
       if (!(byte & CONTINUE_BIT)) {
@@ -100,8 +99,10 @@ export const readWoff2Tables = (font: Buffer): string[] => {
   for (let table = 0; table < font.readUInt16BE(12); table++) {
     const flags = font[offset++] ?? 0;
     const tagIndex = flags & TAG_INDEX_BITS;
+
     const tag =
       tagIndex === ARBITRARY_TAG ? font.toString('latin1', offset, (offset += 4)) : (KNOWN_TAGS[tagIndex] ?? '?');
+
     const transform = flags >> 6;
 
     readBase128();

@@ -3,13 +3,18 @@ import { z } from 'zod';
 
 import type { RenameFunction } from './refilename.types';
 
+import { KEY_HINTS } from './refilename.constants';
+
+const describeUnknownKey = (key: string): string =>
+  Object.hasOwn(KEY_HINTS, key) ? `"${key}" (use ${KEY_HINTS[key]})` : `"${key}"`;
+
 /** Part of a file name: a folder separator would move the file, possibly out of the base. */
 const fileNamePartSchema = z
   .string()
   .refine((part) => !/[/\\]/.test(part), 'Expected part of a file name, without / or \\');
 
-const renameObjectSchema = z
-  .object({
+export const renameObjectSchema = z.strictObject(
+  {
     /** New directory, relative to `file.base`; `.` is the base itself. */
     dirname: z
       .string()
@@ -29,8 +34,14 @@ const renameObjectSchema = z
     prefix: fileNamePartSchema.optional(),
     /** Added after the stem, before the extension. */
     suffix: fileNamePartSchema.optional()
-  })
-  .strict();
+  },
+  {
+    error: (issue) =>
+      issue.code === 'unrecognized_keys'
+        ? `Unknown key ${issue.keys.map(describeUnknownKey).join(', ')}; expected dirname, stem, extname, prefix or suffix`
+        : undefined
+  }
+);
 
 export const refilenameOptionsSchema = z.union([
   z
@@ -41,9 +52,6 @@ export const refilenameOptionsSchema = z.union([
   renameObjectSchema,
   z.custom<RenameFunction>(isFunction, 'Expected a function')
 ]);
-
-/** What a rename function may return, checked like the same keys of the object option. */
-export const renameResultSchema = renameObjectSchema.pick({ dirname: true, stem: true, extname: true }).strip();
 
 export type RenameObject = z.input<typeof renameObjectSchema>;
 

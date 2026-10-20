@@ -13,7 +13,11 @@
     "cache-busting",
     "manifest",
     "rewrite",
-    "assets"
+    "assets",
+    "gulp-rev",
+    "gulp-rev-rewrite",
+    "gulp-rev-all",
+    "gulp-rev-replace"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/asset-revision",
   "bugs": {
@@ -53,14 +57,12 @@
   "dependencies": {
     "@zilero/gulp-plugin-factory": "workspace:^",
     "escape-string-regexp": "^5.0.0",
-    "picomatch": "^4.0.7",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
-    "@types/picomatch": "^4.0.3",
     "remeda": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"

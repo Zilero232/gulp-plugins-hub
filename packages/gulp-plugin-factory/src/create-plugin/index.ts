@@ -1,3 +1,12 @@
 export { createPlugin } from './create-plugin';
-export type * from './create-plugin.types';
+export type {
+  AnyPluginDefinition,
+  BufferFile,
+  BufferPluginDefinition,
+  PluginContext,
+  PluginDefinition,
+  PluginStream,
+  TransformResult
+} from './create-plugin.types';
+export type { ToPluginErrorInput } from './to-plugin-error';
 export { toPluginError } from './to-plugin-error';

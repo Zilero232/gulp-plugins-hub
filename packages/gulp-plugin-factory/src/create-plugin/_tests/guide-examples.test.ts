@@ -18,7 +18,7 @@ const banner = (options: z.input<typeof optionsSchema>) => {
 
   return createPlugin({
     name: PLUGIN_NAME,
-    filter: (file) => extensions.includes(file.extname),
+    extensions,
     transform: (file) => {
       file.contents = Buffer.concat([Buffer.from(`${text}\n`), file.contents]);
     }
@@ -32,6 +32,7 @@ const fileList = () => {
     name: 'gulp-file-list',
     transform: (file) => {
       names.push(toPosixPath(file.relative));
+
       return null;
     },
     flush: ({ push }) => push(new Vinyl({ path: path.resolve('files.txt'), contents: Buffer.from(names.join('\n')) }))

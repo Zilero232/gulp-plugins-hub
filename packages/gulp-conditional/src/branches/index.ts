@@ -1,4 +1,10 @@
 export { createBranchRegistry } from './branch-registry';
-export type * from './branches.types';
+export type * from './branch-registry';
+export type * from './create-branch-stream';
+export { createBranchStream } from './create-branch-stream';
+export type * from './find-branch';
 export { findBranch } from './find-branch';
+export { isBranchStream } from './is-branch-stream';
+export { toPredicate } from './to-predicate';
+export type * from './write-to-branch';
 export { writeToBranch } from './write-to-branch';

@@ -1,19 +1,21 @@
 import { isFunction } from '@zilero/gulp-plugin-factory';
 import { z } from 'zod';
 
-import type { BranchHandler, Condition } from './conditional.types';
+import type { BranchHandler, ConditionFunction } from './conditional.types';
 
 const handlerSchema = z.custom<BranchHandler>(
   isFunction,
   'Expected a function that returns a stream or an array of them'
 );
 
+const pathPatternSchema = z.union([z.string().min(1), z.instanceof(RegExp)]);
+
 const branchSchema = z
   .object({
-    /** A boolean, or a function of the file. */
-    condition: z.custom<Condition>(
-      (value) => typeof value === 'boolean' || isFunction(value),
-      'Expected a boolean or a function'
+    /** A boolean, a glob or RegExp (or an array of them) matched against `file.relative`, or a function of the file. */
+    condition: z.union(
+      [z.boolean(), pathPatternSchema, z.array(pathPatternSchema), z.custom<ConditionFunction>(isFunction)],
+      'Expected a boolean, a glob, a RegExp, an array of globs or a function'
     ),
     /** Creates the stream the matching files go through. */
     handler: handlerSchema

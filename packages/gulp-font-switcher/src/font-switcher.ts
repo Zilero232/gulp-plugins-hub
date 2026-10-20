@@ -1,11 +1,12 @@
 import type { PluginStream, Vinyl } from '@zilero/gulp-plugin-factory';
 
-import { assertBinaryContents, createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import { createPlugin, parseOptions, toPosixPath } from '@zilero/gulp-plugin-factory';
+import { unique } from 'remeda';
 
 import type { FontSwitcherOptions } from './font-switcher.schema';
 
 import { getInputFormat, isFontFile, readSfnt, writeFormat } from './convert';
-import { PLUGIN_NAME } from './font-switcher.constants';
+import { INPUT_EXTENSIONS, PLUGIN_NAME } from './font-switcher.constants';
 import { fontSwitcherOptionsSchema } from './font-switcher.schema';
 import { subsetSfnt } from './subset';
 
@@ -21,26 +22,40 @@ import { subsetSfnt } from './subset';
  *   .pipe(fontSwitcher({ formats: ['woff2', 'woff'], subset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' }))
  *   .pipe(dest('dist/fonts'));
  */
-export const fontSwitcher = (options: FontSwitcherOptions): PluginStream => {
+export const fontSwitcher = (options: FontSwitcherOptions = {}): PluginStream => {
   const { formats, subset, hinting, keepOriginal } = parseOptions({
     name: PLUGIN_NAME,
     schema: fontSwitcherOptionsSchema,
     options
   });
 
+  // Every path written so far, with the source it came from: `Inter.ttf` and `Inter.otf` would both write
+  // `Inter.woff2`, and the second would silently replace the first in the output folder.
+  const written = new Map<string, string>();
+
+  const claim = (output: Vinyl, source: Vinyl): void => {
+    const key = toPosixPath(output.relative);
+    const previous = written.get(key);
+
+    if (previous !== undefined) {
+      throw new Error(`${toPosixPath(source.relative)} and ${previous} both write ${key}; rename one of them`);
+    }
+
+    written.set(key, toPosixPath(source.relative));
+  };
+
   return createPlugin({
     name: PLUGIN_NAME,
+    extensions: INPUT_EXTENSIONS,
     filter: isFontFile,
+    // SVG fonts are text, but plain ASCII: the check passes them.
+    binary: true,
     transform: async (file) => {
       const input = getInputFormat(file.extname);
 
-      // Narrows the format; the filter already let only fonts through.
+      // Narrows the format; `extensions` already let only fonts through.
       if (!input) {
         return;
-      }
-
-      if (input !== 'svg') {
-        assertBinaryContents(file);
       }
 
       const sfnt = await readSfnt({ contents: file.contents, format: input });
@@ -48,7 +63,7 @@ export const fontSwitcher = (options: FontSwitcherOptions): PluginStream => {
 
       // One file per path: with keepOriginal the source is emitted as it is instead of converting it to its own
       // format, unless it is subset, when the subset font takes that path.
-      const requested = [...new Set([formats].flat())];
+      const requested = unique([formats].flat());
       const requestsOwnFormat = new Set<string>(requested).has(input);
       const emitsOriginal = keepOriginal && !(subset && requestsOwnFormat);
       const targets = requested.filter((format) => !(emitsOriginal && format === input));
@@ -60,6 +75,10 @@ export const fontSwitcher = (options: FontSwitcherOptions): PluginStream => {
         output.contents = await writeFormat({ sfnt: font, format, hinting });
         output.extname = `.${format}`;
         outputs.push(output);
+      }
+
+      for (const output of outputs) {
+        claim(output, file);
       }
 
       return outputs;

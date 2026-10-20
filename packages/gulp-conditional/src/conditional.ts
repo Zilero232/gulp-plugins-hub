@@ -4,7 +4,7 @@ import { createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
 
 import type { ConditionalOptions } from './conditional.schema';
 
-import { createBranchRegistry, findBranch, writeToBranch } from './branches';
+import { createBranchRegistry, findBranch, toPredicate, writeToBranch } from './branches';
 import { DEFAULT_BRANCH, PLUGIN_NAME } from './conditional.constants';
 import { conditionalOptionsSchema } from './conditional.schema';
 
@@ -19,7 +19,7 @@ import { conditionalOptionsSchema } from './conditional.schema';
  * src('src/**')
  *   .pipe(conditional({
  *     handlers: [
- *       { condition: ({ file }) => file.extname === '.js', handler: () => jsSqueezer() },
+ *       { condition: '*.js', handler: () => jsSqueezer() },
  *       { condition: ({ file }) => file.extname === '.scss', handler: () => [scssCompiler(), cssSqueezer()] }
  *     ]
  *   }))
@@ -27,16 +27,16 @@ import { conditionalOptionsSchema } from './conditional.schema';
  */
 export const conditional = (options: ConditionalOptions): PluginStream => {
   const { handlers, defaultHandler } = parseOptions({ name: PLUGIN_NAME, schema: conditionalOptionsSchema, options });
-  const conditions = handlers.map(({ condition }) => condition);
+  const predicates = handlers.map(({ condition }) => toPredicate(condition));
   const branches = createBranchRegistry();
 
-  const plugin = createPlugin({
+  return createPlugin({
     name: PLUGIN_NAME,
     accept: 'any',
     transform: async (file, { push }) => {
       branches.throwIfFailed();
 
-      const index = await findBranch({ conditions, file });
+      const index = await findBranch({ predicates, file });
       const handler = index === DEFAULT_BRANCH ? defaultHandler : handlers[index]?.handler;
 
       if (!handler) {
@@ -54,12 +54,9 @@ export const conditional = (options: ConditionalOptions): PluginStream => {
       branches.throwIfFailed();
 
       await branches.closeAll();
-    }
+    },
+    // Ended, failed or destroyed, the conditional takes its branches with it: a branch holding a process (a Sass
+    // compiler) must not keep gulp alive. Destroying branches that already finished does nothing.
+    dispose: () => branches.destroyAll()
   });
-
-  // Ended or failed, the conditional takes its branches with it: a branch holding a process (a Sass compiler)
-  // must not keep gulp alive. Destroying branches that already finished does nothing.
-  plugin.once('close', () => branches.destroyAll());
-
-  return plugin;
 };

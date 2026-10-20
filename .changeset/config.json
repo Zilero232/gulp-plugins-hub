@@ -10,6 +10,6 @@
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
-  "ignore": ["gulp-plugins-hub-example"],
+  "privatePackages": { "version": false, "tag": false },
   "fixed": [["@zilero/gulp-*"]]
 }

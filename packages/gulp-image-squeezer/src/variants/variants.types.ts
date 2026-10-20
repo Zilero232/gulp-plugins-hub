@@ -13,4 +13,6 @@ export type PlanVariantsInput = {
   widths: number[] | undefined;
   /** The encoder of the source's own format. */
   sourceEncoder: Encoder;
+  /** The width of the upright source, which no output exceeds; undefined when unknown. */
+  sourceWidth?: number;
 };

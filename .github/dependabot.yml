@@ -1,0 +1,30 @@
+# Weekly update pull requests, one per ecosystem: grouped so a week's bumps land (and run CI) together.
+version: 2
+
+updates:
+  # The workflows and the composite setup action; the actions stay pinned to commit SHAs, Dependabot updates the SHA
+  # and the version comment.
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/setup
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
+
+  # Every workspace's package.json and the root catalog, with bun.lock. Major versions come one per pull request,
+  # since they can need code changes.
+  - package-ecosystem: bun
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: upgrade
+    versioning-strategy: increase
+    groups:
+      dependencies:
+        update-types: [minor, patch]

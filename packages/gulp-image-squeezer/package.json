@@ -1,7 +1,7 @@
 {
   "name": "@zilero/gulp-image-squeezer",
   "version": "2.0.0",
-  "description": "Optimize images and convert them to WebP, AVIF, JPEG or PNG, at several widths for responsive images, with sharp in a gulp stream.",
+  "description": "Optimize images in a gulp stream with sharp and convert them to WebP, AVIF, JPEG or PNG, at several widths for responsive images.",
   "keywords": [
     "gulpplugin",
     "gulp",
@@ -15,7 +15,12 @@
     "png",
     "sharp",
     "responsive",
-    "imagemin"
+    "imagemin",
+    "gulp-imagemin",
+    "gulp-webp",
+    "gulp-avif",
+    "gulp-sharp-responsive",
+    "gulp-responsive"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/image-squeezer",
   "bugs": {
@@ -61,6 +66,7 @@
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
+    "remeda": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"
   },

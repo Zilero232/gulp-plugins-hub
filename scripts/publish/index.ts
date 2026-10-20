@@ -24,6 +24,7 @@ import { sortByDependencies } from './sort-by-dependencies';
 const { values } = parseArgs({
   options: { 'dry-run': { type: 'boolean', default: false }, local: { type: 'boolean', default: false } }
 });
+
 const dryRun = values['dry-run'];
 const { local } = values;
 

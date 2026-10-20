@@ -20,6 +20,11 @@ export const fileChangedOptionsSchema = z
      */
     target: z.custom<TargetResolver>(isFunction, 'Expected a function').optional(),
     /**
+     * Globs (relative to the working directory) of files every file depends on: Sass partials, a config. When
+     * the newest of them is newer than a file's built file, the file passes even if it did not change itself.
+     */
+    extra: z.union([z.string().min(1), z.array(z.string().min(1))]).optional(),
+    /**
      * How a file counts as changed: `mtime` (newer than the built file, the default), `contents` (different
      * bytes, for builds that copy files as they are) or a function.
      */

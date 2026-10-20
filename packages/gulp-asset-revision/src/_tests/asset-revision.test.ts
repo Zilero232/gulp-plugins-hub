@@ -2,6 +2,7 @@ import type { Vinyl } from '@zilero/gulp-plugin-factory';
 
 import { createFile, getContents, getRelativePath, runPlugin } from '@zilero/gulp-plugin-factory/testing';
 import { createHash } from 'node:crypto';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import assetRevision from '..';
@@ -156,12 +157,72 @@ describe('assetRevision', () => {
     expect(JSON.parse(getContents(output.at(-1)).toString())).toEqual({ 'a.png': `a-${hash('PNG')}.png` });
   });
 
+  it('keeps the names of files fetched at fixed URLs and of files without an extension', async () => {
+    const fixed = [
+      'robots.txt',
+      'favicon.ico',
+      'sitemap.xml',
+      'sitemap-posts.xml',
+      'sw.js',
+      'service-worker.js',
+      'site.webmanifest',
+      'apple-touch-icon.png',
+      '.well-known/security.txt',
+      'CNAME',
+      '.htaccess',
+      'img/.keep'
+    ];
+
+    const output = await runPlugin(
+      assetRevision(),
+      fixed.map((name) => createFile({ path: name, contents: name }))
+    );
+
+    expect(output.map(getRelativePath)).toEqual(fixed);
+  });
+
+  it('never renames a file without an extension, even when the exclude list is replaced', async () => {
+    const output = await runPlugin(assetRevision({ exclude: [] }), [createFile({ path: '.htaccess', contents: 'x' })]);
+
+    expect(output.map(getRelativePath)).toEqual(['.htaccess']);
+  });
+
+  it('fails, naming both files, when two bases give the same relative path', async () => {
+    const run = runPlugin(assetRevision(), [
+      createFile({ path: 'css/main.css', contents: 'a', base: path.join('/project', 'a') }),
+      createFile({ path: 'css/main.css', contents: 'b', base: path.join('/project', 'b') })
+    ]);
+
+    await expect(run).rejects.toThrow(
+      `${path.join('/project', 'a', 'css', 'main.css')} and ${path.join('/project', 'b', 'css', 'main.css')} are both css/main.css`
+    );
+  });
+
+  it('leaves the bytes of a text file with nothing to rewrite untouched', async () => {
+    // Latin-1 "café": not valid UTF-8, so a round trip through a string would corrupt it.
+    const latin1 = Buffer.from('café', 'latin1');
+    const output = await runPlugin(assetRevision(), [createFile({ path: 'notes.txt', contents: latin1 })]);
+
+    expect(getContents(output[0])).toEqual(latin1);
+  });
+
+  it('sets the gulp-rev metadata on renamed files', async () => {
+    const [output] = await runPlugin(assetRevision(), [createFile({ path: 'a.png', contents: 'PNG' })]);
+
+    expect(output).toMatchObject({
+      revOrigPath: path.join('/project', 'src', 'a.png'),
+      revOrigBase: path.join('/project', 'src'),
+      revHash: hash('PNG')
+    });
+  });
+
   it('emits nothing for an empty stream', async () => {
     expect(await runPlugin(assetRevision({ manifest: true }), [])).toEqual([]);
   });
 
   it('rejects an invalid hash length', () => {
     expect(() => assetRevision({ hashLength: 2 })).toThrow(/Invalid options/);
+
     expect(() => assetRevision({ manifest: { path: '../rev.json' } })).toThrow(
       'Expected a path inside the output folder'
     );

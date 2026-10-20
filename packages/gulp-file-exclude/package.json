@@ -6,6 +6,8 @@
     "gulpplugin",
     "gulp",
     "gulp-plugin",
+    "gulp-filter",
+    "gulp-ignore",
     "exclude",
     "filter",
     "ignore",
@@ -50,15 +52,12 @@
   },
   "dependencies": {
     "@zilero/gulp-plugin-factory": "workspace:^",
-    "picomatch": "^4.0.7",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@gulp-plugins-hub/tsdown-config": "workspace:*",
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
-    "@types/picomatch": "^4.0.3",
-    "remeda": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"
   },

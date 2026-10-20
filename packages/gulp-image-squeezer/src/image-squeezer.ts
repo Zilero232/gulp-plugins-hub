@@ -1,11 +1,12 @@
 import type { PluginStream, Vinyl } from '@zilero/gulp-plugin-factory';
 
-import { assertBinaryContents, createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import { createPlugin, parseOptions } from '@zilero/gulp-plugin-factory';
+import sharp from 'sharp';
 
 import type { ImageSqueezerOptions } from './image-squeezer.schema';
 
 import { encodeVariant, getSourceEncoder } from './encoding';
-import { PLUGIN_NAME } from './image-squeezer.constants';
+import { INPUT_EXTENSIONS, PLUGIN_NAME } from './image-squeezer.constants';
 import { imageSqueezerOptionsSchema } from './image-squeezer.schema';
 import { planVariants } from './variants';
 
@@ -30,20 +31,22 @@ export const imageSqueezer = (options: ImageSqueezerOptions = {}): PluginStream 
 
   return createPlugin({
     name: PLUGIN_NAME,
-    filter: (file) => getSourceEncoder(file.extname) !== undefined,
+    extensions: INPUT_EXTENSIONS,
+    binary: true,
     transform: async (file) => {
       const sourceEncoder = getSourceEncoder(file.extname);
 
-      // Narrows the encoder; the filter already let only images through.
+      // Narrows the encoder; `extensions` already let only images through.
       if (!sourceEncoder) {
         return;
       }
 
-      assertBinaryContents(file);
-
+      // The upright width caps the widths; read only when widths are asked for.
+      const sourceWidth = widths && (await sharp(file.contents).metadata()).autoOrient.width;
+      const variants = planVariants({ formats: [formats].flat(), widths, sourceEncoder, sourceWidth });
       const outputs: Vinyl[] = [];
 
-      for (const variant of planVariants({ formats: [formats].flat(), widths, sourceEncoder })) {
+      for (const variant of variants) {
         outputs.push(await encodeVariant({ file, variant, sourceEncoder, quality, encoderOptions, keepSmaller }));
       }
 

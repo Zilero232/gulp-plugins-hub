@@ -26,9 +26,11 @@
       "dependsOn": ["transit"],
       "inputs": ["$TURBO_DEFAULT$", "!README.md", "!CHANGELOG.md"]
     },
-    // The example runs gulp on the built packages, as a user would: it needs their dist/ first.
+    // The example runs gulp on the built packages, as a user would: it needs their dist/ first. NODE_ENV switches
+    // it to production and ANALYTICS_ID fills in the vendor script, so both are part of the cache key.
     "gulp-plugins-hub-example#build": {
       "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "ANALYTICS_ID"],
       "outputs": ["dist/**"]
     },
     "gulp-plugins-hub-docs#build": {
@@ -36,6 +38,7 @@
     },
     "gulp-plugins-hub-example#test": {
       "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "ANALYTICS_ID"],
       "outputs": ["dist/**", "release/**"]
     }
   }

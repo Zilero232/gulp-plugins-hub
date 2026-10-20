@@ -11,7 +11,9 @@
     "css",
     "sass-embedded",
     "compile",
-    "sourcemaps"
+    "sourcemaps",
+    "gulp-sass",
+    "gulp-dart-sass"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/scss-compiler",
   "bugs": {

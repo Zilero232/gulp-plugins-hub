@@ -1,5 +1,5 @@
 name: Setup toolchain
-description: Bun and Node from mise.toml, cached bun packages and installed dependencies.
+description: Bun and Node from mise.toml, cached bun packages and turbo outputs, and installed dependencies.
 
 inputs:
   node-version:
@@ -29,6 +29,16 @@ runs:
         path: ~/.bun/install/cache
         key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
         restore-keys: bun-${{ runner.os }}-
+
+    # turbo's local cache: unchanged packages replay their typecheck, test and build results. One entry per commit,
+    # job, OS and Node version; a new commit starts from the latest entry of the same job.
+    - name: Cache turbo outputs
+      if: inputs.cache == 'true'
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      with:
+        path: .turbo/cache
+        key: turbo-${{ runner.os }}-node-${{ inputs.node-version || 'default' }}-${{ github.job }}-${{ github.sha }}
+        restore-keys: turbo-${{ runner.os }}-node-${{ inputs.node-version || 'default' }}-${{ github.job }}-
 
     - name: Install dependencies
       shell: bash

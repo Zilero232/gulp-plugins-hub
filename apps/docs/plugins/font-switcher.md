@@ -1,3 +1,7 @@
+---
+description: Convert fonts in a gulp stream to woff2, woff, ttf, eot or SVG and subset them with harfbuzz, keeping ligatures, kerning and every OpenType feature.
+---
+
 # font-switcher
 
 Converts fonts from `ttf`, `otf`, `woff`, `woff2`, `eot` and SVG fonts into `woff2`, `woff`, `ttf`, `eot` and `svg`, into one format or several at once, and can keep only the glyphs you use. Subsetting is done by [subset-font](https://github.com/papandreou/subset-font) (hb-subset) and keeps ligatures, kerning and the other OpenType features. All WebAssembly: there is no native build to install.
@@ -14,7 +18,7 @@ import fontSwitcher from '@zilero/gulp-font-switcher';
 
 export const fonts = () =>
   src('src/fonts/*.{ttf,otf}', { encoding: false })
-    .pipe(fontSwitcher({ formats: ['woff2', 'woff'] })) // Inter.ttf → Inter.woff2, Inter.woff
+    .pipe(fontSwitcher({ formats: ['woff2', 'woff'] })) // Inter.ttf → Inter.woff2, Inter.woff; fontSwitcher() writes woff2
     .pipe(dest('dist/fonts'));
 ```
 
@@ -29,12 +33,12 @@ fontSwitcher({ formats: 'woff2', subset: [0x20, 0x41, 0x42, 0x2014] }); // Unico
 
 ## Options
 
-| Option         | Type                 | Default      | Description                                                                                                                                                                                                  |
-| -------------- | -------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `formats`      | `Format \| Format[]` | _(required)_ | `'woff2'`, `'woff'`, `'ttf'`, `'eot'` or `'svg'`, or a list of them. Each font becomes one file per format.                                                                                                  |
-| `subset`       | `string \| number[]` | every glyph  | Keep only these glyphs: the characters of a string, or Unicode code points. The kept glyphs keep their OpenType features.                                                                                    |
-| `hinting`      | `boolean`            | `true`       | Keep the hinting instructions (sharper text on low-resolution screens) when subsetting and in the rebuilt formats (`ttf` from CFF, `eot`, `svg`). `woff2`, `woff` and TrueType `ttf` keep the font as it is. |
-| `keepOriginal` | `boolean`            | `false`      | Emit the source font as well as the converted ones.                                                                                                                                                          |
+| Option         | Type                         | Default     | Description                                                                                                                                                                                                  |
+| -------------- | ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `formats`      | `FontFormat \| FontFormat[]` | `['woff2']` | `'woff2'`, `'woff'`, `'ttf'`, `'eot'` or `'svg'`, or a list of them. Each font becomes one file per format.                                                                                                  |
+| `subset`       | `string \| number[]`         | every glyph | Keep only these glyphs: the characters of a string, or Unicode code points. The kept glyphs keep their OpenType features.                                                                                    |
+| `hinting`      | `boolean`                    | `true`      | Keep the hinting instructions (sharper text on low-resolution screens) when subsetting and in the rebuilt formats (`ttf` from CFF, `eot`, `svg`). `woff2`, `woff` and TrueType `ttf` keep the font as it is. |
+| `keepOriginal` | `boolean`                    | `false`     | Emit the source font as well as the converted ones.                                                                                                                                                          |
 
 `otf` is read but not written. Unknown keys, an empty `formats` list, an empty `subset` string and an empty list of code points are an error when the plugin is created. So is a code point that is not an integer from 0 to U+10FFFF (`0x10FFFF`), such as `0x110000` (`Expected a Unicode code point`). A format listed twice is written once.
 
@@ -58,11 +62,25 @@ fontSwitcher({ formats: 'woff2', subset: [0x20, 0x41, 0x42, 0x2014] }); // Unico
 - A binary font read as UTF-8 text fails with an error that names the file and says to use `src(globs, { encoding: false })`.
 - An encoder that produces an empty file is an error, never an empty output.
 - A broken font emits a PluginError with the file name.
+- Two sources that would write the same file fail the stream with a PluginError naming both: `Inter.ttf` and `Inter.otf` both become `Inter.woff2`, and a kept `Inter.woff2` would collide with the one converted from `Inter.ttf`. Without the error, the second file would silently replace the first in the output folder. Keep one source per family and style, or convert them in separate tasks into separate folders.
 
-## Migrating from 1.x
+## Migrating
+
+### From gulp-ttf2woff2 or gulp-fontmin
+
+| gulp-ttf2woff2, gulp-ttf2woff, gulp-fontmin | font-switcher                          |
+| ------------------------------------------- | -------------------------------------- |
+| `ttf2woff2()`                               | `fontSwitcher()`                       |
+| `ttf2woff()`                                | `fontSwitcher({ formats: 'woff' })`    |
+| `ttf2woff2({ clone: true })`                | `fontSwitcher({ keepOriginal: true })` |
+| `fontmin({ text: 'abc' })`                  | `fontSwitcher({ subset: 'abc' })`      |
+| `fontmin({ hinting: false })`               | `fontSwitcher({ hinting: false })`     |
+| fontmin's `ttf2eot`, `ttf2svg` plugins      | `formats: ['eot', 'svg']`              |
+
+### From 1.x
 
 - fontmin and fonteditor-core's lossy writing were replaced: subsetting by subset-font and container conversion keep every table of the font, ligatures and kerning included. Conversion is all WebAssembly, with no native dependencies.
-- `{ pluginOptions: { format }, fontOptions: { glyph } }` becomes flat options: `format` is now `formats`, which takes one format or several, and `glyph.text` is now `subset`, which also takes code points.
+- `{ pluginOptions: { format }, fontOptions: { glyph } }` becomes flat options: `format` is now `formats`, which takes one format or several and defaults to `['woff2']`, and `glyph.text` is now `subset`, which also takes code points.
 - `hinting` is a top-level option, `true` by default. There is no `kerning` option: kerning is always kept in `woff2`, `woff` and TrueType `ttf` outputs.
 - `keepOriginal` (default `false`) is new.
 - `woff`, `woff2` and `eot` fonts are read too, not only `ttf`, `otf` and `svg`.

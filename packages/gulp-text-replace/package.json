@@ -13,7 +13,10 @@
     "text",
     "banner",
     "header",
-    "footer"
+    "footer",
+    "gulp-replace",
+    "gulp-header",
+    "gulp-footer"
   ],
   "homepage": "https://zilero232.github.io/gulp-plugins-hub/plugins/text-replace",
   "bugs": {
@@ -61,6 +64,8 @@
     "@gulp-plugins-hub/typescript-config": "workspace:*",
     "@gulp-plugins-hub/vitest-config": "workspace:*",
     "@jridgewell/trace-mapping": "^0.3.31",
+    "remeda": "catalog:",
+    "ts-pattern": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:"
   },
