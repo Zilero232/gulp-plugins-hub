@@ -1,6 +1,10 @@
 ---
 url: /gulp-plugins-hub/plugins/scss-compiler.md
+description: >-
+  Compile SCSS and indented Sass to CSS in a gulp stream with sass-embedded, one
+  compiler process per stream, with source maps.
 ---
+
 # scss-compiler
 
 Compiles SCSS and indented Sass to CSS with the modern Sass compiler (sass-embedded), from the file contents. One compiler process serves each stream, partials are dropped, and the file gets a source map when it had one.
@@ -32,27 +36,46 @@ export const styles = () =>
 
 ## Options
 
-| Option            | Type                                               | Default | Description                                                                                                                                 |
-| ----------------- | -------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sassOptions`     | `StringOptions`                                    | `{}`    | Passed to Sass: `style`, `loadPaths`, `importers`, `functions`, `silenceDeprecations`, … except `url`, `syntax` and the source map options. |
-| `skipPartials`    | `boolean`                                          | `true`  | Drop partials (`_variables.scss`) instead of compiling them on their own.                                                                   |
-| `onBeforeCompile` | `({ content, file }) => string \| Promise<string>` | —       | Runs on the source before Sass and returns the source to compile.                                                                           |
-| `onAfterCompile`  | `({ content, file }) => string \| Promise<string>` | —       | Runs on the compiled CSS and returns the final CSS. The file is already renamed to `.css`. Source maps do not follow changes made here.     |
+| Option            | Type                                               | Default | Description                                                                                                                                  |
+| ----------------- | -------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sassOptions`     | `StringOptions`                                    | `{}`    | Passed to Sass: `style`, `loadPaths`, `importers`, `functions`, `silenceDeprecations`, … except `url`, `syntax` and the source map options.  |
+| `skipPartials`    | `boolean`                                          | `true`  | Drop partials (`_variables.scss`) instead of compiling them on their own.                                                                    |
+| `onBeforeCompile` | `({ content, file }) => string \| Promise<string>` | —       | Runs on the source before Sass and returns the source to compile.                                                                            |
+| `onAfterCompile`  | `({ content, file }) => string \| Promise<string>` | —       | Runs on the compiled CSS and returns the final CSS. The file is already renamed to `.css`. The source map does not follow changes made here. |
 
 Unknown keys, and a `sassOptions` that is not an object, are an error when the plugin is created.
+
+## Hooks
+
+Both hooks get `{ content, file }` and return the text to continue with, or a promise of it. A hook that returns anything else, say a JavaScript hook that forgets its `return`, fails the file with `onAfterCompile must return the text as a string, got undefined`. Changes made in `onBeforeCompile` are the source Sass compiles, so the map points into them; changes made in `onAfterCompile` are not followed by the map. Their types are exported from the package: `import type { ContentHook } from '@zilero/gulp-scss-compiler'`.
 
 ## Notes
 
 * `.scss` files are compiled as SCSS and `.sass` files as indented syntax, in any case; both become `.css`. Other files, plain `.css` included, and files without contents (`read: false`) pass through untouched.
 * `@use` and `@import` resolve relative to the file, then from `sassOptions.loadPaths`, then from `file.base`, which is always searched.
 * With `skipPartials`, partials leave the stream, so they are not written to `dest`; other files still load them from disk.
-* With `src(…, { sourcemaps: true })`, Sass writes a map with the sources included, relative to `file.base`. Without it, no map is made. `sourceMap`, `sourceMapIncludeSources`, `syntax` and `url` come from the file, not from `sassOptions`.
-* Each stream gets one Sass compiler. It starts with the first Sass file to compile and stops when the stream ends or is destroyed by an error, so it never outlives the task.
+* With `src(…, { sourcemaps: true })`, Sass writes a map with the sources included, relative to `file.base`. Without it, no map is made.
+* Sass takes no input map, so when the file arrived with a map of its own (SCSS generated by an earlier plugin), the plugin chains the Sass map to it: the result points at that map's sources. Imported stylesheets keep their own entries. `sourceMap`, `sourceMapIncludeSources`, `syntax` and `url` come from the file, not from `sassOptions`.
+* Each stream gets one Sass compiler. It starts with the first Sass file to compile and stops when the stream ends, fails or is destroyed (`stream.destroy()`, a pipeline torn down by another step's error), so it never outlives the task.
 * A compiler that fails to start, for example because the sass-embedded binary for your platform is missing, fails the file that needed it with a PluginError naming its path, and that error ends the stream as any other error does. The start is not retried for later files.
 * A Sass error emits a PluginError that points at the stylesheet where it happened, often a partial, and its line. The message is Sass's own, without the `Error:` prefix, and the details leave out Sass's raw span objects. Other errors, from a hook for example, name the file being compiled.
 * The compiler is [sass-embedded](https://sass-lang.com/dart-sass/), the Dart Sass compiler; its options go through `sassOptions`.
 
-## Migrating from 1.x
+## Migrating
+
+### From gulp-sass
+
+| gulp-sass                                 | scss-compiler                                                                 |
+| ----------------------------------------- | ----------------------------------------------------------------------------- |
+| `gulpSass(sass)(options)`, `sass.sync(…)` | `scssCompiler({ sassOptions })`: sass-embedded is built in                    |
+| `outputStyle: 'compressed'`               | `sassOptions: { style: 'compressed' }`                                        |
+| `includePaths`                            | `sassOptions.loadPaths`                                                       |
+| `indentedSyntax: true`                    | the `.sass` extension                                                         |
+| `.on('error', sass.logError)`             | errors are PluginErrors with the file and line; handle them as for any plugin |
+| gulp-sourcemaps `init()` / `write('.')`   | `src(…, { sourcemaps: true })` / `dest(…, { sourcemaps: '.' })`               |
+| partials skipped                          | the same; `skipPartials: false` keeps them                                    |
+
+### From 1.x
 
 * `scssOptions` is renamed to `sassOptions`; `url`, `syntax` and `sourceMap` are no longer options because they come from the file.
 * 1.x compiled the file from disk, so the result of `onBeforeCompile` was ignored. Now the file contents are compiled, including changes from earlier plugins and from the hook.

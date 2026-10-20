@@ -1,6 +1,11 @@
 ---
 url: /gulp-plugins-hub/guide/migration.md
+description: >-
+  Upgrade gulp-plugins-hub packages from 1.x to 2.0, with before and after code
+  for hooks, the plugin factory, file-exclude, archive-creator, scss-compiler
+  and the minifiers.
 ---
+
 # Migrating from 1.x
 
 2.0 rewrites every package for gulp 5 and Node.js 22.13+. The packages keep their names; the options changed where 1.x had bugs or nested everything under `pluginOptions`.
@@ -32,6 +37,89 @@ url: /gulp-plugins-hub/guide/migration.md
 | gulp-scss-compiler   | `scssOptions`; compiled the file on disk (`onBeforeCompile` was ignored), one process per file | `sassOptions`; compiles the contents with one compiler per stream; partials skipped; source maps; `.sass`                                          |
 
 Each plugin page ends with its own migration notes.
+
+## Before and after
+
+### Hooks
+
+```js
+// 1.x
+jsSqueezer({ pluginOptions: { onBeforeMinify: (content) => content.replace('__DEV__', 'false') } });
+
+// 2.0: flat, one object with the file, may be async
+jsSqueezer({ onBeforeMinify: ({ content, file }) => content.replace('__DEV__', 'false') });
+```
+
+### A plugin of your own
+
+```js
+// 1.x
+GulpPluginFactory({
+  pluginName: 'gulp-banner',
+  onFile: (file) => {
+    /* returning undefined dropped the file */
+  }
+});
+
+// 2.0: nothing returned keeps the file, null drops it
+import { createPlugin } from '@zilero/gulp-plugin-factory';
+
+export const banner = () =>
+  createPlugin({
+    name: 'gulp-banner',
+    transform: (file) => {
+      file.contents = Buffer.concat([Buffer.from('/* banner */\n'), file.contents]);
+    }
+  });
+```
+
+[Writing a plugin](/guide/writing-plugins) covers options, source maps and tests.
+
+### file-exclude
+
+```js
+// 1.x: substrings, a size tuple, onExclude
+fileExclude({ patterns: ['.map', 'draft'], size: [0, 2_000_000], onExclude: (file) => file.stem === 'tmp' });
+
+// 2.0: globs or RegExps, a size object, exclude
+fileExclude({
+  patterns: ['*.map', '**/draft/**'],
+  size: { max: 2_000_000 },
+  exclude: ({ file }) => file.stem === 'tmp'
+});
+```
+
+### archive-creator
+
+```js
+// 1.x
+archiveCreator({ format: 'zip', pluginOptions: { archiveName: 'site.zip' }, archiveOptions: { zlib: { level: 9 } } });
+
+// 2.0: the format comes from the name's extension
+archiveCreator({ name: 'site.zip', archiverOptions: { zlib: { level: 9 } } });
+```
+
+### scss-compiler and the minifiers
+
+```js
+// 1.x
+scssCompiler({ scssOptions: { style: 'compressed' } });
+jsSqueezer({ minifyOptions: { compress: { drop_console: true } } });
+htmlSqueezer({}); // minified nothing without options
+
+// 2.0
+scssCompiler({ sassOptions: { style: 'compressed' } });
+jsSqueezer({ terserOptions: { compress: { drop_console: true } } });
+htmlSqueezer(); // the conservative preset; { preset: 'comprehensive' } for the smallest output
+```
+
+### A CommonJS gulpfile
+
+1.x shipped a separate CommonJS build. 2.0 is ES modules only, which Node.js 22.13+ loads with `require()`; take the named export, since `require()` returns the module namespace:
+
+```js
+const { scssCompiler } = require('@zilero/gulp-scss-compiler');
+```
 
 ## New in 2.0
 

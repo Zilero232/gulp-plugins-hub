@@ -1,6 +1,10 @@
 ---
 url: /gulp-plugins-hub/guide/getting-started.md
+description: >-
+  Install gulp-plugins-hub plugins and write a first gulp 5 gulpfile with
+  pipeline, source maps and options validated up front.
 ---
+
 # Getting started
 
 gulp-plugins-hub is a set of gulp plugins, each in its own package, that share one way of working: typed options checked when the plugin is created, hooks that get the file, errors that name the plugin and the file.
@@ -95,5 +99,8 @@ In a `watch` task an error stops that run; gulp keeps watching.
 ## Next
 
 * [Gulp 5 essentials](/guide/gulp-5): binary files, glob order, `pipeline`, TypeScript gulpfiles, source maps.
-* [Recipes](/guide/recipes): a complete static site build.
+* [Recipes](/guide/recipes): incremental builds, responsive images, font subsets.
+* [Example project](/guide/example-project): a complete static site built with every plugin.
+* [Migrating from other plugins](/guide/migrating-from-other-plugins): gulp-sass, gulp-imagemin, gulp-rev and the rest, option by option.
+* [Troubleshooting](/guide/troubleshooting): corrupted images, CommonJS and TypeScript gulpfiles, native binaries in CI.
 * [Plugins](/plugins/): every plugin and its options.

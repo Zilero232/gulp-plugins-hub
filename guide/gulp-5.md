@@ -1,6 +1,10 @@
 ---
 url: /gulp-plugins-hub/guide/gulp-5.md
+description: >-
+  The gulp 5 changes every build runs into: binary files and encoding false,
+  glob order, source maps, pipeline, ES modules and TypeScript gulpfiles.
 ---
+
 # Gulp 5 essentials
 
 Gulp 5 changed a few defaults that every build runs into. The plugins handle them, but some need a setting in your gulpfile.

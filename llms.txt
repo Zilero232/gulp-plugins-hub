@@ -8,44 +8,50 @@ Pug, Sass, Lightning CSS, terser, sharp, fonts, archives and cache-busting — o
 
 ### Guide
 
-- [Getting started](/gulp-plugins-hub/guide/getting-started.md)
-- [Gulp 5 essentials](/gulp-plugins-hub/guide/gulp-5.md)
-- [Recipes](/gulp-plugins-hub/guide/recipes.md)
-- [Writing a plugin](/gulp-plugins-hub/guide/writing-plugins.md)
-- [Migrating from 1.x](/gulp-plugins-hub/guide/migration.md)
+- [Getting started](/gulp-plugins-hub/guide/getting-started.md): Install gulp-plugins-hub plugins and write a first gulp 5 gulpfile with pipeline, source maps and options validated up front.
+- [Gulp 5 essentials](/gulp-plugins-hub/guide/gulp-5.md): The gulp 5 changes every build runs into: binary files and encoding false, glob order, source maps, pipeline, ES modules and TypeScript gulpfiles.
+- [Recipes](/gulp-plugins-hub/guide/recipes.md): Short gulp 5 recipes with gulp-plugins-hub: incremental builds, responsive images, font subsetting and steps that run in one mode only.
+- [Example project](/gulp-plugins-hub/guide/example-project.md): A complete static site built with every gulp-plugins-hub plugin, set up the way a gulp 5 build is in 2026, with its task tree and how to run it.
+- [Writing a plugin](/gulp-plugins-hub/guide/writing-plugins.md): Build a typed gulp plugin with @zilero/gulp-plugin-factory: a stream from a transform function, validated options, source maps, hooks and tests.
+- [Troubleshooting](/gulp-plugins-hub/guide/troubleshooting.md): Fixes for the problems gulp 5 builds run into with gulp-plugins-hub - corrupted binary files, CommonJS and TypeScript gulpfiles, native binaries in CI and Windows paths.
+
+### Migrating
+
+- [Migrating from other plugins](/gulp-plugins-hub/guide/migrating-from-other-plugins.md): Replace gulp-sass, gulp-clean-css, gulp-autoprefixer, gulp-terser, gulp-htmlmin, gulp-imagemin, gulp-rev, gulp-zip, gulp-if, gulp-rename, gulp-concat and others with typed gulp 5 plugins, option by option.
+- [Migrating from 1.x](/gulp-plugins-hub/guide/migration.md): Upgrade gulp-plugins-hub packages from 1.x to 2.0, with before and after code for hooks, the plugin factory, file-exclude, archive-creator, scss-compiler and the minifiers.
 
 ### Compile
 
-- [pug-compiler](/gulp-plugins-hub/plugins/pug-compiler.md)
-- [scss-compiler](/gulp-plugins-hub/plugins/scss-compiler.md)
+- [pug-compiler](/gulp-plugins-hub/plugins/pug-compiler.md): Render Pug templates to HTML in a gulp stream, with locals from options or file.data and partials skipped.
+- [scss-compiler](/gulp-plugins-hub/plugins/scss-compiler.md): Compile SCSS and indented Sass to CSS in a gulp stream with sass-embedded, one compiler process per stream, with source maps.
 
 ### Optimize
 
-- [html-squeezer](/gulp-plugins-hub/plugins/html-squeezer.md)
-- [css-squeezer](/gulp-plugins-hub/plugins/css-squeezer.md)
-- [js-squeezer](/gulp-plugins-hub/plugins/js-squeezer.md)
-- [image-squeezer](/gulp-plugins-hub/plugins/image-squeezer.md)
-- [font-switcher](/gulp-plugins-hub/plugins/font-switcher.md)
+- [html-squeezer](/gulp-plugins-hub/plugins/html-squeezer.md): Minify HTML in a gulp stream with html-minifier-next presets, inline CSS and JavaScript included.
+- [css-squeezer](/gulp-plugins-hub/plugins/css-squeezer.md): Minify CSS, add vendor prefixes and lower modern syntax for your browserslist targets in one gulp pass with Lightning CSS.
+- [js-squeezer](/gulp-plugins-hub/plugins/js-squeezer.md): Minify JavaScript in a gulp stream with terser, with source maps chained to the original sources.
+- [image-squeezer](/gulp-plugins-hub/plugins/image-squeezer.md): Optimize JPEG, PNG, WebP, AVIF, GIF and TIFF images in a gulp stream with sharp, convert them to modern formats and resize them for srcset.
+- [font-switcher](/gulp-plugins-hub/plugins/font-switcher.md): Convert fonts in a gulp stream to woff2, woff, ttf, eot or SVG and subset them with harfbuzz, keeping ligatures, kerning and every OpenType feature.
 
 ### Transform
 
-- [file-concat](/gulp-plugins-hub/plugins/file-concat.md)
-- [text-replace](/gulp-plugins-hub/plugins/text-replace.md)
-- [refilename](/gulp-plugins-hub/plugins/refilename.md)
-- [asset-revision](/gulp-plugins-hub/plugins/asset-revision.md)
-- [archive-creator](/gulp-plugins-hub/plugins/archive-creator.md)
+- [file-concat](/gulp-plugins-hub/plugins/file-concat.md): Concatenate the files of a gulp stream into one, in an order set with globs, with a header, a footer and a source map chained through every input.
+- [text-replace](/gulp-plugins-hub/plugins/text-replace.md): Replace text in gulp streams with strings, regular expressions or async replacers, add a header and footer, and keep source maps; replaces gulp-replace and gulp-header.
+- [refilename](/gulp-plugins-hub/plugins/refilename.md): Rename files in a gulp stream with a new name, a prefix or suffix, another extension or folder, or a function of the path parts; a typed gulp-rename replacement.
+- [asset-revision](/gulp-plugins-hub/plugins/asset-revision.md): Cache-busting for a gulp build - hash asset names, rewrite the references in HTML, CSS and JavaScript in the same pass, and write a manifest.
+- [archive-creator](/gulp-plugins-hub/plugins/archive-creator.md): Pack the files of a gulp stream into one reproducible zip, tar or tar.gz archive with archiver.
 
 ### Route and filter
 
-- [conditional](/gulp-plugins-hub/plugins/conditional.md)
-- [file-exclude](/gulp-plugins-hub/plugins/file-exclude.md)
-- [file-changed](/gulp-plugins-hub/plugins/file-changed.md)
-- [folder-clone](/gulp-plugins-hub/plugins/folder-clone.md)
+- [conditional](/gulp-plugins-hub/plugins/conditional.md): Route each file of a gulp stream through a different plugin chain by glob, RegExp or a function of the file, like if / else if / else for streams.
+- [file-exclude](/gulp-plugins-hub/plugins/file-exclude.md): Drop files from a gulp stream by glob, regular expression, size or your own predicate, or keep only the matching ones with invert.
+- [file-changed](/gulp-plugins-hub/plugins/file-changed.md): A gulp plugin that passes only the files changed since the last build, by modification time or contents, with extra dependencies such as Sass partials.
+- [folder-clone](/gulp-plugins-hub/plugins/folder-clone.md): Copy every file of a gulp stream into one or more extra folders in a single pass, with a hook to change, replace or skip each copy.
 
 ### Reference
 
-- [Plugin factory](/gulp-plugins-hub/reference/factory.md)
-- [Testing helpers](/gulp-plugins-hub/reference/testing.md)
+- [Plugin factory](/gulp-plugins-hub/reference/factory.md): API reference of @zilero/gulp-plugin-factory: createPlugin, parseOptions, hooks, source map, path and binary helpers.
+- [Testing helpers](/gulp-plugins-hub/reference/testing.md): Test gulp plugins without gulp: createFile, runPlugin, getContents and getRelativePath from @zilero/gulp-plugin-factory/testing.
 
 ### Other
 
