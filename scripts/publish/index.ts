@@ -8,7 +8,8 @@
 //
 // `bun scripts/publish/index.ts --dry-run` packs everything and runs `npm publish --dry-run`: nothing is uploaded.
 // `--local` publishes from a maintainer's machine (after `npm login`), without provenance: how a package that is
-// not on npm yet gets its first version, since trusted publishing can only be set up for an existing package.
+// not on npm yet gets its first version, since trusted publishing can only be set up for an existing package. It
+// publishes only those packages, and leaves tagging to CI: every other version goes out from CI with provenance.
 import { mkdir, rm } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 
@@ -32,8 +33,13 @@ await mkdir(PACK_DIR);
 for (const workspace of sortByDependencies(await readWorkspaces())) {
   const { name, version } = workspace.manifest;
 
-  if (isPublished(workspace.manifest)) {
+  if (isPublished({ name, version })) {
     console.log(`${name}@${version} is already on npm`);
+    continue;
+  }
+
+  if (local && isPublished({ name })) {
+    console.log(`${name} is on npm: ${version} is published from CI, with provenance`);
     continue;
   }
 
@@ -41,10 +47,10 @@ for (const workspace of sortByDependencies(await readWorkspaces())) {
   console.log(`${dryRun ? 'Checked' : 'Published'} ${name}@${version}`);
 }
 
-// Always, even when nothing was published now: a run that published and then failed before tagging is
+// Always in CI, even when nothing was published now: a run that published and then failed before tagging is
 // completed by the next one. `changeset tag` skips versions that have a tag, and writes a git-tag event per new
 // tag to the file in CHANGESETS_OUTPUT (set by changesets/action and inherited here), from which the action
 // pushes the tags and creates the GitHub releases.
-if (!dryRun) {
+if (!dryRun && !local) {
   runCommand({ command: 'bun', args: ['run', 'changeset', 'tag'] });
 }

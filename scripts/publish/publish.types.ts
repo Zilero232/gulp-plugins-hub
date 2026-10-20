@@ -12,6 +12,12 @@ export type Workspace = {
   manifest: Manifest;
 };
 
+export type IsPublishedInput = {
+  name: string;
+  /** Left out: whether any version of the package is on npm. */
+  version?: string;
+};
+
 export type RunCommandInput = {
   command: string;
   args: string[];

@@ -43,7 +43,7 @@ Commits follow [Conventional Commits](https://www.conventionalcommits.org), chec
 Releases go through [changesets](https://github.com/changesets/changesets) and `.github/workflows/release.yml`:
 
 1. A pull request that changes a published package includes a changeset: `bun run changeset`, pick the packages and the bump, describe the change for the changelog.
-2. Merged to `master`, the release workflow opens (or updates) the "chore(release): 🔖 version packages" pull request, which bumps the versions and writes the changelogs.
+2. Merged to `master`, the release workflow opens (or updates) the "chore(release): 🔖 version packages" pull request, which bumps the versions and writes the changelogs. Every `@zilero/gulp-*` package is in one `fixed` group (`.changeset/config.json`): a release bumps them all to the same version, so the plugins and the factory they depend on always match.
 3. Merging that pull request runs the workflow again: `scripts/publish/` publishes every package whose version is not on npm yet, dependencies first, with npm trusted publishing and provenance, then tags the versions and creates the GitHub releases.
 
 ### A new package
@@ -51,14 +51,15 @@ Releases go through [changesets](https://github.com/changesets/changesets) and `
 npm trusted publishing can only be set up for a package that already exists, so a new package's first version is published by hand, from the "version packages" branch, before that pull request is merged:
 
 ```sh
-git switch changeset-release/master && git pull
+git fetch origin
+git switch -C changeset-release/master origin/changeset-release/master   # the branch is recreated on every run
 npm login
 bun install && bun run build
 bun scripts/publish/index.ts --local --dry-run   # check what would be published
 bun scripts/publish/index.ts --local
 ```
 
-`--local` publishes with the maintainer's login and without provenance (which needs CI's OIDC token). Then, in its settings on the npm website, each new package gets a trusted publisher: repository `Zilero232/gulp-plugins-hub`, workflow `release.yml`. Merging the pull request afterwards publishes nothing twice: versions already on npm are skipped, and the workflow tags them and creates the releases.
+`--local` publishes only the packages that are not on npm at all, with the maintainer's login and without provenance (which needs CI's OIDC token), and creates no tags. Then, in its settings on the npm website, each new package gets a trusted publisher: repository `Zilero232/gulp-plugins-hub`, workflow `release.yml`. Merging the pull request afterwards publishes nothing twice: versions already on npm are skipped, and the workflow tags them and creates the releases.
 
 ### Repository settings the workflows need
 
