@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-image-squeezer",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Optimize images in a gulp stream with sharp and convert them to WebP, AVIF, JPEG or PNG, at several widths for responsive images.",
   "keywords": [
     "gulpplugin",

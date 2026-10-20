@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-scss-compiler",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Compile SCSS and indented Sass with the modern Sass compiler (sass-embedded) in a gulp stream: one compiler process per stream, partials skipped, source maps kept.",
   "keywords": [
     "gulpplugin",

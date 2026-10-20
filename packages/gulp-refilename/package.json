@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-refilename",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Rename files in a gulp stream: a new name, a prefix or suffix, another extension or directory, or a function of the path parts.",
   "keywords": [
     "gulpplugin",

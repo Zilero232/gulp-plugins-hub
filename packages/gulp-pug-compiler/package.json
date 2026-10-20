@@ -1,6 +1,6 @@
 {
   "name": "@zilero/gulp-pug-compiler",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Compile Pug templates to HTML in a gulp stream, with per-file data, includes from the file contents and your own extension.",
   "keywords": [
     "gulpplugin",
